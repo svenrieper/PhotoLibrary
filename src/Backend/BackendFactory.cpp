@@ -16,6 +16,8 @@ BackendFactory::BackendFactory(const char* filename) : db(nullptr) {
 	window_properties[WindowProperties::WINDOW_HEIGHT] = 1200;
 	window_properties[WindowProperties::LEFT_PANE_WIDTH] = 250;
 	window_properties[WindowProperties::RIGHT_PANE_WIDTH] = 250;
+	window_properties[WindowProperties::TILE_WIDTH] = 250;
+//	window_properties[WindowProperties::TILE_HEIGHT] = 250;
 
 	try {
 		db = new Adapter::DatabaseFactory(":memory:");
@@ -40,6 +42,10 @@ DirectoryInterface* BackendFactory::getDirectoriesInterface() {
 
 AlbumInterface* BackendFactory::getAlbumInterface() {
 	return db->getAlbumInterface();
+}
+
+PhotoInterface* BackendFactory::getPhotoInterface() {
+	return db->getPhotoInterface();
 }
 
 int BackendFactory::getWindowProperty(WindowProperties property) {

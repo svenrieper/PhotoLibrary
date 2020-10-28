@@ -9,7 +9,7 @@
 #include "SQLQuerry.h"
 #include "Database.h"
 #include <string>
-#include <iostream>
+//#include <iostream>
 
 namespace PhotoLibrary {
 namespace Adapter {
@@ -43,6 +43,10 @@ const char* SQLQuerry::getColumnText(int colNum) {
 
 int SQLQuerry::getColumnInt(int colNum) {
 	return sqlite3_column_int(sqlStmt, colNum);
+}
+
+int_least64_t SQLQuerry::getColumnInt64(int colNum) {
+	return sqlite3_column_int64(sqlStmt, colNum);
 }
 
 void SQLQuerry::nextStatement() {

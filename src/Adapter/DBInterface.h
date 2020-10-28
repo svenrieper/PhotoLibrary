@@ -25,7 +25,7 @@ namespace Adapter {
  *
  * The Backend::Record::getField(int) should return the name of the column
  * for the data returned with Backend::Record::access<int>().
- * Currently supported data types: int, Glib::ustring, and
+ * Currently supported data types: int, int_least64_t, Glib::ustring, and
  * Backend::RecordOptions::KeywordOptions.
  *
  * @param RType Backend::Record based class used to retrieve,
@@ -147,6 +147,9 @@ private:
 
 	//update 'field' with the retrieved data
 	//use overloaded functions to get the right type
+	void setValue(SQLQuerry& querry, int column, int_least64_t& field) {
+		field = querry.getColumnInt64(column);
+	}
 	void setValue(SQLQuerry& querry, int column, int& field) {
 		field = querry.getColumnInt(column);
 	}

@@ -14,7 +14,8 @@ namespace Adapter {
 
 using Backend::DirectoryRecord;
 using Backend::BackendFactory;
-using DirectoryInterface = DBInterface<Backend::DirectoryRecord>;
+using Backend::InterfaceBase;
+using DirectoryInterface = InterfaceBase<Backend::DirectoryRecord>;
 
 
 TEMPLATE_TEST_CASE("Test the DirectoryInterface of the Adapter and the Backend", "[directory][adapter][backend]", DatabaseFactory, BackendFactory) {

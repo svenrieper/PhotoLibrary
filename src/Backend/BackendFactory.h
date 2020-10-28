@@ -9,6 +9,7 @@
 #define SRC_BACKEND_BACKENDFACTORY_H_
 
 #include "../Adapter/DatabaseFactory.h"
+#include "FactoryBase.h"
 #include <unordered_map>
 
 namespace PhotoLibrary {
@@ -33,10 +34,16 @@ using DirectoryInterface = InterfaceBase<DirectoryRecord>;
 using AlbumInterface = InterfaceBase<AlbumRecord>;
 
 /**
+ * There is no backend for photos so we just pass the database interface
+ * for PhotoInterface through.
+ */
+using PhotoInterface = InterfaceBase<PhotoRecord>;
+
+/**
  * Factory class to construct the backend.
  * Constructs the backend classes and hands them to the GUI on demand.
  */
-class BackendFactory {
+class BackendFactory : public FactoryBase {
 public:
 	/**
 	 * Properties of the main window.
@@ -47,7 +54,9 @@ public:
 		WINDOW_WIDTH,	/**< Width of the main window. */
 		WINDOW_HEIGHT,	/**< Height of the main window. */
 		LEFT_PANE_WIDTH,	/**< Width of the left pane. */
-		RIGHT_PANE_WIDTH	/**< Width of the right pane. */
+		RIGHT_PANE_WIDTH,	/**< Width of the right pane. */
+		TILE_WIDTH	/**< The width of a tile in the centre frame */
+//		, TILE_HEIGHT	/**< The height of a tile in the centre frame */
 	};
 
 	/**
@@ -60,19 +69,25 @@ public:
 	 * Get a pointer to the keyword interface of the backend.
 	 * @return Pointer to the Keywords interface of the backend.
 	 */
-	KeywordInterface* getKeywordInterface();
+	KeywordInterface* getKeywordInterface() override;
 
 	/**
 	 * Get a pointer to the directories interface of the backend.
 	 * @return Pointer to the DirectoryInterface of the backend.
 	 */
-	DirectoryInterface* getDirectoriesInterface();
+	DirectoryInterface* getDirectoriesInterface() override;
 
 	/**
 	 * Get a pointer to the albums interface of the backend.
 	 * @return Pointer to the AlbumInterface of the backend.
 	 */
-	AlbumInterface* getAlbumInterface();
+	AlbumInterface* getAlbumInterface() override;
+
+	/**
+	 * Get a pointer to the photo interface of the backend.
+	 * @return Pointer to the PhotoInterface of the backend.
+	 */
+	PhotoInterface* getPhotoInterface() override;
 
 	/**
 	 * Retrieve the value of a main window property.

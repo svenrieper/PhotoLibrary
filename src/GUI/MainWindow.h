@@ -13,9 +13,9 @@
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/box.h>
 #include <gtkmm/frame.h>
-
 #include "RightPane.h"
 #include "LeftPane.h"
+#include "CentrePane.h"
 
 namespace PhotoLibrary {
 namespace GUI {
@@ -42,10 +42,11 @@ private:
 
 	RightPane rightPaneBox;
 	LeftPane leftPaneBox;
+	CentrePane centrePaneBox;
 
 	Gtk::Frame topPaneBox;
 	Gtk::Frame buttomPaneBox;
-	Gtk::Frame centerPaneBox;
+//	Gtk::Frame centerPaneBox;
 
 	void fillWindow();
 	void onWindowResize();

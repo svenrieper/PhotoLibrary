@@ -28,6 +28,7 @@ add_executable(PhotoLibrary
 			GUI/NewAlbumDialogue.cpp
 			GUI/NewKeywordDialogue.cpp
 			GUI/RenameAlbumDialogue.cpp
+			GUI/CentrePane.cpp
 			)
 
 #configure_file(CmakeConfig.h.in CmakeConfig.h)

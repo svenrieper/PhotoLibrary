@@ -10,9 +10,7 @@
 
 #include "Database.h"
 #include "DBInterface.h"
-#include "../Backend/Record/DirectoryRecord.h"
-#include "../Backend/Record/AlbumRecord.h"
-#include "../Backend/Record/KeywordRecord.h"
+#include "../Backend/FactoryBase.h"
 
 namespace PhotoLibrary {
 namespace Adapter {
@@ -20,7 +18,7 @@ namespace Adapter {
 /**
  * Factory class to create the database handle and interface.
  */
-class DatabaseFactory {
+class DatabaseFactory : public Backend::FactoryBase {
 public:
 	/**
 	 * @param filename filname of the database
@@ -34,19 +32,25 @@ public:
 	 * Get a pointer to the Keyword interface.
 	 * @return pointer to the keyword interface
 	 */
-	DBInterface<Backend::KeywordRecord>* getKeywordInterface();
+	DBInterface<Backend::KeywordRecord>* getKeywordInterface() override;
 
 	/**
 	 * Get a pointer to the directories interface.
 	 * @return pointer to the directories interface
 	 */
-	DBInterface<Backend::DirectoryRecord>* getDirectoriesInterface();
+	DBInterface<Backend::DirectoryRecord>* getDirectoriesInterface() override;
 
 	/**
 	 * Get a pointer to the album interface.
 	 * @return pointer to the album interface
 	 */
-	DBInterface<Backend::AlbumRecord>* getAlbumInterface();
+	DBInterface<Backend::AlbumRecord>* getAlbumInterface() override;
+
+	/**
+	 * Get a pointer to the photo interface.
+	 * @return pointer to the photo interface
+	 */
+	DBInterface<Backend::PhotoRecord>* getPhotoInterface() override;
 
 	//disable copying and copy construction
 	DatabaseFactory(const DatabaseFactory &other) = delete;
@@ -59,6 +63,7 @@ private:
 	DBInterface<Backend::KeywordRecord> keyword_interface;
 	DBInterface<Backend::DirectoryRecord> directories_interface;
 	DBInterface<Backend::AlbumRecord> album_interface;
+	DBInterface<Backend::PhotoRecord> photo_interface;
 };
 
 } /* namespace Adapter */
