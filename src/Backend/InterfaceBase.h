@@ -34,7 +34,7 @@ public:
 	 * @param id Id of the record to return
 	 * @return complete information for record with id 'id'
 	 */
-	virtual RecordType getEntry(int id) = 0;
+	virtual RecordType getEntry(int id) const = 0;
 
 	/**
 	 * Get the children of a entry.
@@ -42,7 +42,7 @@ public:
 	 * @param parent id of the entry of which the children should be returned
 	 * @return vector of id's of the children of 'parent'
 	 */
-	virtual std::vector<int> getChildren(int parent) = 0;
+	virtual std::vector<int> getChildren(int parent) const = 0;
 
 	/**
 	 * Add new record.
@@ -77,7 +77,7 @@ public:
 	 * @param entry the record for which to return the id
 	 * @return the id of the record 'entry'
 	 */
-	virtual int getID(const RType& entry) = 0;
+	virtual int getID(const RType& entry) const = 0;
 
 	/**
 	 * Delete record from table.

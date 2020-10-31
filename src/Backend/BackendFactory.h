@@ -72,10 +72,22 @@ public:
 	KeywordInterface* getKeywordInterface() override;
 
 	/**
+	 * Get a pointer to the keyword interface of the backend.
+	 * @return Pointer to the Keywords interface of the backend.
+	 */
+	const KeywordInterface* getKeywordInterface() const override;
+
+	/**
 	 * Get a pointer to the directories interface of the backend.
 	 * @return Pointer to the DirectoryInterface of the backend.
 	 */
 	DirectoryInterface* getDirectoriesInterface() override;
+
+	/**
+	 * Get a pointer to the directories interface of the backend.
+	 * @return Pointer to the DirectoryInterface of the backend.
+	 */
+	const DirectoryInterface* getDirectoriesInterface() const override;
 
 	/**
 	 * Get a pointer to the albums interface of the backend.
@@ -84,10 +96,22 @@ public:
 	AlbumInterface* getAlbumInterface() override;
 
 	/**
+	 * Get a pointer to the albums interface of the backend.
+	 * @return Pointer to the AlbumInterface of the backend.
+	 */
+	const AlbumInterface* getAlbumInterface() const override;
+
+	/**
 	 * Get a pointer to the photo interface of the backend.
 	 * @return Pointer to the PhotoInterface of the backend.
 	 */
 	PhotoInterface* getPhotoInterface() override;
+
+	/**
+	 * Get a pointer to the photo interface of the backend.
+	 * @return Pointer to the PhotoInterface of the backend.
+	 */
+	const PhotoInterface* getPhotoInterface() const override;
 
 	/**
 	 * Retrieve the value of a main window property.
@@ -95,7 +119,7 @@ public:
 	 * @param property Property for which the value should be returned
 	 * @return Value of 'property'
 	 */
-	int getWindowProperty(WindowProperties property);
+	int getWindowProperty(WindowProperties property) const;
 
 	/**
 	 * Save the value of a main window property.
@@ -110,7 +134,7 @@ public:
 	 *
 	 * @retun Width of the central pane
 	 */
-	int getCentreWidth();
+	int getCentreWidth() const;
 
 private:
 	Adapter::DatabaseFactory* db;

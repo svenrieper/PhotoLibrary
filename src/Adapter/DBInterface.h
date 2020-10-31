@@ -50,7 +50,7 @@ public:
 	 * @param id Id of the record to return
 	 * @return complete information for record with id 'id'
 	 */
-	RecordType getEntry(int id) override;
+	RecordType getEntry(int id) const override;
 
 	/**
 	 * Get the children of a entry.
@@ -58,7 +58,7 @@ public:
 	 * @param parent id of the entry of which the children should be returned
 	 * @return vector of id's of the children of 'parent'
 	 */
-	std::vector<int> getChildren(int parent) override;
+	std::vector<int> getChildren(int parent) const override;
 
 	/**
 	 * Add new record.
@@ -101,7 +101,7 @@ public:
 	 * @param entry the record for which to return the id
 	 * @return the id of the record 'entry'
 	 */
-	int getID(const RType& entry) override;
+	int getID(const RType& entry) const override;
 
 	/**
 	 * Delete record from table.
@@ -117,17 +117,17 @@ protected:
 	const Glib::ustring table; /**< name of the table associated with the derived interface class */
 
 private:
-	void appendSQL(Glib::ustring* sql, Glib::ustring append, bool escape=true) {
+	void appendSQL(Glib::ustring* sql, Glib::ustring append, bool escape=true) const {
 		escapeSingleQuotes(&append);
 		*sql += (escape?"'":"") + append + (escape?"'":"");
 	}
 
-	void appendSQL(Glib::ustring* sql, int append, bool escape=true) {
+	void appendSQL(Glib::ustring* sql, int append, bool escape=true) const {
 		*sql += std::to_string(append);
 	}
 
 	//append the names of all data fields (table columns)
-	void appendFieldNames(RecordType entry, Glib::ustring &sql) {
+	void appendFieldNames(RecordType entry, Glib::ustring &sql) const {
 		int i = entry.size()-1;
 		appendSQL(&sql, entry.getField(i), false);
 		while(i--) {
@@ -137,7 +137,7 @@ private:
 	}
 
 	//append the names of all data fields (table columns) for GET
-	void appendFieldNamesReverse(RecordType entry, Glib::ustring &sql) {
+	void appendFieldNamesReverse(RecordType entry, Glib::ustring &sql) const {
 		appendSQL(&sql, entry.getField(0), false);
 		for(int i=1; i<entry.size(); ++i) {
 			sql += ", ";
@@ -147,16 +147,16 @@ private:
 
 	//update 'field' with the retrieved data
 	//use overloaded functions to get the right type
-	void setValue(SQLQuerry& querry, int column, int_least64_t& field) {
+	void setValue(SQLQuerry& querry, int column, int_least64_t& field) const {
 		field = querry.getColumnInt64(column);
 	}
-	void setValue(SQLQuerry& querry, int column, int& field) {
+	void setValue(SQLQuerry& querry, int column, int& field) const {
 		field = querry.getColumnInt(column);
 	}
-	void setValue(SQLQuerry& querry, int column, Backend::RecordOptions::KeywordOptions& field) {
+	void setValue(SQLQuerry& querry, int column, Backend::RecordOptions::KeywordOptions& field) const {
 		field = static_cast<Backend::RecordOptions::KeywordOptions>(querry.getColumnInt(column));
 	}
-	void setValue(SQLQuerry& querry, int column, Glib::ustring& field) {
+	void setValue(SQLQuerry& querry, int column, Glib::ustring& field) const {
 		field = querry.getColumnText(column);
 	}
 };
@@ -170,7 +170,7 @@ DBInterface<RType>::DBInterface(Database *db, Glib::ustring table) :
 }
 
 template<class RType>
-RType DBInterface<RType>::getEntry(int id) {
+RType DBInterface<RType>::getEntry(int id) const {
 	RecordType entry;
 
 	Glib::ustring sql = "SELECT ";
@@ -218,7 +218,7 @@ RType DBInterface<RType>::getEntry(int id) {
 }
 
 template<class RType>
-std::vector<int> DBInterface<RType>::getChildren(int parent) {
+std::vector<int> DBInterface<RType>::getChildren(int parent) const {
 	Glib::ustring sql = "SELECT id FROM " + table + " WHERE parent IS '" + std::to_string(parent) + "'";
 	SQLQuerry querry(db, sql.c_str());
 
@@ -354,7 +354,7 @@ void DBInterface<RType>::setParent(int child_id, int new_parent_id) {
 }
 
 template<class RType>
-int DBInterface<RType>::getID(const RType& entry) {
+int DBInterface<RType>::getID(const RType& entry) const {
 	Glib::ustring sql = "SELECT id FROM " + table + " WHERE (";
 	switch (entry.size()) {
 	case 5:

@@ -36,7 +36,15 @@ KeywordInterface* BackendFactory::getKeywordInterface() {
 	return db->getKeywordInterface();
 }
 
+const KeywordInterface* BackendFactory::getKeywordInterface() const {
+	return db->getKeywordInterface();
+}
+
 DirectoryInterface* BackendFactory::getDirectoriesInterface() {
+	return db->getDirectoriesInterface();
+}
+
+const DirectoryInterface* BackendFactory::getDirectoriesInterface() const {
 	return db->getDirectoriesInterface();
 }
 
@@ -44,11 +52,19 @@ AlbumInterface* BackendFactory::getAlbumInterface() {
 	return db->getAlbumInterface();
 }
 
+const AlbumInterface* BackendFactory::getAlbumInterface() const {
+	return db->getAlbumInterface();
+}
+
 PhotoInterface* BackendFactory::getPhotoInterface() {
 	return db->getPhotoInterface();
 }
 
-int BackendFactory::getWindowProperty(WindowProperties property) {
+const PhotoInterface* BackendFactory::getPhotoInterface() const {
+	return db->getPhotoInterface();
+}
+
+int BackendFactory::getWindowProperty(WindowProperties property) const {
 	return window_properties.at(property);
 }
 
@@ -57,10 +73,10 @@ void BackendFactory::setWindowProperty(WindowProperties property, int value) {
 	window_properties[property] = value;
 }
 
-int BackendFactory::getCentreWidth() {
-	return window_properties[WindowProperties::WINDOW_WIDTH] -
-			window_properties[WindowProperties::RIGHT_PANE_WIDTH] -
-			window_properties[WindowProperties::RIGHT_PANE_WIDTH] - 4;
+int BackendFactory::getCentreWidth() const {
+	return window_properties.at(WindowProperties::WINDOW_WIDTH) -
+			window_properties.at(WindowProperties::RIGHT_PANE_WIDTH) -
+			window_properties.at(WindowProperties::RIGHT_PANE_WIDTH) - 4;
 }
 
 } /* namespace Backend */

@@ -32,10 +32,22 @@ public:
 	virtual InterfaceBase<KeywordRecord>* getKeywordInterface() = 0;
 
 	/**
+	 * Get a pointer to the keyword interface.
+	 * @return Pointer to the Keywords interface.
+	 */
+	virtual const InterfaceBase<KeywordRecord>* getKeywordInterface() const = 0;
+
+	/**
 	 * Get a pointer to the directories interface.
 	 * @return Pointer to the DirectoryInterface.
 	 */
 	virtual InterfaceBase<DirectoryRecord>* getDirectoriesInterface() = 0;
+
+	/**
+	 * Get a pointer to the directories interface.
+	 * @return Pointer to the DirectoryInterface.
+	 */
+	virtual const InterfaceBase<DirectoryRecord>* getDirectoriesInterface() const = 0;
 
 	/**
 	 * Get a pointer to the albums interface.
@@ -44,10 +56,22 @@ public:
 	virtual InterfaceBase<AlbumRecord>* getAlbumInterface() = 0;
 
 	/**
+	 * Get a pointer to the albums interface.
+	 * @return Pointer to the AlbumInterface.
+	 */
+	virtual const InterfaceBase<AlbumRecord>* getAlbumInterface() const = 0;
+
+	/**
 	 * Get a pointer to the photo interface.
 	 * @return Pointer to the PhotoInterface.
 	 */
 	virtual InterfaceBase<PhotoRecord>* getPhotoInterface() = 0;
+
+	/**
+	 * Get a pointer to the photo interface.
+	 * @return Pointer to the PhotoInterface.
+	 */
+	virtual const InterfaceBase<PhotoRecord>* getPhotoInterface() const = 0;
 };
 
 } /* namespace Backend */

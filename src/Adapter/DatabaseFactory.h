@@ -35,10 +35,22 @@ public:
 	DBInterface<Backend::KeywordRecord>* getKeywordInterface() override;
 
 	/**
+	 * Get a pointer to the Keyword interface.
+	 * @return pointer to the keyword interface
+	 */
+	const DBInterface<Backend::KeywordRecord>* getKeywordInterface() const override;
+
+	/**
 	 * Get a pointer to the directories interface.
 	 * @return pointer to the directories interface
 	 */
 	DBInterface<Backend::DirectoryRecord>* getDirectoriesInterface() override;
+
+	/**
+	 * Get a pointer to the directories interface.
+	 * @return pointer to the directories interface
+	 */
+	const DBInterface<Backend::DirectoryRecord>* getDirectoriesInterface() const override;
 
 	/**
 	 * Get a pointer to the album interface.
@@ -47,10 +59,22 @@ public:
 	DBInterface<Backend::AlbumRecord>* getAlbumInterface() override;
 
 	/**
+	 * Get a pointer to the album interface.
+	 * @return pointer to the album interface
+	 */
+	const DBInterface<Backend::AlbumRecord>* getAlbumInterface() const override;
+
+	/**
 	 * Get a pointer to the photo interface.
 	 * @return pointer to the photo interface
 	 */
 	DBInterface<Backend::PhotoRecord>* getPhotoInterface() override;
+
+	/**
+	 * Get a pointer to the photo interface.
+	 * @return pointer to the photo interface
+	 */
+	const DBInterface<Backend::PhotoRecord>* getPhotoInterface() const override;
 
 	//disable copying and copy construction
 	DatabaseFactory(const DatabaseFactory &other) = delete;
