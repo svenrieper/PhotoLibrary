@@ -1,8 +1,20 @@
 /*
  * DBInterface.h
  *
- *  Created on: 15 Sep 2020
- *      Author: Sven Rieper
+ * This file is part of PhotoLibrary
+ * Copyright (C) 2020 Sven Rieper
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #ifndef SRC_DBINTERFACE_H_
@@ -25,6 +37,8 @@ namespace Adapter {
  *
  * The Backend::Record::getField(int) should return the name of the column
  * for the data returned with Backend::Record::access<int>().
+ * Backend::Record::getField(0) should hold the name of the column
+ * containing the parent id or whatever come closest to the parent id.
  * Currently supported data types: int, int_least64_t, Glib::ustring, and
  * Backend::RecordOptions::KeywordOptions.
  *
@@ -54,6 +68,8 @@ public:
 
 	/**
 	 * Get the children of a entry.
+	 * Returns the ids of all entries where the column RType::getField(0)
+	 * is 'parent'.
 	 *
 	 * @param parent id of the entry of which the children should be returned
 	 * @return vector of id's of the children of 'parent'
@@ -153,8 +169,8 @@ private:
 	void setValue(SQLQuerry& querry, int column, int& field) const {
 		field = querry.getColumnInt(column);
 	}
-	void setValue(SQLQuerry& querry, int column, Backend::RecordOptions::KeywordOptions& field) const {
-		field = static_cast<Backend::RecordOptions::KeywordOptions>(querry.getColumnInt(column));
+	void setValue(SQLQuerry& querry, int column, Backend::RecordOptions::Options& field) const {
+		field = static_cast<Backend::RecordOptions::Options>(querry.getColumnInt(column));
 	}
 	void setValue(SQLQuerry& querry, int column, Glib::ustring& field) const {
 		field = querry.getColumnText(column);
@@ -182,6 +198,12 @@ RType DBInterface<RType>::getEntry(int id) const {
 			throw(std::runtime_error(std::string("Error retrieving entry with id ") + std::to_string(id) + " from " + table));
 
 	switch (entry.size()) {
+	case 6:
+		{
+		constexpr int i = 5;
+		setValue(querry, i, entry.template access<i>());
+	}
+		/* no break */
 	case 5:
 		{
 		constexpr int i = 4;
@@ -219,7 +241,9 @@ RType DBInterface<RType>::getEntry(int id) const {
 
 template<class RType>
 std::vector<int> DBInterface<RType>::getChildren(int parent) const {
-	Glib::ustring sql = "SELECT id FROM " + table + " WHERE parent IS '" + std::to_string(parent) + "'";
+//	Glib::ustring sql = "SELECT id FROM " + table + " WHERE parent IS '" + std::to_string(parent) + "'";
+	RType entry_type;
+	Glib::ustring sql = "SELECT id FROM " + table + " WHERE " + entry_type.getField(0) + " IS '" + std::to_string(parent) + "'";
 	SQLQuerry querry(db, sql.c_str());
 
 	std::vector<int> ids;
@@ -236,6 +260,13 @@ void DBInterface<RType>::newEntry(const RecordType& entry) {
 	appendFieldNames(entry, sql);
 	sql += ") VALUES (";
 	switch (entry.size()) {
+	case 6:
+		{
+		constexpr int i = 5;
+		appendSQL(&sql, entry.template access<i>());
+		sql += ", ";
+	}
+		/* no break */
 	case 5:
 		{
 		constexpr int i = 4;
@@ -285,6 +316,15 @@ template<class RType>
 void DBInterface<RType>::updateEntry(int id, const RecordType &entry) {
 	Glib::ustring sql = "UPDATE " + table + " SET ";
 	switch (entry.size()) {
+	case 6:
+		{
+		constexpr int i = 5;
+		appendSQL(&sql, entry.getField(i), false);
+		sql += " = ";
+		appendSQL(&sql, entry.template access<i>());
+		sql += ", ";
+	}
+		/* no break */
 	case 5:
 		{
 		constexpr int i = 4;
@@ -357,6 +397,15 @@ template<class RType>
 int DBInterface<RType>::getID(const RType& entry) const {
 	Glib::ustring sql = "SELECT id FROM " + table + " WHERE (";
 	switch (entry.size()) {
+	case 6:
+		{
+		constexpr int i = 5;
+		appendSQL(&sql, entry.getField(i), false);
+		sql += " = ";
+		appendSQL(&sql, entry.template access<i>());
+		sql += " AND ";
+	}
+		/* no break */
 	case 5:
 		{
 		constexpr int i = 4;

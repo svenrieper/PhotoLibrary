@@ -1,8 +1,20 @@
 /*
  * MainWindow.cpp
  *
- *  Created on: 27 Sep 2020
- *      Author: Sven Rieper
+ * This file is part of PhotoLibrary
+ * Copyright (C) 2020 Sven Rieper
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "MainWindow.h"
@@ -34,6 +46,7 @@ MainWindow::MainWindow(Backend::BackendFactory* backend) :
 	show_all_children();
 
 	signal_check_resize().connect(sigc::mem_fun(*this,&MainWindow::onWindowResize));
+	leftPaneBox.signaleNewDirectorySelected().connect(sigc::mem_fun(*this, &MainWindow::onNewDirectorySelected));
 }
 
 void MainWindow::fillWindow() {
@@ -68,6 +81,10 @@ void MainWindow::fillWindow() {
 void MainWindow::onWindowResize() {
 	backend->setWindowProperty(Backend::BackendFactory::WindowProperties::WINDOW_WIDTH, get_width());
 	backend->setWindowProperty(Backend::BackendFactory::WindowProperties::WINDOW_HEIGHT, get_height());
+}
+
+void MainWindow::onNewDirectorySelected(int id) {
+	centrePaneBox.fillGrid(backend->getPhotoInterface()->getChildren(id));
 }
 
 

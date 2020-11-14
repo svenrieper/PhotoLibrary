@@ -1,8 +1,20 @@
 /*
  * BackendFactory.h
  *
- *  Created on: 3 Oct 2020
- *      Author: Sven Rieper
+ * This file is part of PhotoLibrary
+ * Copyright (C) 2020 Sven Rieper
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #ifndef SRC_BACKEND_BACKENDFACTORY_H_
@@ -55,8 +67,9 @@ public:
 		WINDOW_HEIGHT,	/**< Height of the main window. */
 		LEFT_PANE_WIDTH,	/**< Width of the left pane. */
 		RIGHT_PANE_WIDTH,	/**< Width of the right pane. */
-		TILE_WIDTH	/**< The width of a tile in the centre frame */
-//		, TILE_HEIGHT	/**< The height of a tile in the centre frame */
+		TILE_WIDTH,	/**< The width of a tile in the centre frame */
+//		TILE_HEIGHT,	/**< The height of a tile in the centre frame */
+		N_THREADS,	/**< Number of threads to use */
 	};
 
 	/**

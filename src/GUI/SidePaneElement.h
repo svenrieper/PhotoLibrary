@@ -1,8 +1,20 @@
 /*
  * SidePaneElement.h
  *
- *  Created on: 14 Oct 2020
- *      Author: Sven Rieper
+ * This file is part of PhotoLibrary
+ * Copyright (C) 2020 Sven Rieper
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #ifndef SRC_GUI_SIDEPANEELEMENT_H_
@@ -35,6 +47,13 @@ public:
 	 */
 	SidePaneElement(Glib::ustring title, Backend::BackendFactory* backend);
 	virtual ~SidePaneElement() = default;
+
+	/**
+	 * Returns the widget shown in the SidePaneElement
+	 *
+	 * @return Pointer to the widget shown in the SidePaneElement
+	 */
+	inline T* getContent();
 
 private:
 	Gtk::Box title_box;
@@ -81,6 +100,11 @@ bool SidePaneElement<T>::onClickLabel(GdkEventButton* button_event) {
 		hidden = true;
 	}
 	return true;
+}
+
+template<class T>
+T* SidePaneElement<T>::getContent() {
+	return &content;
 }
 
 } /* namespace GUI */

@@ -1,8 +1,20 @@
 /*
  * PhotoRecord.h
  *
- *  Created on: 25 Oct 2020
- *      Author: Sven Rieper
+ * This file is part of PhotoLibrary
+ * Copyright (C) 2020 Sven Rieper
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #ifndef SRC_BACKEND_RECORD_PHOTORECORD_H_
@@ -14,7 +26,7 @@
 namespace PhotoLibrary {
 namespace Backend {
 
-using PhotoTuple = std::tuple<int,Glib::ustring,int,int_least64_t>;
+using PhotoTuple = std::tuple<int,Glib::ustring,int,int_least64_t,int,int>;
 
 /**
  * Class to hold a photo entry.
@@ -25,8 +37,8 @@ using PhotoTuple = std::tuple<int,Glib::ustring,int,int_least64_t>;
  */
 class PhotoRecord: public Record<PhotoTuple> {
 public:
-	PhotoRecord(int directory=0, Glib::ustring filename="", int rating=0, int_least64_t datetime=0) :
-			Record<PhotoTuple>(std::make_tuple(directory, filename, rating, datetime)) {}
+	PhotoRecord(int directory=0, Glib::ustring filename="", int rating=0, int_least64_t datetime=0, int width=0, int height=0) :
+			Record<PhotoTuple>(std::make_tuple(directory, filename, rating, datetime, width, height)) {}
 
 	virtual ~PhotoRecord() = default;
 
@@ -91,6 +103,36 @@ public:
 	int_least64_t getDatetime() const { return access<3>(); }
 
 	/**
+	 * Set the width.
+	 * Returns a reference to the width in pixel.
+	 *
+	 * @return reference to the width in pixel
+	 */
+	int& setWidth() { return access<4>(); }
+
+	/**
+	 * Get the width.
+	 *
+	 * @return value of the width in pixel
+	 */
+	int getWidth() const { return access<4>(); }
+
+	/**
+	 * Set the height.
+	 * Returns a reference to the height in pixel.
+	 *
+	 * @return reference to the height in pixel
+	 */
+	int& setHeight() { return access<5>(); }
+
+	/**
+	 * Get the height.
+	 *
+	 * @return value of the height in pixel
+	 */
+	int getHeight() const { return access<5>(); }
+
+	/**
 	 * Get the name of a data field.
 	 * Returns the name of the column in the database.
 	 *
@@ -100,7 +142,7 @@ public:
 	const Glib::ustring& getField(int i) const override { return fields[i]; }
 
 private:
-	static inline const std::array<Glib::ustring,4> fields {"directory", "filename", "rating", "datetime"};
+	static inline const std::array<Glib::ustring,6> fields {"directory", "filename", "rating", "datetime", "width", "height"};
 };
 
 } /* namespace Backend */
