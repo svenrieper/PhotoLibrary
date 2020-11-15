@@ -26,24 +26,75 @@
 namespace PhotoLibrary {
 namespace Support {
 
+/**
+ * Thread safe interface for an std::queue.
+ *
+ * @tparam T type of the Elements
+ *
+ * \todo add emplace()?
+ */
 template<typename T>
-class ThreadSafeQueue : protected std::queue<T> {
+class ThreadSafeQueue : private std::queue<T> {
 public:
 	using size_type = typename std::queue<T>::size_type;
 
 	ThreadSafeQueue();
 	~ThreadSafeQueue() = default;
 
+	/**
+	 * Whether the queue is empty.
+	 *
+	 * @return \c true if the queue is empty, \c false otherwise
+	 */
 	bool empty() const;
+
+	/**
+	 * Number of elements in the queue.
+	 *
+	 * @return number of elements in the queue
+	 */
 	size_type size() const;
+
+	/**
+	 * Retrieve the first element from the queue.
+	 *
+	 * Get the first element and delete it from the queue.
+	 *
+	 * @param[out] t first element of the queue
+	 * @retval true if an element could be retrieved
+	 * @retval false if the queue was empty
+	 */
 	bool pop(T& t);
+
+	/**
+	 * Add an element to the queue.
+	 *
+	 * Copies an element to the end of the queue.
+	 *
+	 * @param t item to copy to the queue
+	 */
 	void push(const T& t);
+
+	/**
+	 * \copybrief push(const T&)
+	 *
+	 * Moves an element to the end of the queue.
+	 *
+	 * @param t item to move to the end of the queue
+	 */
 	void push(T&& t);
+
+	/**
+	 * Empty the queue.
+	 *
+	 * Removes all elements from the queue.
+	 */
 	void clear();
 
 private:
 	mutable std::mutex queue_mutex;
 };
+
 
 //implementation
 template<typename T>

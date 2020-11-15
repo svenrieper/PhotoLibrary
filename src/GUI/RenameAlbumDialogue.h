@@ -35,13 +35,13 @@ namespace GUI {
 class RenameAlbumDialogue: public Gtk::Dialog {
 public:
 	/**
-	 * @param[in,out] keyword Pointer to the Backend::AlbumRecord object to edit
+	 * @param[in,out] album Pointer to the Backend::AlbumRecord object to edit
 	 */
 	RenameAlbumDialogue(Backend::AlbumRecord* album);
 	~RenameAlbumDialogue() = default;
 
 protected:
-	Backend::AlbumRecord* album;
+	Backend::AlbumRecord* album;	/**< Pointer to the AlbumRecord edited in the dialogue */
 
 private:
 	Gtk::Label album_name_label;

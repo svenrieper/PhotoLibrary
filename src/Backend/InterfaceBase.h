@@ -28,7 +28,7 @@ namespace Backend {
 /**
  * Abstract base class for the backend interface.
  *
- * @param RType Backend::Record based class used to retrieve,
+ * @tparam RType Backend::Record based class used to retrieve,
  * 		save, and update records in the database
  */
 template<class RType>
@@ -77,8 +77,8 @@ public:
 	 * Moves a record to a new parent.
 	 *
 	 * @throws constraint_error Thrown if parent 'id' does not exist.
-	 * @param id Id of the record to update
-	 * @param newParent New parent id of record 'id'
+	 * @param child_id Id of the record to update
+	 * @param new_parent_id New parent id of record 'id'
 	 */
 	virtual void setParent(int child_id, int new_parent_id) = 0;
 

@@ -31,8 +31,8 @@ namespace GUI {
  *
  * @see https://developer.gnome.org/gtkmm/stable/classGtk_1_1TreeView.html
  *
- * @param TStore BaseTreeStore based class to display in the TreeView
- * @param RecordType the Backend::Record type used by 'TStore'
+ * @tparam TStore BaseTreeStore based class to display in the TreeView
+ * @tparam RecordType the Backend::Record type used by 'TStore'
  */
 template<class TStore, class RecordType>
 class BaseTreeView: public Gtk::TreeView {
@@ -52,7 +52,7 @@ public:
 	 *
 	 * \par Prototype
 	 * void onSelectionChanged(int id)
-	 * @param the id of the newly selected row or 0 if no row is selected
+	 * @param id the id of the newly selected row or 0 if no row is selected
 	 */
 	inline sigc::signal<void,int> signalSelectionChanged();
 

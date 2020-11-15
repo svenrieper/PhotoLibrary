@@ -27,14 +27,47 @@
 namespace PhotoLibrary {
 namespace GUI {
 
+/**
+ * Tile for the grid view in the centre pane.
+ *
+ * For performance reasons PhotoTile's constructor doesn't load
+ * the tumbnail to be displayed in the tile, it needs to be
+ * loaded externally and set with setPhoto(Glib::RefPtr<Gdk::Pixbuf>).
+ *
+ * \todo display information about the photos
+ */
 class PhotoTile : public Gtk::VBox {
 public:
-	/// \todo construct with PhotoRecord, full_path, and tile width instead
+	/**
+	 * Constructor.
+	 * The constructor does not load the thumbnail, it needs
+	 * to be set with setPhoto(Glib::RefPtr<Gdk::Pixbuf>)
+	 *
+	 * @param backend pointer to the BackendFactory object
+	 *
+	 * \todo construct with PhotoRecord, full_path, and tile width instead?
+	 */
 	PhotoTile(Backend::BackendFactory* backend, int photo_id);
 	PhotoTile(PhotoTile&&) noexcept;
 	virtual ~PhotoTile() = default;
 
+	/**
+	 * Sets the thumbnail.
+	 * After construction the thumbnail needs to be set.
+	 *
+	 * @param image RefPtr to the tumbnail to be displayed
+	 * 		in the tile
+	 */
 	inline void setPhoto(Glib::RefPtr<Gdk::Pixbuf> image);
+
+	/**
+	 * Get the filename of the image.
+	 * Returns the full path and filename of the image
+	 * to be displayed in the tile.
+	 *
+	 * @return Full path and filname of the image to be
+	 * 		displayed in the tile.
+	 */
 	Glib::ustring getFilename();
 
 private:
@@ -46,6 +79,8 @@ private:
 	Glib::ustring getFullPath();
 };
 
+
+//implementation
 void PhotoTile::setPhoto(Glib::RefPtr<Gdk::Pixbuf> image) {
 	photo_image.setPhoto(image);
 }

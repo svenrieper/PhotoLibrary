@@ -42,7 +42,7 @@ namespace Adapter {
  * Currently supported data types: int, int_least64_t, Glib::ustring, and
  * Backend::RecordOptions::KeywordOptions.
  *
- * @param RType Backend::Record based class used to retrieve,
+ * @tparam RType Backend::Record based class used to retrieve,
  * 		save, and update records in the database
  */
 template<class RType>
@@ -105,8 +105,8 @@ public:
 	 * \todo check for consistency? (refering to self or child* as parent)
 	 *
 	 * @throws constraint_error Thrown if parent 'id' does not exist.
-	 * @param id Id of the record to update
-	 * @param newParent New parent id of record 'id'
+	 * @param child_id Id of the record to update
+	 * @param new_parent_id New parent id of record 'id'
 	 */
 	void setParent(int child_id, int new_parent_id) override;
 

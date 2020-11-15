@@ -145,7 +145,7 @@ public:
 	/**
 	 * Get the width of the central pane.
 	 *
-	 * @retun Width of the central pane
+	 * @return Width of the central pane
 	 */
 	int getCentreWidth() const;
 

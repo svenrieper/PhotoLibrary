@@ -40,7 +40,14 @@ void escapeSingleQuotes(Glib::ustring* string);
  */
 class constraint_error : public std::runtime_error {
 public:
+	/**
+	 * @param error_message the value to be returned by constraint_error::what()
+	 */
 	constraint_error(const char* error_message) : std::runtime_error(error_message) {}
+
+	/**
+	 * \copydoc constraint_error(const char* error_message)
+	 */
 	constraint_error(std::string error_message) : std::runtime_error(error_message) {}
 };
 

@@ -34,10 +34,27 @@
 namespace PhotoLibrary {
 namespace GUI {
 
+/**
+ * Grid view for the pane in the centre of the window.
+ *
+ * \todo move to GridView class and implement other display styles
+ * \todo research memory usage of Gdk::Pixbuf and consider different implementation
+ */
 class CentrePane: public Gtk::ScrolledWindow {
 public:
+	/**
+	 * @param backend Pointer to the BackendFactory object
+	 */
 	CentrePane(Backend::BackendFactory* backend);
 	virtual ~CentrePane();
+
+	/**
+	 * Fill the grid view with PhotoTile|s.
+	 *
+	 * Fills the grid view with the specified PhotoTile|s
+	 *
+	 * @param photos vector of photo ids to be loaded into the grid view
+	 */
 	void fillGrid(std::vector<int> photos);
 
 private:

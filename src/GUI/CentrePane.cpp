@@ -54,6 +54,7 @@ CentrePane::~CentrePane() {
 	}
 }
 
+/// \todo consider the space between the tiles and add space around the images
 void CentrePane::calculateTilePerRow() {
 	tiles_per_row = backend->getCentreWidth()
 			/ backend->getWindowProperty(Backend::BackendFactory::WindowProperties::TILE_WIDTH);
@@ -112,6 +113,7 @@ void CentrePane::loadPhotos(CentrePane* object) {
 				int size = object->backend->getWindowProperty(BackendFactory::WindowProperties::TILE_WIDTH);
 				auto photo_image = Gdk::Pixbuf::create_from_file(filename, size, size, true);
 //				object->loaded_images.push(new std::pair<int,Glib::RefPtr<Gdk::Pixbuf>>(tile_id, photo_image));
+				/// \todo use emplace?
 				object->loaded_images.push(std::make_pair(tile_id, photo_image));
 				object->image_dispatcher.emit();
 			}

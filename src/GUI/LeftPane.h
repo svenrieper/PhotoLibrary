@@ -43,7 +43,30 @@ public:
 	inline LeftPane(Backend::BackendFactory* backend);
 	virtual ~LeftPane() = default;
 
+	/**
+	 * Signal emitted when a new directory is selcted.
+	 *
+	 * Signal emitted when a new directory is selected in the DirectoryView.
+	 *
+	 * @return sigc::signal; use connect() to connect a signal handler
+	 *
+	 * \par Prototype
+	 * void onNewDirectorySelected(int id)
+	 * @param id id of the newly selected directory
+	 */
 	inline sigc::signal<void,int> signaleNewDirectorySelected();
+
+	/**
+	 * Signal emitted when a new Album is selected.
+	 *
+	 * Signal emitted when a new Album is selceted in the AlbumView.
+	 *
+	 * @return sigc::signal; use connect() to connect a signal handler
+	 *
+	 * \par Prototype
+	 * void onNewAlbumSelected(int id)
+	 * @param id id of the newly selected album
+	 */
 	inline sigc::signal<void,int> signaleNewAlbumSelected();
 
 private:
@@ -56,7 +79,6 @@ private:
 	sigc::signal<void,int> signal_new_album_selected;
 
 	inline void onSizeAllocate(Gdk::Rectangle& allocation);
-
 	inline void onDirectorySelectionChanged(int id);
 	inline void onAlbumsSelectionChanged(int id);
 };

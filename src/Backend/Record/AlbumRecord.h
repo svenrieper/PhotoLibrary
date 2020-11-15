@@ -122,7 +122,7 @@ public:
 
 	virtual ~NewAlbumRecord() = default;
 
-	int new_parent_id_backup;
+	int new_parent_id_backup;	/**< Id of the potential parent of the new album. */
 };
 
 } /* namespace Backend */
