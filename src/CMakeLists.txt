@@ -28,6 +28,10 @@ add_executable(PhotoLibrary
 			GUI/NewAlbumDialogue.cpp
 			GUI/NewKeywordDialogue.cpp
 			GUI/RenameAlbumDialogue.cpp
+			GUI/CentrePane.cpp
+			GUI/PhotoDrawingArea.cpp
+			GUI/PhotoTile.cpp
+			resources/grey_pixel.cc
 			)
 
 #configure_file(CmakeConfig.h.in CmakeConfig.h)
@@ -36,8 +40,14 @@ target_include_directories(PhotoLibrary PUBLIC
                            "${PROJECT_BINARY_DIR}"
                            )
 
+add_custom_command(TARGET PhotoLibrary POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E copy_directory
+		"${CMAKE_SOURCE_DIR}/example pictures/"
+		"$<TARGET_FILE_DIR:PhotoLibrary>/example pictures/")
+
 # Check for libraries:
 find_package(PkgConfig)
+find_package(Threads)
 
 pkg_check_modules (SQLITE3  sqlite3)
 pkg_check_modules (GTKMM   gtkmm-3.0>=3.16)
@@ -56,5 +66,6 @@ link_directories(${EXTRA_LIBDIR}
 target_link_libraries(PhotoLibrary
     ${GTKMM_LIBRARIES}
     ${SQLITE3_LIBRARIES}
+    Threads::Threads
     )
 

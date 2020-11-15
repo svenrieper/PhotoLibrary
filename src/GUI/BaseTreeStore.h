@@ -38,9 +38,9 @@ namespace GUI {
  *
  * \see https://developer.gnome.org/gtkmm/stable/classGtk_1_1TreeStore.html
  *
- * @param TModelColumns Gtk::TreeModel::ColumnRecord based class
+ * @tparam TModelColumns Gtk::TreeModel::ColumnRecord based class
  * 		used by the Gtk::TreeStore
- * @param RecordType the Backend::Record type used by the TreeStore;
+ * @tparam RecordType the Backend::Record type used by the TreeStore;
  * 		the Backend interface must be derived from
  * 		Backend::InterfaceBase<RecordType>
  */
@@ -82,7 +82,7 @@ public:
 	 * @see https://developer.gnome.org/libsigc++/stable/group__signal.html
 	 *
 	 * \par Prototype
-	 * bool onSignalExpandRow(const TreeModel::Path& path, bool open_all)
+	 * bool onSignalExpandRow(const Gtk::TreeModel::Path& path, bool open_all)
 	 * @param path TreeModel::Path to the row that should be expanded
 	 * @param open_all is always false
 	 * @return the return value is ignored
@@ -173,7 +173,7 @@ void BaseTreeStore<TModelColumns,RecordType>::reload() {
 }
 
 template<class TModelColumns, class RecordType>
-typename BaseTreeStore<TModelColumns,RecordType>::SignalExpandRow BaseTreeStore<TModelColumns,RecordType>::signalExpandRow() {
+sigc::signal<bool, const Gtk::TreeModel::Path&,bool> BaseTreeStore<TModelColumns,RecordType>::signalExpandRow() {
 	return signal_expand_row;
 }
 

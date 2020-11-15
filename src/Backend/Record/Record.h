@@ -44,7 +44,7 @@ enum Options {
 /**
  * Base class for database records.
  *
- * @param Tuple class to hold the data. Should have the interface
+ * @tparam Tuple class to hold the data. Should have the interface
  * of an std::tuple (inlcuding std::get and std::tuple_size).
  * For constraints see also Adapter::DBInterface
  */
@@ -73,7 +73,7 @@ public:
 	 * Access a data field.
 	 * Returns a reference to the Nth data field.
 	 *
-	 * @param N number of the data field
+	 * @tparam N number of the data field
 	 * @return reference to the data
 	 */
 	template<int N>
@@ -85,7 +85,7 @@ public:
 	 * Get data.
 	 * Returns the value of the Nth data field.
 	 *
-	 * @param N number of the data field
+	 * @tparam N number of the data field
 	 * @return value to the data
 	 */
 	template<int N>
@@ -128,8 +128,6 @@ bool operator!=(const Record<Tuple>& a, const Record<Tuple>& b) {
 }
 
 namespace RecordOptions {
-using KeywordOptions = Options;
-
 /**
  * Default bitwise and, or, and xor on two Options returns an Options
  */

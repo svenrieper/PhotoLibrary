@@ -22,6 +22,7 @@
 
 #include <string>
 #include <sqlite3.h>
+#include <cstdint>
 
 namespace PhotoLibrary {
 namespace Adapter {
@@ -86,6 +87,15 @@ public:
 	 * @return value of 'colNum'
 	 */
 	int getColumnInt(int colNum);
+
+	/**
+	 * Get the content of a column as an int_least64_t.
+	 * @see https://sqlite.org/c3ref/column_blob.html
+	 *
+	 * @param colNum number of the column from the result to return
+	 * @return value of 'colNum'
+	 */
+	int_least64_t getColumnInt64(int colNum);
 
 	/**
 	 * Prepare the next SQL querry.

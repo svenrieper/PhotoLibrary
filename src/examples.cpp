@@ -25,6 +25,7 @@ namespace PhotoLibrary {
 void exampleKeywords(PhotoLibrary::Backend::BackendFactory* db);
 void exampleDirectories(PhotoLibrary::Backend::BackendFactory* db);
 void exampleAlbums(PhotoLibrary::Backend::BackendFactory* db);
+void examplePictures(PhotoLibrary::Backend::BackendFactory* db);
 template<class TRecord>
 int addEntry(TRecord, PhotoLibrary::Backend::InterfaceBase<TRecord>*);
 
@@ -32,6 +33,7 @@ void examples(PhotoLibrary::Backend::BackendFactory* db) {
 	exampleKeywords(db);
 	exampleDirectories(db);
 	exampleAlbums(db);
+	examplePictures(db);
 }
 
 void exampleKeywords(PhotoLibrary::Backend::BackendFactory* db) {
@@ -96,6 +98,52 @@ void exampleAlbums(PhotoLibrary::Backend::BackendFactory* db) {
 	int venice = addEntry(AlbumRecord(city_trips, AlbumRecord::Options::NONE, "Venice"), album_interface);
 	int tokyo = addEntry(AlbumRecord(city_trips, AlbumRecord::Options::NONE, "Tokyo"), album_interface);
 	int moscow = addEntry(AlbumRecord(city_trips, AlbumRecord::Options::NONE, "Moscow"), album_interface);
+}
+
+void examplePictures(PhotoLibrary::Backend::BackendFactory* db) {
+	using PhotoLibrary::Backend::DirectoryRecord;
+	using PhotoLibrary::Backend::PhotoRecord;
+
+	PhotoLibrary::Backend::InterfaceBase<DirectoryRecord>* directory_interface = db->getDirectoriesInterface();
+	PhotoLibrary::Backend::InterfaceBase<PhotoRecord>* photo_interface = db->getPhotoInterface();
+
+	int here = addEntry(DirectoryRecord(0, DirectoryRecord::Options::ROW_EXPANDED, "here", "."), directory_interface);
+	int examples = addEntry(DirectoryRecord(here, DirectoryRecord::Options::NONE, "example pictures", "example pictures"), directory_interface);
+
+	int photo_1 = addEntry(PhotoRecord(examples, "1.jpg", 1, 1604149700, 1920, 1080), photo_interface);
+	int photo_2 = addEntry(PhotoRecord(examples, "2.jpg", 5, 1604149000, 1920, 1080), photo_interface);
+	int photo_3 = addEntry(PhotoRecord(examples, "3.jpg", 0, 1604150001, 1920, 1080), photo_interface);
+	int photo_4 = addEntry(PhotoRecord(examples, "4.jpg", 0, 1604150001, 1920, 1080), photo_interface);
+	int photo_5 = addEntry(PhotoRecord(examples, "5.jpg", 0, 1604150001, 1920, 1080), photo_interface);
+	int photo_6 = addEntry(PhotoRecord(examples, "6.jpg", 0, 1604150001, 1920, 1080), photo_interface);
+	int photo_7 = addEntry(PhotoRecord(examples, "7.jpg", 0, 1604150001, 1920, 1080), photo_interface);
+	int photo_8 = addEntry(PhotoRecord(examples, "8.jpg", 0, 1604150001, 1920, 1080), photo_interface);
+	int photo_9 = addEntry(PhotoRecord(examples, "9.jpg", 0, 1604150001, 1920, 1080), photo_interface);
+	int photo_10 = addEntry(PhotoRecord(examples, "10.jpg", 0, 1604150001, 1920, 1080), photo_interface);
+	int photo_11 = addEntry(PhotoRecord(examples, "11.jpg", 0, 1604150001, 1920, 1080), photo_interface);
+	int photo_12 = addEntry(PhotoRecord(examples, "12.jpg", 0, 1604150001, 1920, 1080), photo_interface);
+	int photo_13 = addEntry(PhotoRecord(examples, "13.jpg", 0, 1604150001, 1920, 1080), photo_interface);
+	int photo_14 = addEntry(PhotoRecord(examples, "14.jpg", 0, 1604150001, 1920, 1080), photo_interface);
+	int photo_15 = addEntry(PhotoRecord(examples, "15.jpg", 0, 1604150001, 1920, 1080), photo_interface);
+	int photo_16 = addEntry(PhotoRecord(examples, "16.jpg", 0, 1604150001, 1920, 1080), photo_interface);
+	int photo_17 = addEntry(PhotoRecord(examples, "17.jpg", 0, 1604150001, 1920, 1080), photo_interface);
+	int photo_18 = addEntry(PhotoRecord(examples, "18.jpg", 0, 1604150001, 1920, 1080), photo_interface);
+	int photo_19 = addEntry(PhotoRecord(examples, "19.jpg", 0, 1604150001, 1920, 1080), photo_interface);
+	int photo_20 = addEntry(PhotoRecord(examples, "20.jpg", 0, 1604150001, 1920, 1080), photo_interface);
+	int photo_21 = addEntry(PhotoRecord(examples, "21.jpg", 0, 1604150001, 1920, 1080), photo_interface);
+	int photo_22 = addEntry(PhotoRecord(examples, "22.jpg", 0, 1604150001, 1920, 1080), photo_interface);
+	int photo_23 = addEntry(PhotoRecord(examples, "23.jpg", 0, 1604150001, 1920, 1080), photo_interface);
+	int photo_24 = addEntry(PhotoRecord(examples, "24.jpg", 0, 1604150001, 1920, 1080), photo_interface);
+	int photo_25 = addEntry(PhotoRecord(examples, "25.jpg", 0, 1604150001, 1920, 1080), photo_interface);
+	int photo_26 = addEntry(PhotoRecord(examples, "26.jpg", 0, 1604150001, 1920, 1080), photo_interface);
+
+	int photo_a = addEntry(PhotoRecord(examples, "a.jpg", 0, 1604150001, 1080, 1920), photo_interface);
+	int photo_b = addEntry(PhotoRecord(examples, "b.jpg", 0, 1604150001, 1080, 1920), photo_interface);
+	int photo_c = addEntry(PhotoRecord(examples, "c.jpg", 0, 1604150001, 1080, 1920), photo_interface);
+	int photo_d = addEntry(PhotoRecord(examples, "d.jpg", 0, 1604150001, 1080, 1920), photo_interface);
+	int photo_e = addEntry(PhotoRecord(examples, "e.jpg", 0, 1604150001, 1080, 1920), photo_interface);
+	int photo_f = addEntry(PhotoRecord(examples, "f.jpg", 0, 1604150001, 1080, 1920), photo_interface);
+	int photo_g = addEntry(PhotoRecord(examples, "g.jpg", 0, 1604150001, 1080, 1920), photo_interface);
 }
 
 template<class TRecord>

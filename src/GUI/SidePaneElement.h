@@ -48,6 +48,13 @@ public:
 	SidePaneElement(Glib::ustring title, Backend::BackendFactory* backend);
 	virtual ~SidePaneElement() = default;
 
+	/**
+	 * Returns the widget shown in the SidePaneElement
+	 *
+	 * @return Pointer to the widget shown in the SidePaneElement
+	 */
+	inline T* getContent();
+
 private:
 	Gtk::Box title_box;
 	/// \todo use Gtk::Expander instead
@@ -93,6 +100,11 @@ bool SidePaneElement<T>::onClickLabel(GdkEventButton* button_event) {
 		hidden = true;
 	}
 	return true;
+}
+
+template<class T>
+T* SidePaneElement<T>::getContent() {
+	return &content;
 }
 
 } /* namespace GUI */

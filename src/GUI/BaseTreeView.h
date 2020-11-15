@@ -31,8 +31,8 @@ namespace GUI {
  *
  * @see https://developer.gnome.org/gtkmm/stable/classGtk_1_1TreeView.html
  *
- * @param TStore BaseTreeStore based class to display in the TreeView
- * @param RecordType the Backend::Record type used by 'TStore'
+ * @tparam TStore BaseTreeStore based class to display in the TreeView
+ * @tparam RecordType the Backend::Record type used by 'TStore'
  */
 template<class TStore, class RecordType>
 class BaseTreeView: public Gtk::TreeView {
@@ -43,6 +43,23 @@ public:
 	BaseTreeView(Backend::InterfaceBase<RecordType>* backend);
 
 	virtual ~BaseTreeView() = default;
+
+	/**
+	 * Signal emitted when the selected row changed.
+	 *
+	 * @return sigc::signal; use connect() to connect a signal handler
+	 * @see https://developer.gnome.org/libsigc++/stable/group__signal.html
+	 *
+	 * \par Prototype
+	 * void onSelectionChanged(int id)
+	 * @param id the id of the newly selected row or 0 if no row is selected
+	 */
+	inline sigc::signal<void,int> signalSelectionChanged();
+
+	/**
+	 * Unselects all rows in the TreeView.
+	 */
+	inline void unselectAll();
 
 	//no copying or moving
 	BaseTreeView(const BaseTreeView &other) = delete;
@@ -84,6 +101,8 @@ private:
 	Glib::RefPtr<TStore> treeStore;
 	sigc::connection signal_row_expanded_connection;
 	sigc::connection signal_row_collapsed_connection;
+	sigc::signal<void,int> signal_selection_changed;
+	int selection_id;
 
 	void onRowExpandedOrCollapsed(const Gtk::TreeModel::iterator& iter, const Gtk::TreeModel::Path& path);
 	void connectOnRowExpandedOrCollapsed();
@@ -93,12 +112,13 @@ private:
 	bool onSignalExpandRow(const Gtk::TreeModel::Path& path, bool open_all);
 	void onDragBegin(const Glib::RefPtr<Gdk::DragContext>& context);
 	void onDragEnd(const Glib::RefPtr<Gdk::DragContext>& context);
+	void onSelectionChanged();
 };
 
 
 //implementation
 template<class TStore, class RecordType>
-BaseTreeView<TStore,RecordType>::BaseTreeView(Backend::InterfaceBase<RecordType>* dbInterface) : backend_interface(dbInterface) {
+BaseTreeView<TStore,RecordType>::BaseTreeView(Backend::InterfaceBase<RecordType>* dbInterface) : backend_interface(dbInterface), selection_id(0) {
 	treeStore = TStore::create(dbInterface);
 
 	set_model(treeStore);
@@ -114,6 +134,7 @@ BaseTreeView<TStore,RecordType>::BaseTreeView(Backend::InterfaceBase<RecordType>
 	getTreeStore()->initialise();
 
 	connectOnRowExpandedOrCollapsed();
+	get_selection()->signal_changed().connect(sigc::mem_fun(*this, &BaseTreeView<TStore,RecordType>::onSelectionChanged));
 }
 
 template<class TStore, class RecordType>
@@ -188,6 +209,28 @@ void BaseTreeView<TStore,RecordType>::reloadTreeStore() {
 	disconnectOnRowExpandedOrCollapsed();
 	getTreeStore()->reload();
 	connectOnRowExpandedOrCollapsed();
+}
+
+template<class TStore, class RecordType>
+sigc::signal<void,int> BaseTreeView<TStore,RecordType>::signalSelectionChanged() {
+	return signal_selection_changed;
+}
+
+/// \todo set to the old selection after renaming album
+/// \todo don't emit signal on right click
+template<class TStore, class RecordType>
+void BaseTreeView<TStore,RecordType>::onSelectionChanged() {
+	auto selection = get_selection()->get_selected();
+	int new_selection_id = selection?selection->get_value(getTreeStore()->getColumns().id):0;
+	if(new_selection_id != selection_id) {
+		signalSelectionChanged().emit(new_selection_id);
+		selection_id = new_selection_id;
+	}
+}
+
+template<class TStore, class RecordType>
+void BaseTreeView<TStore,RecordType>::unselectAll() {
+	get_selection()->unselect_all();
 }
 
 } /* namespace GUI */

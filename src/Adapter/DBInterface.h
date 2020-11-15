@@ -37,10 +37,12 @@ namespace Adapter {
  *
  * The Backend::Record::getField(int) should return the name of the column
  * for the data returned with Backend::Record::access<int>().
- * Currently supported data types: int, Glib::ustring, and
+ * Backend::Record::getField(0) should hold the name of the column
+ * containing the parent id or whatever come closest to the parent id.
+ * Currently supported data types: int, int_least64_t, Glib::ustring, and
  * Backend::RecordOptions::KeywordOptions.
  *
- * @param RType Backend::Record based class used to retrieve,
+ * @tparam RType Backend::Record based class used to retrieve,
  * 		save, and update records in the database
  */
 template<class RType>
@@ -62,15 +64,17 @@ public:
 	 * @param id Id of the record to return
 	 * @return complete information for record with id 'id'
 	 */
-	RecordType getEntry(int id) override;
+	RecordType getEntry(int id) const override;
 
 	/**
 	 * Get the children of a entry.
+	 * Returns the ids of all entries where the column RType::getField(0)
+	 * is 'parent'.
 	 *
 	 * @param parent id of the entry of which the children should be returned
 	 * @return vector of id's of the children of 'parent'
 	 */
-	std::vector<int> getChildren(int parent) override;
+	std::vector<int> getChildren(int parent) const override;
 
 	/**
 	 * Add new record.
@@ -101,8 +105,8 @@ public:
 	 * \todo check for consistency? (refering to self or child* as parent)
 	 *
 	 * @throws constraint_error Thrown if parent 'id' does not exist.
-	 * @param id Id of the record to update
-	 * @param newParent New parent id of record 'id'
+	 * @param child_id Id of the record to update
+	 * @param new_parent_id New parent id of record 'id'
 	 */
 	void setParent(int child_id, int new_parent_id) override;
 
@@ -113,7 +117,7 @@ public:
 	 * @param entry the record for which to return the id
 	 * @return the id of the record 'entry'
 	 */
-	int getID(const RType& entry) override;
+	int getID(const RType& entry) const override;
 
 	/**
 	 * Delete record from table.
@@ -129,17 +133,17 @@ protected:
 	const Glib::ustring table; /**< name of the table associated with the derived interface class */
 
 private:
-	void appendSQL(Glib::ustring* sql, Glib::ustring append, bool escape=true) {
+	void appendSQL(Glib::ustring* sql, Glib::ustring append, bool escape=true) const {
 		escapeSingleQuotes(&append);
 		*sql += (escape?"'":"") + append + (escape?"'":"");
 	}
 
-	void appendSQL(Glib::ustring* sql, int append, bool escape=true) {
+	void appendSQL(Glib::ustring* sql, int append, bool escape=true) const {
 		*sql += std::to_string(append);
 	}
 
 	//append the names of all data fields (table columns)
-	void appendFieldNames(RecordType entry, Glib::ustring &sql) {
+	void appendFieldNames(RecordType entry, Glib::ustring &sql) const {
 		int i = entry.size()-1;
 		appendSQL(&sql, entry.getField(i), false);
 		while(i--) {
@@ -149,7 +153,7 @@ private:
 	}
 
 	//append the names of all data fields (table columns) for GET
-	void appendFieldNamesReverse(RecordType entry, Glib::ustring &sql) {
+	void appendFieldNamesReverse(RecordType entry, Glib::ustring &sql) const {
 		appendSQL(&sql, entry.getField(0), false);
 		for(int i=1; i<entry.size(); ++i) {
 			sql += ", ";
@@ -159,13 +163,16 @@ private:
 
 	//update 'field' with the retrieved data
 	//use overloaded functions to get the right type
-	void setValue(SQLQuerry& querry, int column, int& field) {
+	void setValue(SQLQuerry& querry, int column, int_least64_t& field) const {
+		field = querry.getColumnInt64(column);
+	}
+	void setValue(SQLQuerry& querry, int column, int& field) const {
 		field = querry.getColumnInt(column);
 	}
-	void setValue(SQLQuerry& querry, int column, Backend::RecordOptions::KeywordOptions& field) {
-		field = static_cast<Backend::RecordOptions::KeywordOptions>(querry.getColumnInt(column));
+	void setValue(SQLQuerry& querry, int column, Backend::RecordOptions::Options& field) const {
+		field = static_cast<Backend::RecordOptions::Options>(querry.getColumnInt(column));
 	}
-	void setValue(SQLQuerry& querry, int column, Glib::ustring& field) {
+	void setValue(SQLQuerry& querry, int column, Glib::ustring& field) const {
 		field = querry.getColumnText(column);
 	}
 };
@@ -179,7 +186,7 @@ DBInterface<RType>::DBInterface(Database *db, Glib::ustring table) :
 }
 
 template<class RType>
-RType DBInterface<RType>::getEntry(int id) {
+RType DBInterface<RType>::getEntry(int id) const {
 	RecordType entry;
 
 	Glib::ustring sql = "SELECT ";
@@ -191,6 +198,12 @@ RType DBInterface<RType>::getEntry(int id) {
 			throw(std::runtime_error(std::string("Error retrieving entry with id ") + std::to_string(id) + " from " + table));
 
 	switch (entry.size()) {
+	case 6:
+		{
+		constexpr int i = 5;
+		setValue(querry, i, entry.template access<i>());
+	}
+		/* no break */
 	case 5:
 		{
 		constexpr int i = 4;
@@ -227,8 +240,10 @@ RType DBInterface<RType>::getEntry(int id) {
 }
 
 template<class RType>
-std::vector<int> DBInterface<RType>::getChildren(int parent) {
-	Glib::ustring sql = "SELECT id FROM " + table + " WHERE parent IS '" + std::to_string(parent) + "'";
+std::vector<int> DBInterface<RType>::getChildren(int parent) const {
+//	Glib::ustring sql = "SELECT id FROM " + table + " WHERE parent IS '" + std::to_string(parent) + "'";
+	RType entry_type;
+	Glib::ustring sql = "SELECT id FROM " + table + " WHERE " + entry_type.getField(0) + " IS '" + std::to_string(parent) + "'";
 	SQLQuerry querry(db, sql.c_str());
 
 	std::vector<int> ids;
@@ -245,6 +260,13 @@ void DBInterface<RType>::newEntry(const RecordType& entry) {
 	appendFieldNames(entry, sql);
 	sql += ") VALUES (";
 	switch (entry.size()) {
+	case 6:
+		{
+		constexpr int i = 5;
+		appendSQL(&sql, entry.template access<i>());
+		sql += ", ";
+	}
+		/* no break */
 	case 5:
 		{
 		constexpr int i = 4;
@@ -294,6 +316,15 @@ template<class RType>
 void DBInterface<RType>::updateEntry(int id, const RecordType &entry) {
 	Glib::ustring sql = "UPDATE " + table + " SET ";
 	switch (entry.size()) {
+	case 6:
+		{
+		constexpr int i = 5;
+		appendSQL(&sql, entry.getField(i), false);
+		sql += " = ";
+		appendSQL(&sql, entry.template access<i>());
+		sql += ", ";
+	}
+		/* no break */
 	case 5:
 		{
 		constexpr int i = 4;
@@ -363,9 +394,18 @@ void DBInterface<RType>::setParent(int child_id, int new_parent_id) {
 }
 
 template<class RType>
-int DBInterface<RType>::getID(const RType& entry) {
+int DBInterface<RType>::getID(const RType& entry) const {
 	Glib::ustring sql = "SELECT id FROM " + table + " WHERE (";
 	switch (entry.size()) {
+	case 6:
+		{
+		constexpr int i = 5;
+		appendSQL(&sql, entry.getField(i), false);
+		sql += " = ";
+		appendSQL(&sql, entry.template access<i>());
+		sql += " AND ";
+	}
+		/* no break */
 	case 5:
 		{
 		constexpr int i = 4;

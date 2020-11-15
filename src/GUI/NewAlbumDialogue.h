@@ -33,7 +33,7 @@ class NewAlbumDialogue: public RenameAlbumDialogue {
 public:
 	/**
 	 * @param[out] album Pointer to the Backend::NewAlbumRecord object to save the to
-	 * @param[in] parent_key The parent album set
+	 * @param[in] parent_album_name The parent album set
 	 */
 	NewAlbumDialogue(Backend::NewAlbumRecord* album, const Glib::ustring& parent_album_name="");
 	~NewAlbumDialogue() = default;

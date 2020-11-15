@@ -117,6 +117,21 @@ void Database::createTables() {
 			");"
 			"CREATE INDEX albumsParentIndex ON Albums(parent);"
 			"INSERT INTO Albums (id, name, parent) VALUES (0, 'root', 0);"
+		//Photos table
+			"CREATE TABLE Photos("
+			"  id				INTEGER	PRIMARY KEY"
+			", directory		INTEGER	NOT NULL"
+			", filename			TEXT	NOT NULL"
+			", rating			INTEGER	DEFAULT 0"
+			", datetime			INTEGER"
+			", width			INTEGER"
+			", height			INTEGER"
+			/// \todo add other attributes
+			", UNIQUE			(directory, filename)"
+			", FOREIGN KEY		(directory) REFERENCES Directories ON DELETE CASCADE"
+			");"
+			//Create index for directory
+			"CREATE INDEX photosDirIndex ON Photos(directory);"
 			;
 
 	if(sqlite3_exec(db, tables, nullptr, nullptr, &zErrMsg))

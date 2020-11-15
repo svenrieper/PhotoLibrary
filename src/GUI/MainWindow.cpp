@@ -30,7 +30,8 @@ MainWindow::MainWindow(Backend::BackendFactory* backend) :
 		leftPane(Gtk::ORIENTATION_HORIZONTAL),
 		rightPane(Gtk::ORIENTATION_HORIZONTAL),
 		rightPaneBox(backend),
-		leftPaneBox(backend) {
+		leftPaneBox(backend),
+		centrePaneBox(backend) {
 //	set_hide_titlebar_when_maximized(true);
 //	set_mnemonics_visible(true);
 	set_title("Photo Library");
@@ -45,6 +46,7 @@ MainWindow::MainWindow(Backend::BackendFactory* backend) :
 	show_all_children();
 
 	signal_check_resize().connect(sigc::mem_fun(*this,&MainWindow::onWindowResize));
+	leftPaneBox.signaleNewDirectorySelected().connect(sigc::mem_fun(*this, &MainWindow::onNewDirectorySelected));
 }
 
 void MainWindow::fillWindow() {
@@ -59,28 +61,30 @@ void MainWindow::fillWindow() {
 	leftPane.pack1(leftPaneBox, false, false);
 	leftPane.pack2(rightPane, true, true);
 
-	rightPane.pack1(centerPaneBox, true, false);
+	rightPane.pack1(centrePaneBox, true, false);
 	rightPane.pack2(rightPaneBox, false, false);
 
 	topPaneBox.set_size_request(-1, 50);
 	buttomPaneBox.set_size_request(-1, 150);
 	leftPaneBox.set_size_request(150, -1);
 	rightPaneBox.set_size_request(150, -1);
-	centerPaneBox.set_size_request(250, 250);
+	centrePaneBox.set_size_request(250, 250);
 
 	topPaneBox.set_shadow_type(Gtk::SHADOW_NONE);
 	buttomPaneBox.set_shadow_type(Gtk::SHADOW_NONE);
 	leftPaneBox.set_shadow_type(Gtk::SHADOW_NONE);
 	rightPaneBox.set_shadow_type(Gtk::SHADOW_NONE);
-	centerPaneBox.set_shadow_type(Gtk::SHADOW_NONE);
+	centrePaneBox.set_shadow_type(Gtk::SHADOW_NONE);
 }
 
 /// \todo find a solution that isn't called every time any child widget changes
 void MainWindow::onWindowResize() {
-	int width, height;
-	get_size(width, height);
-	backend->setWindowProperty(Backend::BackendFactory::WindowProperties::WINDOW_WIDTH, width);
-	backend->setWindowProperty(Backend::BackendFactory::WindowProperties::WINDOW_HEIGHT, height);
+	backend->setWindowProperty(Backend::BackendFactory::WindowProperties::WINDOW_WIDTH, get_width());
+	backend->setWindowProperty(Backend::BackendFactory::WindowProperties::WINDOW_HEIGHT, get_height());
+}
+
+void MainWindow::onNewDirectorySelected(int id) {
+	centrePaneBox.fillGrid(backend->getPhotoInterface()->getChildren(id));
 }
 
 

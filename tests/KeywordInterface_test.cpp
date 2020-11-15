@@ -28,8 +28,7 @@ using PhotoLibrary::Backend::BackendFactory;
 using PhotoLibrary::Adapter::constraint_error;
 using Keyword = PhotoLibrary::Backend::KeywordRecord;
 using PhotoLibrary::Backend::KeywordRecord;
-using Backend::InterfaceBase;
-using KeywordInterface = InterfaceBase<KeywordRecord>;
+using KeywordInterface = Backend::InterfaceBase<KeywordRecord>;
 
 TEMPLATE_TEST_CASE("Test the Keyword interface of the Adapter and the Backend", "[keywords][adapter][backend]", DatabaseFactory, BackendFactory) {
 	TestType db { ":memory:" };

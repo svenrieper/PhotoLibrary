@@ -101,7 +101,7 @@ public:
 	const Glib::ustring& getAlbumName() const { return access<2>(); }
 
 private:
-	static inline const std::array<Glib::ustring,4> fields {"parent", "attributes", "name"};
+	static inline const std::array<Glib::ustring,3> fields {"parent", "attributes", "name"};
 };
 
 /**
@@ -122,7 +122,7 @@ public:
 
 	virtual ~NewAlbumRecord() = default;
 
-	int new_parent_id_backup;
+	int new_parent_id_backup;	/**< Id of the potential parent of the new album. */
 };
 
 } /* namespace Backend */

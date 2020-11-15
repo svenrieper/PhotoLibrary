@@ -1,7 +1,6 @@
 /*
  * main.cpp
  *
- *
  * This file is part of PhotoLibrary
  * Copyright (C) 2020 Sven Rieper
  *
