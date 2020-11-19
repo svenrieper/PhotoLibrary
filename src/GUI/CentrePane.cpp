@@ -75,7 +75,6 @@ void CentrePane::abortThreads() {
 	loaded_images.clear();
 }
 
-///\todo verify that the program doesn't crash anymore, if the method is called before all images are displayed
 void CentrePane::fillGrid(std::vector<int> photos) {
 	size_allocation_connection.disconnect();
 	dispatcher_connection.disconnect();
@@ -86,10 +85,12 @@ void CentrePane::fillGrid(std::vector<int> photos) {
 	tiles.clear();
 
 	for(int photo_id : photos) {
-		tiles.insert(std::make_pair(photo_id, new PhotoTile(backend, photo_id)));
-		tiles[photo_id]->set_size_request(backend->getWindowProperty(Backend::BackendFactory::WindowProperties::TILE_WIDTH),
+		std::unique_ptr<PhotoTile> newTile(new PhotoTile(backend, photo_id));
+		newTile->set_size_request(backend->getWindowProperty(Backend::BackendFactory::WindowProperties::TILE_WIDTH),
 				backend->getWindowProperty(Backend::BackendFactory::WindowProperties::TILE_WIDTH));
-		flowbox.add(*tiles[photo_id]);
+		flowbox.add(*newTile);
+		if(!tiles.emplace(photo_id, std::move(newTile)).second)
+			throw std::runtime_error("Error adding new tile to GridView tiles map.");
 		tiles_to_update.push(photo_id);
 	}
 	show_all();
@@ -106,8 +107,8 @@ void CentrePane::onSizeAllocate(Gdk::Rectangle& allocation) {
 }
 
 void CentrePane::loadPhotos(CentrePane* object) {
-	for(int tile_id; object->tiles_to_update.pop(tile_id);) {
-		Glib::ustring filename = object->tiles[tile_id]->getFilename();
+	for(int tile_id; object->tiles_to_update.pop(tile_id);) try {
+		Glib::ustring filename = object->tiles.at(tile_id)->getFilename();
 		if(std::filesystem::exists(filename.c_str())) { // @suppress("Invalid arguments")
 			try {
 				int size = object->backend->getWindowProperty(BackendFactory::WindowProperties::TILE_WIDTH);
@@ -125,16 +126,18 @@ void CentrePane::loadPhotos(CentrePane* object) {
 			}
 		}
 	}
+	catch (std::out_of_range&) {}
 }
 
-void CentrePane::updateDisplayedImage() {
+void CentrePane::updateDisplayedImage() try {
 //	if(std::pair<int,Glib::RefPtr<Gdk::Pixbuf>>* image; loaded_images.pop(image)) {
-//		tiles[image->first]->setPhoto(image->second);
+//		tiles.at(image->first)->setPhoto(image->second);
 //		delete image;
 //	}
 	if(std::pair<int,Glib::RefPtr<Gdk::Pixbuf>> image; loaded_images.pop(image))
-		tiles[image.first]->setPhoto(image.second);
+		tiles.at(image.first)->setPhoto(image.second);
 }
+catch (std::out_of_range&) {}
 
 } /* namespace GUI */
 } /* namespace PhotoLibrary */
