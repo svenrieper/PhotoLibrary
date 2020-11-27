@@ -29,7 +29,7 @@ namespace Support {
 /**
  * Thread safe interface for an std::queue.
  *
- * @tparam T type of the Elements
+ * @tparam T type of the Elements; \c T needs to be movable
  *
  * \todo add emplace()?
  */
@@ -38,13 +38,22 @@ class ThreadSafeQueue : private std::queue<T> {
 public:
 	using size_type = typename std::queue<T>::size_type;
 
+	/**
+	 * Creates an empty queue.
+	 */
 	ThreadSafeQueue();
 	~ThreadSafeQueue() = default;
+	//no default moving or copying (not thread safe)
+	ThreadSafeQueue(const ThreadSafeQueue&) = delete;
+	ThreadSafeQueue(ThreadSafeQueue&&) = delete;
+	ThreadSafeQueue& operator=(const ThreadSafeQueue&) = delete;
+	ThreadSafeQueue& operator=(ThreadSafeQueue&&) = delete;
 
 	/**
 	 * Whether the queue is empty.
 	 *
-	 * @return \c true if the queue is empty, \c false otherwise
+	 * @retval true if the queue is empty
+	 * @retval false otherwise
 	 */
 	bool empty() const;
 
@@ -88,6 +97,7 @@ public:
 	 * Empty the queue.
 	 *
 	 * Removes all elements from the queue.
+	 * \todo add option to give a hint whether or not to keep reserve?
 	 */
 	void clear();
 
