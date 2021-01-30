@@ -18,6 +18,7 @@
  */
 
 #include "BackendFactory.h"
+#include <thread>
 
 namespace PhotoLibrary {
 namespace Backend {
@@ -30,19 +31,9 @@ BackendFactory::BackendFactory(const char* filename) : db(nullptr) {
 	window_properties[WindowProperties::RIGHT_PANE_WIDTH] = 250;
 	window_properties[WindowProperties::TILE_WIDTH] = 250;
 //	window_properties[WindowProperties::TILE_HEIGHT] = 250;
-	window_properties[WindowProperties::N_THREADS] = 1;
+	window_properties[WindowProperties::N_THREADS] = std::thread::hardware_concurrency()?std::thread::hardware_concurrency():1;
 
-	try {
-		db = new Adapter::DatabaseFactory(":memory:");
-	}
-	catch (...) {
-		delete db;
-		throw;
-	}
-}
-
-BackendFactory::~BackendFactory() {
-	delete db;
+	db = std::make_unique<Adapter::DatabaseFactory>(":memory:");
 }
 
 KeywordInterface* BackendFactory::getKeywordInterface() {

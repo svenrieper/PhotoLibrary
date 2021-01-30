@@ -23,6 +23,7 @@
 #include "../Adapter/DatabaseFactory.h"
 #include "FactoryBase.h"
 #include <unordered_map>
+#include <memory>
 
 namespace PhotoLibrary {
 namespace Backend {
@@ -76,7 +77,7 @@ public:
 	 * @param filename Filename and path of the database to use
 	 */
 	BackendFactory(const char* filename = nullptr);
-	~BackendFactory();
+	~BackendFactory() = default;
 
 	/**
 	 * Get a pointer to the keyword interface of the backend.
@@ -150,7 +151,7 @@ public:
 	int getCentreWidth() const;
 
 private:
-	Adapter::DatabaseFactory* db;
+	std::unique_ptr<Adapter::DatabaseFactory> db;
 	std::unordered_map<WindowProperties,int> window_properties;
 
 	//prevent copying and copy construction
