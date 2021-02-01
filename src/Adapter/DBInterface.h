@@ -33,7 +33,7 @@ namespace Adapter {
 /**
  * Base class for database interface classes.
  * Currently works for Backend::Record classes based on
- * up to five-tuples.
+ * up to six-tuples.
  *
  * The Backend::Record::getField(int) should return the name of the column
  * for the data returned with Backend::Record::access<int>().
@@ -203,37 +203,37 @@ RType DBInterface<RType>::getEntry(int id) const {
 		constexpr int i = 5;
 		setValue(querry, i, entry.template access<i>());
 	}
-		/* no break */
+		[[fallthrough]];
 	case 5:
 		{
 		constexpr int i = 4;
 		setValue(querry, i, entry.template access<i>());
 	}
-		/* no break */
+		[[fallthrough]];
 	case 4:
 		{
 		constexpr int i = 3;
 		setValue(querry, i, entry.template access<i>());
 	}
-		/* no break */
+		[[fallthrough]];
 	case 3:
 		{
 		constexpr int i = 2;
 		setValue(querry, i, entry.template access<i>());
 	}
-		/* no break */
+		[[fallthrough]];
 	case 2:
 		{
 		constexpr int i = 1;
 		setValue(querry, i, entry.template access<i>());
 	}
-		/* no break */
+		[[fallthrough]];
 	case 1:
 		{
 		constexpr int i =0;
 		setValue(querry, i, entry.template access<i>());
 	}
-		/* no break */
+		[[fallthrough]];
 	}
 
 	return entry;
@@ -266,41 +266,41 @@ void DBInterface<RType>::newEntry(const RecordType& entry) {
 		appendSQL(&sql, entry.template access<i>());
 		sql += ", ";
 	}
-		/* no break */
+		[[fallthrough]];
 	case 5:
 		{
 		constexpr int i = 4;
 		appendSQL(&sql, entry.template access<i>());
 		sql += ", ";
 	}
-		/* no break */
+		[[fallthrough]];
 	case 4:
 		{
 		constexpr int i = 3;
 		appendSQL(&sql, entry.template access<i>());
 		sql += ", ";
 	}
-		/* no break */
+		[[fallthrough]];
 	case 3:
 		{
 		constexpr int i = 2;
 		appendSQL(&sql, entry.template access<i>());
 		sql += ", ";
 	}
-		/* no break */
+		[[fallthrough]];
 	case 2:
 		{
 		constexpr int i = 1;
 		appendSQL(&sql, entry.template access<i>());
 		sql += ", ";
 	}
-		/* no break */
+		[[fallthrough]];
 	case 1:
 		{
 		constexpr int i = 0;
 		appendSQL(&sql, entry.template access<i>());
 	}
-		/* no break */
+		[[fallthrough]];
 	}
 	sql += Glib::ustring(");");
 
@@ -324,7 +324,7 @@ void DBInterface<RType>::updateEntry(int id, const RecordType &entry) {
 		appendSQL(&sql, entry.template access<i>());
 		sql += ", ";
 	}
-		/* no break */
+		[[fallthrough]];
 	case 5:
 		{
 		constexpr int i = 4;
@@ -333,7 +333,7 @@ void DBInterface<RType>::updateEntry(int id, const RecordType &entry) {
 		appendSQL(&sql, entry.template access<i>());
 		sql += ", ";
 	}
-		/* no break */
+		[[fallthrough]];
 	case 4:
 		{
 		constexpr int i = 3;
@@ -342,7 +342,7 @@ void DBInterface<RType>::updateEntry(int id, const RecordType &entry) {
 		appendSQL(&sql, entry.template access<i>());
 		sql += ", ";
 	}
-		/* no break */
+		[[fallthrough]];
 	case 3:
 		{
 		constexpr int i = 2;
@@ -351,7 +351,7 @@ void DBInterface<RType>::updateEntry(int id, const RecordType &entry) {
 		appendSQL(&sql, entry.template access<i>());
 		sql += ", ";
 	}
-		/* no break */
+		[[fallthrough]];
 	case 2:
 		{
 		constexpr int i = 1;
@@ -360,7 +360,7 @@ void DBInterface<RType>::updateEntry(int id, const RecordType &entry) {
 		appendSQL(&sql, entry.template access<i>());
 		sql += ", ";
 	}
-		/* no break */
+		[[fallthrough]];
 	case 1:
 		{
 		constexpr int i = 0;
@@ -368,7 +368,7 @@ void DBInterface<RType>::updateEntry(int id, const RecordType &entry) {
 		sql += " = ";
 		appendSQL(&sql, entry.template access<i>());
 	}
-		/* no break */
+		[[fallthrough]];
 	}
 	sql += " WHERE id IS " + std::to_string(id) + "";
 //		std::cout << sql << std::endl;
@@ -405,7 +405,7 @@ int DBInterface<RType>::getID(const RType& entry) const {
 		appendSQL(&sql, entry.template access<i>());
 		sql += " AND ";
 	}
-		/* no break */
+		[[fallthrough]];
 	case 5:
 		{
 		constexpr int i = 4;
@@ -414,7 +414,7 @@ int DBInterface<RType>::getID(const RType& entry) const {
 		appendSQL(&sql, entry.template access<i>());
 		sql += " AND ";
 	}
-		/* no break */
+		[[fallthrough]];
 	case 4:
 		{
 		constexpr int i = 3;
@@ -423,7 +423,7 @@ int DBInterface<RType>::getID(const RType& entry) const {
 		appendSQL(&sql, entry.template access<i>());
 		sql += " AND ";
 	}
-		/* no break */
+		[[fallthrough]];
 	case 3:
 		{
 		constexpr int i = 2;
@@ -432,7 +432,7 @@ int DBInterface<RType>::getID(const RType& entry) const {
 		appendSQL(&sql, entry.template access<i>());
 		sql += " AND ";
 	}
-		/* no break */
+		[[fallthrough]];
 	case 2:
 		{
 		constexpr int i = 1;
@@ -441,7 +441,7 @@ int DBInterface<RType>::getID(const RType& entry) const {
 		appendSQL(&sql, entry.template access<i>());
 		sql += " AND ";
 	}
-		/* no break */
+		[[fallthrough]];
 	case 1:
 		{
 		constexpr int i = 0;
@@ -449,7 +449,7 @@ int DBInterface<RType>::getID(const RType& entry) const {
 		sql += " = ";
 		appendSQL(&sql, entry.template access<i>());
 	}
-		/* no break */
+		[[fallthrough]];
 	}
 	sql += ");";
 

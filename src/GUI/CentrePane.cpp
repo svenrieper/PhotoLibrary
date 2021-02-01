@@ -38,7 +38,7 @@ CentrePane::CentrePane(Backend::BackendFactory* backend) :
 	flowbox.set_activate_on_single_click(true);
 	flowbox.set_column_spacing(0);
 
-	//put the flobox inside a box so that the child widgets aren't expanded vertically
+	//put the flowbox inside a box so that the child widgets aren't expanded vertically
 	add(box);
 	box.pack_start(flowbox, false, false);
 
