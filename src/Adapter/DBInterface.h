@@ -25,8 +25,7 @@
 #include "../Backend/Record/Record.h"
 #include "../Backend/InterfaceBase.h"
 #include <iostream>
-
-#include "Database.h"
+#include "../SQLiteAdapter/Database.h"
 
 namespace PhotoLibrary {
 namespace Adapter {

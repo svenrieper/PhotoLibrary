@@ -22,7 +22,7 @@
 
 #include "DBInterface.h"
 #include "../Backend/FactoryBase.h"
-#include "Database.h"
+#include "../SQLiteAdapter/Database.h"
 #include "RelationsDBInterface.h"
 
 namespace PhotoLibrary {

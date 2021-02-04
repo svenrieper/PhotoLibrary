@@ -16,10 +16,10 @@ add_executable(PhotoLibraryTests
 			KeywordRecord_test.cpp
 			PhotosAlbumsRelationsInterface_test.cpp
 			suppport_test.cpp
-			../src/Adapter/Database.cpp
+			../src/SQLiteAdapter/Database.cpp
+			../src/SQLiteAdapter/SQLQuerry.cpp
 			../src/Adapter/DatabaseFactory.cpp
 			../src/Adapter/RelationsDBInterface.cpp
-			../src/Adapter/SQLQuerry.cpp
 			../src/Adapter/suppport.cpp
 			../src/Backend/BackendFactory.cpp
 			)

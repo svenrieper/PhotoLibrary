@@ -17,10 +17,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "SQLQuerry.h"
-#include "Database.h"
+#include "../SQLiteAdapter/SQLQuerry.h"
+
 #include <stdexcept>
 #include <string>
+#include "Database.h"
 
 namespace PhotoLibrary {
 namespace SQLiteAdapter {

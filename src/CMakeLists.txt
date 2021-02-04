@@ -11,10 +11,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 add_executable(PhotoLibrary 
 			main.cpp 
 			examples.cpp
-			Adapter/Database.cpp
+			SQLiteAdapter/Database.cpp
+			SQLiteAdapter/SQLQuerry.cpp
 			Adapter/RelationsDBInterface.cpp
 			Adapter/DatabaseFactory.cpp
-			Adapter/SQLQuerry.cpp
 			Adapter/suppport.cpp
 			Backend/BackendFactory.cpp
 			GUI/AlbumStore.cpp

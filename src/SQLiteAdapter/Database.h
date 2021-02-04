@@ -17,8 +17,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef SRC_ADAPTER_DATABASE_H_
-#define SRC_ADAPTER_DATABASE_H_
+#ifndef SRC_SQLITEADAPTER_DATABASE_H_
+#define SRC_SQLITEADAPTER_DATABASE_H_
 
 #include <sqlite3.h>
 #include "SQLQuerry.h"
@@ -77,4 +77,4 @@ private:
 } /* namespace SQLiteAdapter */
 } /* namespace PhotoLibrary */
 
-#endif /* SRC_ADAPTER_DATABASE_H_ */
+#endif /* SRC_SQLITEADAPTER_DATABASE_H_ */

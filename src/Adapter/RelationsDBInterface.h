@@ -23,7 +23,7 @@
 #include "../Backend/RelationsInterfaceBase.h"
 #include <glibmm/ustring.h>
 
-#include "Database.h"
+#include "../SQLiteAdapter/Database.h"
 
 namespace PhotoLibrary {
 namespace Adapter {
