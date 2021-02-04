@@ -25,7 +25,7 @@
 #include <cstdint>
 
 namespace PhotoLibrary {
-namespace Adapter {
+namespace SQLiteAdapter {
 
 //catch2 doesn't like it if Database.h is included here (why?)
 class Database;
@@ -113,7 +113,7 @@ private:
 	friend Database;	//is there another solution to make (private) prepareStmt a friend of Database?
 };
 
-} /* namespace Adapter */
+} /* namespace SQLiteAdapter */
 } /* namespace PhotoLibrary */
 
 #endif /* SRC_SQLQUERRY_H_ */

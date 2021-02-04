@@ -21,6 +21,7 @@
 #define SRC_SUPPPORT_H_
 
 #include <glibmm/ustring.h>
+
 #include "SQLQuerry.h"
 
 namespace PhotoLibrary {

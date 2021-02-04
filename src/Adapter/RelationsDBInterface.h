@@ -21,8 +21,9 @@
 #define SRC_ADAPTER_RELATIONSDBINTERFACE_H_
 
 #include "../Backend/RelationsInterfaceBase.h"
-#include "Database.h"
 #include <glibmm/ustring.h>
+
+#include "Database.h"
 
 namespace PhotoLibrary {
 namespace Adapter {
@@ -42,7 +43,7 @@ public:
 	 * @param entry_name Name of the database column containing the entry-like ids.
 	 * @param collection_name Name of the database column containing the collection-like ids.
 	 */
-	RelationsDBInterface(Database* db, const Glib::ustring& table, const Glib::ustring& entry_name, const Glib::ustring& collection_name);
+	RelationsDBInterface(SQLiteAdapter::Database* db, const Glib::ustring& table, const Glib::ustring& entry_name, const Glib::ustring& collection_name);
 	virtual ~RelationsDBInterface() = default;
 
 	std::vector<int> getEntries(int collection) const override;
@@ -51,7 +52,7 @@ public:
 	void deleteRelation(int entry, int collection) override;
 
 private:
-	Database* const db;
+	SQLiteAdapter::Database* const db;
 	const Glib::ustring table;
 	const Glib::ustring entry_name;
 	const Glib::ustring collection_name;

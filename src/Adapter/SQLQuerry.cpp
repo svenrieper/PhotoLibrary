@@ -17,13 +17,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <stdexcept>
 #include "SQLQuerry.h"
 #include "Database.h"
+#include <stdexcept>
 #include <string>
 
 namespace PhotoLibrary {
-namespace Adapter {
+namespace SQLiteAdapter {
 
 SQLQuerry::SQLQuerry(Database* db, const char* querry) : db(db), sqlStmt(nullptr), nextStmt(querry) {
 	try {
@@ -73,5 +73,5 @@ void SQLQuerry::prepareStmt() {
 	}
 }
 
-} /* namespace Adapter */
+} /* namespace SQLiteAdapter */
 } /* namespace PhotoLibrary */

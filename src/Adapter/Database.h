@@ -21,11 +21,10 @@
 #define SRC_ADAPTER_DATABASE_H_
 
 #include <sqlite3.h>
-
 #include "SQLQuerry.h"
 
 namespace PhotoLibrary {
-namespace Adapter {
+namespace SQLiteAdapter {
 
 /**
  * SQLite database handle. It holds the connection to the SQLite
@@ -75,7 +74,7 @@ private:
 	friend void SQLQuerry::prepareStmt();
 };
 
-} /* namespace Adapter */
+} /* namespace SQLiteAdapter */
 } /* namespace PhotoLibrary */
 
 #endif /* SRC_ADAPTER_DATABASE_H_ */

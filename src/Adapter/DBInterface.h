@@ -21,11 +21,12 @@
 #define SRC_DBINTERFACE_H_
 
 #include <glibmm/ustring.h>
-#include "Database.h"
 #include "suppport.h"
 #include "../Backend/Record/Record.h"
 #include "../Backend/InterfaceBase.h"
 #include <iostream>
+
+#include "Database.h"
 
 namespace PhotoLibrary {
 namespace Adapter {
@@ -54,7 +55,7 @@ public:
 	 * @param db Handle for the database to use
 	 * @param table name of the associated table
 	 */
-	DBInterface(Database *db, Glib::ustring table);
+	DBInterface(SQLiteAdapter::Database *db, Glib::ustring table);
 
 	virtual ~DBInterface() = default;
 
@@ -129,7 +130,7 @@ public:
 	void deleteEntry(int id) override;
 
 protected:
-	Database* const db;	/**< Database hande used */
+	SQLiteAdapter::Database* const db;	/**< Database hande used */
 	const Glib::ustring table; /**< name of the table associated with the derived interface class */
 
 private:
@@ -163,16 +164,16 @@ private:
 
 	//update 'field' with the retrieved data
 	//use overloaded functions to get the right type
-	void setValue(SQLQuerry& querry, int column, int_least64_t& field) const {
+	void setValue(SQLiteAdapter::SQLQuerry& querry, int column, int_least64_t& field) const {
 		field = querry.getColumnInt64(column);
 	}
-	void setValue(SQLQuerry& querry, int column, int& field) const {
+	void setValue(SQLiteAdapter::SQLQuerry& querry, int column, int& field) const {
 		field = querry.getColumnInt(column);
 	}
-	void setValue(SQLQuerry& querry, int column, Backend::RecordOptions::Options& field) const {
+	void setValue(SQLiteAdapter::SQLQuerry& querry, int column, Backend::RecordOptions::Options& field) const {
 		field = static_cast<Backend::RecordOptions::Options>(querry.getColumnInt(column));
 	}
-	void setValue(SQLQuerry& querry, int column, Glib::ustring& field) const {
+	void setValue(SQLiteAdapter::SQLQuerry& querry, int column, Glib::ustring& field) const {
 		field = querry.getColumnText(column);
 	}
 };
@@ -181,7 +182,7 @@ private:
 
 //implementation
 template<class RType>
-DBInterface<RType>::DBInterface(Database *db, Glib::ustring table) :
+DBInterface<RType>::DBInterface(SQLiteAdapter::Database *db, Glib::ustring table) :
 		db(db), table(table) {
 }
 
@@ -192,7 +193,7 @@ RType DBInterface<RType>::getEntry(int id) const {
 	Glib::ustring sql = "SELECT ";
 	appendFieldNamesReverse(entry, sql);
 	sql += " FROM " + table + " WHERE id IS " + std::to_string(id) + "";
-	SQLQuerry querry(db, sql.c_str());
+	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
 
 	if(querry.nextRow() != SQLITE_ROW)
 			throw(std::runtime_error(std::string("Error retrieving entry with id ") + std::to_string(id) + " from " + table));
@@ -244,7 +245,7 @@ std::vector<int> DBInterface<RType>::getChildren(int parent) const {
 //	Glib::ustring sql = "SELECT id FROM " + table + " WHERE parent IS '" + std::to_string(parent) + "'";
 	RType entry_type;
 	Glib::ustring sql = "SELECT id FROM " + table + " WHERE " + entry_type.getField(0) + " IS '" + std::to_string(parent) + "'";
-	SQLQuerry querry(db, sql.c_str());
+	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
 
 	std::vector<int> ids;
 	while (querry.nextRow() == SQLITE_ROW)
@@ -304,7 +305,7 @@ void DBInterface<RType>::newEntry(const RecordType& entry) {
 	}
 	sql += Glib::ustring(");");
 
-	SQLQuerry querry(db, sql.c_str());
+	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
 
 	if(int i = querry.nextRow(); i == SQLITE_CONSTRAINT)
 		throw(constraint_error(std::string("Constraint Error adding entry to table ") + table));
@@ -373,7 +374,7 @@ void DBInterface<RType>::updateEntry(int id, const RecordType &entry) {
 	sql += " WHERE id IS " + std::to_string(id) + "";
 //		std::cout << sql << std::endl;
 
-	SQLQuerry querry(db, sql.c_str());
+	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
 
 	if(int i = querry.nextRow(); i == SQLITE_CONSTRAINT)
 		throw(constraint_error("Error updating " + table));
@@ -385,7 +386,7 @@ template<class RType>
 void DBInterface<RType>::setParent(int child_id, int new_parent_id) {
 	Glib::ustring sql = "UPDATE " + table + " SET parent = '" + std::to_string(new_parent_id) +
 			"' WHERE id IS '" + std::to_string(child_id) + "'";
-	SQLQuerry querry(db, sql.c_str());
+	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
 
 	if (int i = querry.nextRow(); i == SQLITE_CONSTRAINT)
 		throw(constraint_error("Error moving entry."));
@@ -453,7 +454,7 @@ int DBInterface<RType>::getID(const RType& entry) const {
 	}
 	sql += ");";
 
-	SQLQuerry querry(db, sql.c_str());
+	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
 	if(int i=querry.nextRow() != SQLITE_ROW)
 		throw(std::runtime_error("Error getting id (error code: " + std::to_string(i)));
 
@@ -466,7 +467,7 @@ void DBInterface<RType>::deleteEntry(int id) {
 		throw(std::runtime_error("Deleting the root is forbidden."));
 
 	Glib::ustring sql = "DELETE FROM " + table + " WHERE id = " + std::to_string(id);
-	SQLQuerry querry(db, sql.c_str());
+	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
 
 	if (querry.nextRow() != SQLITE_DONE)
 		throw(std::runtime_error("Error deleting keyword."));

@@ -23,7 +23,7 @@
 namespace PhotoLibrary {
 namespace Adapter {
 
-RelationsDBInterface::RelationsDBInterface(Database* db, const Glib::ustring& table,
+RelationsDBInterface::RelationsDBInterface(SQLiteAdapter::Database* db, const Glib::ustring& table,
 		const Glib::ustring& entry_name, const Glib::ustring& collection_name) :
 				db(db),
 				table(table),
@@ -42,7 +42,7 @@ std::vector<int> RelationsDBInterface::getCollections(int entry) const {
 void RelationsDBInterface::newRelation(int entry, int collection) {
 	Glib::ustring sql = "INSERT OR IGNORE INTO " + table + " (" + entry_name + ", " + collection_name +
 			") VALUES (" + std::to_string(entry) + ", " + std::to_string(collection) + ");";
-	SQLQuerry querry(db, sql.c_str());
+	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
 
 	if(int i = querry.nextRow(); i == SQLITE_CONSTRAINT)
 		throw(constraint_error(std::string("Constraint Error adding entry to table ") + table));
@@ -53,7 +53,7 @@ void RelationsDBInterface::newRelation(int entry, int collection) {
 void RelationsDBInterface::deleteRelation(int entry, int collection) {
 	Glib::ustring sql = "DELETE FROM " + table + " WHERE " + entry_name + " = " + std::to_string(entry) +
 			" AND " + collection_name + " = " + std::to_string(collection) + ";";
-	SQLQuerry querry(db, sql.c_str());
+	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
 
 	if (querry.nextRow() != SQLITE_DONE)
 		throw(std::runtime_error("Error deleting relation."));
@@ -61,7 +61,7 @@ void RelationsDBInterface::deleteRelation(int entry, int collection) {
 
 std::vector<int> RelationsDBInterface::getVector(int id, const Glib::ustring& reference_id, const Glib::ustring& return_id) const {
 	Glib::ustring sql = "SELECT " + return_id + " FROM " + table + " WHERE " + reference_id + " IS '" + std::to_string(id) + "'";
-	SQLQuerry querry(db, sql.c_str());
+	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
 
 	std::vector<int> ids;
 	while (querry.nextRow() == SQLITE_ROW)

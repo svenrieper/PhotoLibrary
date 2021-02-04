@@ -20,9 +20,9 @@
 #ifndef SRC_ADAPTER_DATABASEFACTORY_H_
 #define SRC_ADAPTER_DATABASEFACTORY_H_
 
-#include "Database.h"
 #include "DBInterface.h"
 #include "../Backend/FactoryBase.h"
+#include "Database.h"
 #include "RelationsDBInterface.h"
 
 namespace PhotoLibrary {
@@ -59,7 +59,7 @@ public:
 	DatabaseFactory& operator=(DatabaseFactory &&other) = delete;
 
 private:
-	Database db;
+	SQLiteAdapter::Database db;
 	DBInterface<Backend::KeywordRecord> keyword_interface;
 	DBInterface<Backend::DirectoryRecord> directories_interface;
 	DBInterface<Backend::AlbumRecord> album_interface;

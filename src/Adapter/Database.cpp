@@ -22,7 +22,7 @@
 #include <string>
 
 namespace PhotoLibrary {
-namespace Adapter {
+namespace SQLiteAdapter {
 
 Database::Database(const char*, bool) :
 	db(nullptr) {
@@ -63,5 +63,5 @@ int Database::querryNoThrow(const char* sql, int (*callback)(void*,int,char**,ch
 	return return_value;
 }
 
-} /* namespace Adapter */
+} /* namespace SQLiteAdapter */
 } /* namespace PhotoLibrary */
