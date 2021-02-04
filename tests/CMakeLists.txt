@@ -14,9 +14,11 @@ add_executable(PhotoLibraryTests
 			DirectoryRecord_test.cpp
 			KeywordInterface_test.cpp
 			KeywordRecord_test.cpp
+			PhotosAlbumsRelationsInterface_test.cpp
 			suppport_test.cpp
 			../src/Adapter/Database.cpp
 			../src/Adapter/DatabaseFactory.cpp
+			../src/Adapter/RelationsDBInterface.cpp
 			../src/Adapter/SQLQuerry.cpp
 			../src/Adapter/suppport.cpp
 			../src/Backend/BackendFactory.cpp

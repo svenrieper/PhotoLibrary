@@ -53,6 +53,11 @@ using AlbumInterface = InterfaceBase<AlbumRecord>;
 using PhotoInterface = InterfaceBase<PhotoRecord>;
 
 /**
+ * The interface to get, set, and delete relations between photos and albums.
+ */
+using PhotosAlbumsRelationsInterface = RelationsInterfaceBase;
+
+/**
  * Factory class to construct the backend.
  * Constructs the backend classes and hands them to the GUI on demand.
  */
@@ -79,53 +84,16 @@ public:
 	BackendFactory(const char* filename = nullptr);
 	~BackendFactory() = default;
 
-	/**
-	 * Get a pointer to the keyword interface of the backend.
-	 * @return Pointer to the Keywords interface of the backend.
-	 */
 	KeywordInterface* getKeywordInterface() override;
-
-	/**
-	 * Get a pointer to the keyword interface of the backend.
-	 * @return Pointer to the Keywords interface of the backend.
-	 */
 	const KeywordInterface* getKeywordInterface() const override;
-
-	/**
-	 * Get a pointer to the directories interface of the backend.
-	 * @return Pointer to the DirectoryInterface of the backend.
-	 */
 	DirectoryInterface* getDirectoriesInterface() override;
-
-	/**
-	 * Get a pointer to the directories interface of the backend.
-	 * @return Pointer to the DirectoryInterface of the backend.
-	 */
 	const DirectoryInterface* getDirectoriesInterface() const override;
-
-	/**
-	 * Get a pointer to the albums interface of the backend.
-	 * @return Pointer to the AlbumInterface of the backend.
-	 */
 	AlbumInterface* getAlbumInterface() override;
-
-	/**
-	 * Get a pointer to the albums interface of the backend.
-	 * @return Pointer to the AlbumInterface of the backend.
-	 */
 	const AlbumInterface* getAlbumInterface() const override;
-
-	/**
-	 * Get a pointer to the photo interface of the backend.
-	 * @return Pointer to the PhotoInterface of the backend.
-	 */
 	PhotoInterface* getPhotoInterface() override;
-
-	/**
-	 * Get a pointer to the photo interface of the backend.
-	 * @return Pointer to the PhotoInterface of the backend.
-	 */
 	const PhotoInterface* getPhotoInterface() const override;
+	PhotosAlbumsRelationsInterface* getPhotosAlbumsRelationsInterface() override;
+	const PhotosAlbumsRelationsInterface* getPhotosAlbumsRelationsInterface() const override;
 
 	/**
 	 * Retrieve the value of a main window property.

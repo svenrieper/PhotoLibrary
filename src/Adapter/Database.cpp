@@ -127,11 +127,24 @@ void Database::createTables() {
 			", width			INTEGER"
 			", height			INTEGER"
 			/// \todo add other attributes
+			//Constraints
 			", UNIQUE			(directory, filename)"
 			", FOREIGN KEY		(directory) REFERENCES Directories ON DELETE CASCADE"
 			");"
 			//Create index for directory
 			"CREATE INDEX photosDirIndex ON Photos(directory);"
+		//Photos-Albums relations table
+			"CREATE TABLE PhotosAlbumsRelations("
+			"  photoId			INTEGER"	//photo id
+			", albumId			INTEGER"
+			//Constraints
+			", UNIQUE			(photoId, albumId)"
+			", FOREIGN KEY		(photoId) REFERENCES Photos ON DELETE CASCADE"
+			", FOREIGN KEY		(albumId) REFERENCES Albums ON DELETE CASCADE"
+			");"
+			//Create indeces for id and albumId
+			"CREATE INDEX photosAlbumsRelationsIdIndex ON PhotosAlbumsRelations(photoId);"
+			"CREATE INDEX photosAlbumsRelationsAlbumIdIndex ON PhotosAlbumsRelations(albumId);"
 			;
 
 	if(sqlite3_exec(db, tables, nullptr, nullptr, &zErrMsg))

@@ -25,6 +25,7 @@
 #include "Record/DirectoryRecord.h"
 #include "Record/AlbumRecord.h"
 #include "Record/PhotoRecord.h"
+#include "RelationsInterfaceBase.h"
 
 namespace PhotoLibrary {
 namespace Backend {
@@ -44,46 +45,55 @@ public:
 	virtual InterfaceBase<KeywordRecord>* getKeywordInterface() = 0;
 
 	/**
-	 * Get a pointer to the keyword interface.
-	 * @return Pointer to the Keywords interface.
+	 * \copydoc getKeywordInterface()
 	 */
 	virtual const InterfaceBase<KeywordRecord>* getKeywordInterface() const = 0;
 
 	/**
 	 * Get a pointer to the directories interface.
-	 * @return Pointer to the DirectoryInterface.
+	 * @return Pointer to the Directory interface.
 	 */
 	virtual InterfaceBase<DirectoryRecord>* getDirectoriesInterface() = 0;
 
 	/**
-	 * Get a pointer to the directories interface.
-	 * @return Pointer to the DirectoryInterface.
+	 * \copydoc getDirectoriesInterface()
 	 */
 	virtual const InterfaceBase<DirectoryRecord>* getDirectoriesInterface() const = 0;
 
 	/**
 	 * Get a pointer to the albums interface.
-	 * @return Pointer to the AlbumInterface.
+	 * @return Pointer to the Album interface.
 	 */
 	virtual InterfaceBase<AlbumRecord>* getAlbumInterface() = 0;
 
 	/**
-	 * Get a pointer to the albums interface.
-	 * @return Pointer to the AlbumInterface.
+	 * \copydoc getAlbumInterface()
 	 */
 	virtual const InterfaceBase<AlbumRecord>* getAlbumInterface() const = 0;
 
 	/**
 	 * Get a pointer to the photo interface.
-	 * @return Pointer to the PhotoInterface.
+	 * @return Pointer to the Photo interface.
 	 */
 	virtual InterfaceBase<PhotoRecord>* getPhotoInterface() = 0;
 
 	/**
-	 * Get a pointer to the photo interface.
-	 * @return Pointer to the PhotoInterface.
+	 * \copydoc getPhotoInterface()
 	 */
 	virtual const InterfaceBase<PhotoRecord>* getPhotoInterface() const = 0;
+
+	/**
+	 * Get a pointer to the photos-albums-relations interface.
+	 * Photos are considered to be the entry-type, albums are considered
+	 * to be the collection-type.
+	 * @return Pointer to the PhotosAlbumsRelations interface
+	 */
+	virtual RelationsInterfaceBase* getPhotosAlbumsRelationsInterface() = 0;
+
+	/**
+	 * \copydoc getPhotosAlbumsRelationsInterface()
+	 */
+	virtual const RelationsInterfaceBase* getPhotosAlbumsRelationsInterface() const = 0;
 };
 
 } /* namespace Backend */

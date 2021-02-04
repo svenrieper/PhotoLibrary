@@ -27,7 +27,8 @@ DatabaseFactory::DatabaseFactory(const char* filename, bool initialise) :
 		keyword_interface(&db, "Keywords"),
 		directories_interface(&db, "Directories"),
 		album_interface(&db, "Albums"),
-		photo_interface(&db, "Photos") {
+		photo_interface(&db, "Photos"),
+		photos_albums_relations(&db, "PhotosAlbumsRelations", "photoId", "albumId") {
 }
 
 DBInterface<Backend::KeywordRecord>* DatabaseFactory::getKeywordInterface() {
@@ -60,6 +61,14 @@ DBInterface<Backend::PhotoRecord>* DatabaseFactory::getPhotoInterface() {
 
 const DBInterface<Backend::PhotoRecord>* DatabaseFactory::getPhotoInterface() const {
 	return &photo_interface;
+}
+
+RelationsDBInterface* DatabaseFactory::getPhotosAlbumsRelationsInterface() {
+	return &photos_albums_relations;
+}
+
+const RelationsDBInterface* DatabaseFactory::getPhotosAlbumsRelationsInterface() const {
+	return &photos_albums_relations;
 }
 
 } /* namespace Adapter */

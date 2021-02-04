@@ -12,6 +12,7 @@ add_executable(PhotoLibrary
 			main.cpp 
 			examples.cpp
 			Adapter/Database.cpp
+			Adapter/RelationsDBInterface.cpp
 			Adapter/DatabaseFactory.cpp
 			Adapter/SQLQuerry.cpp
 			Adapter/suppport.cpp

@@ -68,6 +68,14 @@ const PhotoInterface* BackendFactory::getPhotoInterface() const {
 	return db->getPhotoInterface();
 }
 
+RelationsInterfaceBase* BackendFactory::getPhotosAlbumsRelationsInterface() {
+	return db->getPhotosAlbumsRelationsInterface();
+}
+
+const RelationsInterfaceBase* BackendFactory::getPhotosAlbumsRelationsInterface() const {
+	return db->getPhotosAlbumsRelationsInterface();
+}
+
 int BackendFactory::getWindowProperty(WindowProperties property) const {
 	return window_properties.at(property);
 }
