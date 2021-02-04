@@ -17,16 +17,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef SRC_ADAPTER_RELATIONSDBINTERFACE_H_
-#define SRC_ADAPTER_RELATIONSDBINTERFACE_H_
+#ifndef SRC_BACKEND_DATABASEINTERFACE_RELATIONSDBINTERFACE_H_
+#define SRC_BACKEND_DATABASEINTERFACE_RELATIONSDBINTERFACE_H_
 
-#include "../Backend/RelationsInterfaceBase.h"
+#include "../RelationsInterfaceBase.h"
 #include <glibmm/ustring.h>
-
-#include "../SQLiteAdapter/Database.h"
+#include "../../SQLiteAdapter/Database.h"
 
 namespace PhotoLibrary {
-namespace Adapter {
+namespace Backend {
+namespace DatabaseInterface {
 
 /**
  * Implementation of the relations interface for the SQLite database.
@@ -60,7 +60,8 @@ private:
 	std::vector<int> getVector(int id, const Glib::ustring& reference_id, const Glib::ustring& return_id) const;
 };
 
-} /* namespace Adapter */
+} /* namespace DatabaseInterface */
+} /* namespace Backend */
 } /* namespace PhotoLibrary */
 
-#endif /* SRC_ADAPTER_RELATIONSDBINTERFACE_H_ */
+#endif /* SRC_BACKEND_DATABASEINTERFACE_RELATIONSDBINTERFACE_H_ */

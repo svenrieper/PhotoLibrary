@@ -17,13 +17,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "../src/Adapter/DatabaseFactory.h"
+#include "../src/Backend/DatabaseInterface/DatabaseFactory.h"
 #include "../src/Backend/BackendFactory.h"
 #include <catch2/catch.hpp>
 
 namespace PhotoLibrary {
 
-using PhotoLibrary::Adapter::DatabaseFactory;
+using PhotoLibrary::Backend::DatabaseInterface::DatabaseFactory;
 using PhotoLibrary::Backend::BackendFactory;
 using Backend::RelationsInterfaceBase;
 using Backend::AlbumRecord;
@@ -178,7 +178,7 @@ TEMPLATE_TEST_CASE("Test the PhotosAlbumsRelations interface of the Adapter and 
 		while(i == a_holiday || i == a_zoo || i == a_city_trips || i == a_venice)
 			++i;
 
-		CHECK_THROWS_AS(photos_albums_realtions_if->newRelation(photo_1, i), Adapter::constraint_error);
+		CHECK_THROWS_AS(photos_albums_realtions_if->newRelation(photo_1, i), Backend::DatabaseInterface::constraint_error);
 	}
 
 	SECTION("Adding a non-photo to an album should return a constraint_error", "") {
@@ -186,7 +186,7 @@ TEMPLATE_TEST_CASE("Test the PhotosAlbumsRelations interface of the Adapter and 
 		while(i == photo_1 || i == photo_2 || i == photo_3 || i == photo_4 || i == photo_5)
 			++i;
 
-		CHECK_THROWS_AS(photos_albums_realtions_if->newRelation(i, a_city_trips), Adapter::constraint_error);
+		CHECK_THROWS_AS(photos_albums_realtions_if->newRelation(i, a_city_trips), Backend::DatabaseInterface::constraint_error);
 	}
 
 	SECTION("After deleting a photo all its relations should be removed as well.", "") {

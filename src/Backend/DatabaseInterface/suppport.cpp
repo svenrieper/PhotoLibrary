@@ -21,7 +21,8 @@
 #include <algorithm>
 
 namespace PhotoLibrary {
-namespace Adapter {
+namespace Backend {
+namespace DatabaseInterface {
 
 void escapeSingleQuotes(Glib::ustring* string) {
 	for(auto iter = string->begin();
@@ -30,5 +31,6 @@ void escapeSingleQuotes(Glib::ustring* string) {
 		iter = string->insert(iter, '\'');
 }
 
-} /* namespace Adapter */
+} /* namespace DatabaseInterface */
+} /* namespace Backend */
 } /* namespace PhotoLibrary */

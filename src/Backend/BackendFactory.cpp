@@ -33,7 +33,7 @@ BackendFactory::BackendFactory(const char* filename) : db(nullptr) {
 //	window_properties[WindowProperties::TILE_HEIGHT] = 250;
 	window_properties[WindowProperties::N_THREADS] = std::thread::hardware_concurrency()?std::thread::hardware_concurrency():1;
 
-	db = std::make_unique<Adapter::DatabaseFactory>(":memory:", true);
+	db = std::make_unique<Backend::DatabaseInterface::DatabaseFactory>(":memory:", true);
 }
 
 KeywordInterface* BackendFactory::getKeywordInterface() {

@@ -21,7 +21,8 @@
 #include "suppport.h"
 
 namespace PhotoLibrary {
-namespace Adapter {
+namespace Backend {
+namespace DatabaseInterface {
 
 RelationsDBInterface::RelationsDBInterface(SQLiteAdapter::Database* db, const Glib::ustring& table,
 		const Glib::ustring& entry_name, const Glib::ustring& collection_name) :
@@ -70,5 +71,6 @@ std::vector<int> RelationsDBInterface::getVector(int id, const Glib::ustring& re
 	return ids;
 }
 
-} /* namespace Adapter */
+} /* namespace DatabaseInterface */
+} /* namespace Backend */
 } /* namespace PhotoLibrary */

@@ -17,15 +17,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "../src/Adapter/DatabaseFactory.h"
+#include "../src/Backend/DatabaseInterface/DatabaseFactory.h"
 #include "../src/Backend/BackendFactory.h"
-#include "../src/Adapter/suppport.h"
+#include "../src/Backend/DatabaseInterface/suppport.h"
 #include <catch2/catch.hpp>
 
 using namespace PhotoLibrary;
-using PhotoLibrary::Adapter::DatabaseFactory;
+using PhotoLibrary::Backend::DatabaseInterface::DatabaseFactory;
 using PhotoLibrary::Backend::BackendFactory;
-using PhotoLibrary::Adapter::constraint_error;
+using PhotoLibrary::Backend::DatabaseInterface::constraint_error;
 using Keyword = PhotoLibrary::Backend::KeywordRecord;
 using PhotoLibrary::Backend::KeywordRecord;
 using KeywordInterface = Backend::InterfaceBase<KeywordRecord>;

@@ -13,9 +13,9 @@ add_executable(PhotoLibrary
 			examples.cpp
 			SQLiteAdapter/Database.cpp
 			SQLiteAdapter/SQLQuerry.cpp
-			Adapter/RelationsDBInterface.cpp
-			Adapter/DatabaseFactory.cpp
-			Adapter/suppport.cpp
+			Backend/DatabaseInterface/RelationsDBInterface.cpp
+			Backend/DatabaseInterface/DatabaseFactory.cpp
+			Backend/DatabaseInterface/suppport.cpp
 			Backend/BackendFactory.cpp
 			GUI/AlbumStore.cpp
 			GUI/AlbumView.cpp

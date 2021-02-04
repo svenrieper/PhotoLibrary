@@ -17,16 +17,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef SRC_ADAPTER_DATABASEFACTORY_H_
-#define SRC_ADAPTER_DATABASEFACTORY_H_
+#ifndef SRC_BACKEND_DATABASEINTERFACE_DATABASEFACTORY_H_
+#define SRC_BACKEND_DATABASEINTERFACE_DATABASEFACTORY_H_
 
 #include "DBInterface.h"
-#include "../Backend/FactoryBase.h"
-#include "../SQLiteAdapter/Database.h"
 #include "RelationsDBInterface.h"
+#include "../FactoryBase.h"
+#include "../../SQLiteAdapter/Database.h"
 
 namespace PhotoLibrary {
-namespace Adapter {
+namespace Backend {
+namespace DatabaseInterface {
 
 /**
  * Factory class to create the database handle and interface.
@@ -69,7 +70,8 @@ private:
 	void createTables();
 };
 
-} /* namespace Adapter */
+} /* namespace DatabaseInterface */
+} /* namespace Backend */
 } /* namespace PhotoLibrary */
 
-#endif /* SRC_ADAPTER_DATABASEFACTORY_H_ */
+#endif /* SRC_BACKEND_DATABASEINTERFACE_DATABASEFACTORY_H_ */

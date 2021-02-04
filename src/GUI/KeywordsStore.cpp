@@ -34,7 +34,7 @@ void KeywordsStore::onRowChanged(const TreeModel::Path& path, const TreeModel::i
 	int parent = iter->parent() ? (*(iter->parent()))[getColumns().id] : 0;
 	try {
 		getBackend()->setParent((*iter)[getColumns().id], parent);
-	} catch (const Adapter::constraint_error& e) {
+	} catch (const Backend::DatabaseInterface::constraint_error& e) {
 		/// \todo prepare for internationalisation
 		/// \todo improve text
 		Gtk::MessageDialog message_dialogue("Keyword '" + (*iter)[getColumns().keyword] + "' could not be moved");

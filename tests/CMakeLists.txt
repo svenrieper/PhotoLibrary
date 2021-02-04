@@ -18,9 +18,9 @@ add_executable(PhotoLibraryTests
 			suppport_test.cpp
 			../src/SQLiteAdapter/Database.cpp
 			../src/SQLiteAdapter/SQLQuerry.cpp
-			../src/Adapter/DatabaseFactory.cpp
-			../src/Adapter/RelationsDBInterface.cpp
-			../src/Adapter/suppport.cpp
+			../src/Backend/DatabaseInterface/DatabaseFactory.cpp
+			../src/Backend/DatabaseInterface/RelationsDBInterface.cpp
+			../src/Backend/DatabaseInterface/suppport.cpp
 			../src/Backend/BackendFactory.cpp
 			)
 

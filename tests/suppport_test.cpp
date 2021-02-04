@@ -17,11 +17,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "../src/Adapter/suppport.h"
+#include "../src/Backend/DatabaseInterface/suppport.h"
 #include <catch2/catch.hpp>
 
 namespace PhotoLibrary {
-namespace Adapter {
+namespace Backend {
+namespace DatabaseInterface {
 
 TEST_CASE( "escapeSingleQuotes doesn't change a string that doesn't contain singel quotes",
 		"[support][ustring][escapeSingleQuotes]" ) {
@@ -45,5 +46,6 @@ TEST_CASE( "escapeSingleQuotes escapes singel quotes", "[support][ustring][escap
 	CHECK(str2 == "''some'' ''''test'''' ''string''''''");
 }
 
-} /* namespace Adapter */
+} /* namespace DatabaseInterface */
+} /* namespace Backend */
 } /* namespace PhotoLibrary */

@@ -20,10 +20,10 @@
 #ifndef SRC_BACKEND_BACKENDFACTORY_H_
 #define SRC_BACKEND_BACKENDFACTORY_H_
 
-#include "../Adapter/DatabaseFactory.h"
 #include "FactoryBase.h"
 #include <unordered_map>
 #include <memory>
+#include "DatabaseInterface/DatabaseFactory.h"
 
 namespace PhotoLibrary {
 namespace Backend {
@@ -119,7 +119,7 @@ public:
 	int getCentreWidth() const;
 
 private:
-	std::unique_ptr<Adapter::DatabaseFactory> db;
+	std::unique_ptr<DatabaseInterface::DatabaseFactory> db;
 	std::unordered_map<WindowProperties,int> window_properties;
 
 	//prevent copying and copy construction

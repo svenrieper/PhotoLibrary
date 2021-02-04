@@ -19,7 +19,7 @@
 
 #include "KeywordsView.h"
 #include "../Backend/Record/KeywordRecord.h"
-#include "../Adapter/suppport.h"
+#include "../Backend/DatabaseInterface/suppport.h"
 #include <map>
 #include <vector>
 #include <iostream>
@@ -104,7 +104,7 @@ void KeywordsView::onMenuAddNewKeyword() {
 			reloadTreeStore();
 			return;
 		}
-		catch (Adapter::constraint_error& e) {
+		catch (Backend::DatabaseInterface::constraint_error& e) {
 			/// \todo prepare for internationalisation
 			/// \todo improve text
 			Gtk::MessageDialog message_dialogue("Keyword could not be added");
@@ -130,7 +130,7 @@ void KeywordsView::onMenuEditKeyword() {
 			reloadTreeStore();
 			return;
 		}
-		catch (Adapter::constraint_error &e) {
+		catch (Backend::DatabaseInterface::constraint_error &e) {
 			/// \todo prepare for internationalisation
 			/// \todo improve text
 			Gtk::MessageDialog message_dialogue("Changes could not be saved");

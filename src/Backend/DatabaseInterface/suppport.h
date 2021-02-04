@@ -21,10 +21,11 @@
 #define SRC_SUPPPORT_H_
 
 #include <glibmm/ustring.h>
-#include "../SQLiteAdapter/SQLQuerry.h"
+#include "../../SQLiteAdapter/SQLQuerry.h"
 
 namespace PhotoLibrary {
-namespace Adapter {
+namespace Backend {
+namespace DatabaseInterface {
 
 /**
  * Escapes single quotes (') with single quotes for SQLite querries.
@@ -51,7 +52,8 @@ public:
 	constraint_error(std::string error_message) : std::runtime_error(error_message) {}
 };
 
-} /* namespace Adapter */
+} /* namespace DatabaseInterface */
+} /* namespace Backend */
 } /* namespace PhotoLibrary */
 
 

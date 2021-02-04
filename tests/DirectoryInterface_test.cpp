@@ -17,12 +17,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "../src/Adapter/DatabaseFactory.h"
+#include "../src/Backend/DatabaseInterface/DatabaseFactory.h"
 #include "../src/Backend/BackendFactory.h"
 #include <catch2/catch.hpp>
 
 namespace PhotoLibrary {
-namespace Adapter {
+namespace Backend {
+namespace DatabaseInterface {
 
 using Backend::DirectoryRecord;
 using Backend::BackendFactory;
@@ -156,5 +157,6 @@ TEMPLATE_TEST_CASE("Test the DirectoryInterface of the Adapter and the Backend",
 	}
 }
 
-} /* namespace Adapter */
+} /* namespace DatabaseInterface */
+} /* namespace Backend */
 } /* namespace PhotoLibrary */

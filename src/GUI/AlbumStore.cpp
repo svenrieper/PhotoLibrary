@@ -33,7 +33,7 @@ void AlbumStore::onRowChanged(const TreeModel::Path& path, const TreeModel::iter
 	int parent = iter->parent() ? (*(iter->parent()))[getColumns().id] : 0;
 	try {
 		getBackend()->setParent((*iter)[getColumns().id], parent);
-	} catch (const Adapter::constraint_error& e) {
+	} catch (const Backend::DatabaseInterface::constraint_error& e) {
 		/// \todo prepare for internationalisation
 		/// \todo improve text
 		Gtk::MessageDialog message_dialogue("Album '" + (*iter)[getColumns().album_name] + "' could not be moved");

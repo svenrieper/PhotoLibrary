@@ -21,14 +21,15 @@
 #define SRC_DBINTERFACE_H_
 
 #include <glibmm/ustring.h>
-#include "suppport.h"
-#include "../Backend/Record/Record.h"
-#include "../Backend/InterfaceBase.h"
+#include "../Record/Record.h"
+#include "../InterfaceBase.h"
 #include <iostream>
-#include "../SQLiteAdapter/Database.h"
+#include "suppport.h"
+#include "../../SQLiteAdapter/Database.h"
 
 namespace PhotoLibrary {
-namespace Adapter {
+namespace Backend {
+namespace DatabaseInterface {
 
 /**
  * Base class for database interface classes.
@@ -473,7 +474,8 @@ void DBInterface<RType>::deleteEntry(int id) {
 }
 
 
-} /* namespace Adapter */
+} /* namespace DatabaseInterface */
+} /* namespace Backend */
 } /* namespace PhotoLibrary */
 
 #endif /* SRC_DBINTERFACE_H_ */

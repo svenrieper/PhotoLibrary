@@ -17,7 +17,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "Adapter/DatabaseFactory.h"
 #include "Backend/BackendFactory.h"
 #include "GUI/GUIMain.h"
 

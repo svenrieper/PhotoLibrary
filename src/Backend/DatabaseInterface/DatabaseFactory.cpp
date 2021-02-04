@@ -20,7 +20,8 @@
 #include "DatabaseFactory.h"
 
 namespace PhotoLibrary {
-namespace Adapter {
+namespace Backend {
+namespace DatabaseInterface {
 
 DatabaseFactory::DatabaseFactory(const char* filename, bool initialise) :
 		db(/*filename*/ ":memory:", /*initialise*/ true),
@@ -160,5 +161,6 @@ void DatabaseFactory::createTables() {
 		throw(std::runtime_error("Error creating tables: " + error_msg));
 }
 
-} /* namespace Adapter */
+} /* namespace DatabaseInterface */
+} /* namespace Backend */
 } /* namespace PhotoLibrary */

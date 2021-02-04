@@ -58,7 +58,7 @@ void AlbumView::addNewAlbum(Backend::AlbumRecord::Options options) {
 			reloadTreeStore();
 			return;
 		}
-		catch (Adapter::constraint_error& e) {
+		catch (Backend::DatabaseInterface::constraint_error& e) {
 			/// \todo prepare for internationalisation
 			/// \todo improve text
 			Gtk::MessageDialog message_dialogue("Album could not be added");
@@ -142,7 +142,7 @@ void AlbumView::onMenuRenameAlbum() {
 			reloadTreeStore();
 			return;
 		}
-		catch (Adapter::constraint_error &e) {
+		catch (Backend::DatabaseInterface::constraint_error &e) {
 			/// \todo prepare for internationalisation
 			/// \todo improve text
 			Gtk::MessageDialog message_dialogue("Changes could not be saved");
