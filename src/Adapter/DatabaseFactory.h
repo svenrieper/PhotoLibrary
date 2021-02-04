@@ -38,7 +38,7 @@ public:
 	 * @param initialise create new database or open existing?
 	 * 		If true filename must not exist.
 	 */
-	DatabaseFactory(const char* filename, bool initialise=false);
+	DatabaseFactory(const char* filename, bool initialise=true);
 	~DatabaseFactory() = default;
 
 	DBInterface<Backend::KeywordRecord>* getKeywordInterface() override;
@@ -65,6 +65,8 @@ private:
 	DBInterface<Backend::AlbumRecord> album_interface;
 	DBInterface<Backend::PhotoRecord> photo_interface;
 	RelationsDBInterface photos_albums_relations;
+
+	void createTables();
 };
 
 } /* namespace Adapter */

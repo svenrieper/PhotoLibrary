@@ -21,7 +21,6 @@
 #include "SQLQuerry.h"
 #include "Database.h"
 #include <string>
-//#include <iostream>
 
 namespace PhotoLibrary {
 namespace Adapter {

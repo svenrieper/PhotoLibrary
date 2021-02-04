@@ -39,7 +39,7 @@ public:
 	 * @param initialise create new database or open existing?
 	 * 		If true filename must not exist.
 	 */
-	Database(const char* filename, bool initialise);
+	Database(const char* filename, bool create);
 	~Database();
 
 	//prevent copy-construction and copying
@@ -53,13 +53,25 @@ public:
 	 *
 	 * For details see the SQLite C/C++ API documentation (sqlite3_exec).
 	 * @see https://sqlite.org/c3ref/exec.html
+	 *
+	 * @throw Throws an std::runtime_error if it encounters any problems.
 	 */
 	void querry(const char* sql, int (*callback)(void*,int,char**,char**), void* data);
+
+	/**
+	 * Passes an SQL querry to the database.
+	 *
+	 * For details see the SQLite C/C++ API documentation (sqlite3_exec).
+	 * @see https://sqlite.org/c3ref/exec.html
+	 *
+	 * @param error_msg String into which the error message will be written if an error occurs during execution
+	 * @return Return the SQLite Error code.
+	 */
+	int querryNoThrow(const char* sql, int (*callback)(void*,int,char**,char**), void* data, std::string& error_msg);
 
 private:
 	sqlite3* db;
 
-	void createTables();
 	friend void SQLQuerry::prepareStmt();
 };
 

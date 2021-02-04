@@ -18,8 +18,6 @@
  */
 
 #include "Database.h"
-
-#include <iostream>
 #include <stdexcept>
 #include <string>
 
@@ -30,7 +28,7 @@ Database::Database(const char*, bool) :
 	db(nullptr) {
 	/// \todo Add support for persistence
 	const char* filename = ":memory:";
-	bool initialise = true; // file_exists(filename)
+	[[maybe_unused]] bool create = true; /// \todo test: file_exists(filename)
 
 	int rc;
 	rc = sqlite3_open(filename, &db);
@@ -40,16 +38,6 @@ Database::Database(const char*, bool) :
 		throw(std::runtime_error(std::string("Database ") + filename +
 				" couldn't be opened: ")); // + sqlite3_errmsg(db)
 	}
-
-	try {
-		if (!initialise);
-			//testConsistency(); /// \todo Add test for db
-		else
-			createTables();
-	} catch (...) {
-		sqlite3_close(db);
-		throw;
-	}
 }
 
 Database::~Database() {
@@ -58,97 +46,21 @@ Database::~Database() {
 
 void Database::querry(const char* sql, int (*callback)(void*,int,char**,char**), void* data) {
 	char* zErrMsg = nullptr;
-	if(sqlite3_exec(db, sql, callback, data, &zErrMsg))
-		throw(std::runtime_error(std::string("Error executing SQL command: ") + *zErrMsg));
+	if(sqlite3_exec(db, sql, callback, data, &zErrMsg)) {
+		std::string error_msg = "Error executing SQL command: " + *zErrMsg;
+		sqlite3_free(zErrMsg);
+		throw(std::runtime_error(error_msg));
+	}
 }
 
-void Database::createTables() {
-	char* zErrMsg=nullptr;
-
-	const char* enable_foreign_key_support = "PRAGMA foreign_keys = ON;";
-
-	if (sqlite3_exec(db, enable_foreign_key_support, nullptr, nullptr, &zErrMsg))
-		throw(std::runtime_error(std::string("Table \"keyword\": ") + sqlite3_errmsg(db)));
-
-	/// \todo Add database structure.
-	const char* tables =
-		//Keywords table
-			"CREATE TABLE Keywords("
-			"  id				INTEGER	PRIMARY KEY AUTOINCREMENT"	//AUTOINCREMENT?
-			", parent			INTEGER	NOT NULL"
-			", keyword	TEXT	NOT NULL"
-			", lkeyword	TEXT	AS (lower(keyword))"	//VIRTUAL or STORED?
-			", synonyms	TEXT	DEFAULT ''"
-			", attributes		INTEGER	DEFAULT 0"
-			//Constraints
-			", UNIQUE			(parent, lkeyword)"
-			", FOREIGN KEY		(parent) REFERENCES Keywords ON DELETE CASCADE"
-			");"
-			//Create index for parent
-			"CREATE INDEX keyParentIndex ON Keywords(parent);"
-			"INSERT INTO Keywords (id, keyword, parent) VALUES (1, 'internal root', 1);"
-			"INSERT INTO Keywords (id, keyword, parent) VALUES (0, 'root', 0);"
-			//Reserve keyword ids 1 through 50 for internal use
-			"INSERT INTO Keywords (id, keyword, parent) VALUES (50, 'temp', 0);"
-			"DELETE FROM Keywords WHERE id = 50;"
-		//Directories table
-			"CREATE TABLE Directories("
-			"  id				INTEGER	PRIMARY KEY"	//AUTOINCREMENT?
-			", parent			INTEGER	NOT NULL"
-			", name				TEXT	NOT NULL"
-			", fullname			TEXT	NOT NULL"
-			", attributes		INTEGER	DEFAULT 0"
-			//Constraints
-			", UNIQUE			(parent, fullname)"
-			", FOREIGN KEY		(parent) REFERENCES Directories ON DELETE CASCADE"
-			");"
-			//Create index for parent
-			"CREATE INDEX dirParentIndex ON Directories(parent);"
-			"INSERT INTO Directories (id, name, fullname, parent) VALUES (0, 'root', '/', 0);"
-		//Albums table
-			"CREATE TABLE Albums("
-			"  id				INTEGER	PRIMARY KEY"
-			", parent			INTEGER	NOT NULL"
-			", name				TEXT	NOT NULL"
-			", attributes		INTEGER	DEFAULT 0"
-			//Constraints
-			", UNIQUE			(parent, name)"
-			", FOREIGN KEY		(parent) REFERENCES Albums ON DELETE CASCADE"
-			");"
-			"CREATE INDEX albumsParentIndex ON Albums(parent);"
-			"INSERT INTO Albums (id, name, parent) VALUES (0, 'root', 0);"
-		//Photos table
-			"CREATE TABLE Photos("
-			"  id				INTEGER	PRIMARY KEY"
-			", directory		INTEGER	NOT NULL"
-			", filename			TEXT	NOT NULL"
-			", rating			INTEGER	DEFAULT 0"
-			", datetime			INTEGER"
-			", width			INTEGER"
-			", height			INTEGER"
-			/// \todo add other attributes
-			//Constraints
-			", UNIQUE			(directory, filename)"
-			", FOREIGN KEY		(directory) REFERENCES Directories ON DELETE CASCADE"
-			");"
-			//Create index for directory
-			"CREATE INDEX photosDirIndex ON Photos(directory);"
-		//Photos-Albums relations table
-			"CREATE TABLE PhotosAlbumsRelations("
-			"  photoId			INTEGER"	//photo id
-			", albumId			INTEGER"
-			//Constraints
-			", UNIQUE			(photoId, albumId)"
-			", FOREIGN KEY		(photoId) REFERENCES Photos ON DELETE CASCADE"
-			", FOREIGN KEY		(albumId) REFERENCES Albums ON DELETE CASCADE"
-			");"
-			//Create indeces for id and albumId
-			"CREATE INDEX photosAlbumsRelationsIdIndex ON PhotosAlbumsRelations(photoId);"
-			"CREATE INDEX photosAlbumsRelationsAlbumIdIndex ON PhotosAlbumsRelations(albumId);"
-			;
-
-	if(sqlite3_exec(db, tables, nullptr, nullptr, &zErrMsg))
-		throw(std::runtime_error(std::string("Table \"keyword\": ") + sqlite3_errmsg(db)));
+int Database::querryNoThrow(const char* sql, int (*callback)(void*,int,char**,char**), void* data, std::string& error_msg) {
+	char* zErrMsg = nullptr;
+	int return_value = sqlite3_exec(db, sql, callback, data, &zErrMsg);
+	if(return_value) {
+		error_msg = *zErrMsg;
+		sqlite3_free(zErrMsg);
+	}
+	return return_value;
 }
 
 } /* namespace Adapter */

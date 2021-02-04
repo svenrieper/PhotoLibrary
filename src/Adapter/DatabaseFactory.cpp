@@ -23,12 +23,17 @@ namespace PhotoLibrary {
 namespace Adapter {
 
 DatabaseFactory::DatabaseFactory(const char* filename, bool initialise) :
-		db(filename, initialise),
+		db(/*filename*/ ":memory:", /*initialise*/ true),
 		keyword_interface(&db, "Keywords"),
 		directories_interface(&db, "Directories"),
 		album_interface(&db, "Albums"),
 		photo_interface(&db, "Photos"),
 		photos_albums_relations(&db, "PhotosAlbumsRelations", "photoId", "albumId") {
+	initialise=true;
+	if (!initialise);
+		//testConsistency(); /// \todo Add test for db
+	else
+		createTables();
 }
 
 DBInterface<Backend::KeywordRecord>* DatabaseFactory::getKeywordInterface() {
@@ -69,6 +74,90 @@ RelationsDBInterface* DatabaseFactory::getPhotosAlbumsRelationsInterface() {
 
 const RelationsDBInterface* DatabaseFactory::getPhotosAlbumsRelationsInterface() const {
 	return &photos_albums_relations;
+}
+
+void DatabaseFactory::createTables() {
+	/// \todo Add database structure.
+	const char* tables =
+			"PRAGMA foreign_keys = ON;"
+		//Keywords table
+			"CREATE TABLE Keywords("
+			"  id				INTEGER	PRIMARY KEY AUTOINCREMENT"	//AUTOINCREMENT?
+			", parent			INTEGER	NOT NULL"
+			", keyword	TEXT	NOT NULL"
+			", lkeyword	TEXT	AS (lower(keyword))"	//VIRTUAL or STORED?
+			", synonyms	TEXT	DEFAULT ''"
+			", attributes		INTEGER	DEFAULT 0"
+			//Constraints
+			", UNIQUE			(parent, lkeyword)"
+			", FOREIGN KEY		(parent) REFERENCES Keywords ON DELETE CASCADE"
+			");"
+			//Create index for parent
+			"CREATE INDEX keyParentIndex ON Keywords(parent);"
+			"INSERT INTO Keywords (id, keyword, parent) VALUES (1, 'internal root', 1);"
+			"INSERT INTO Keywords (id, keyword, parent) VALUES (0, 'root', 0);"
+			//Reserve keyword ids 1 through 50 for internal use
+			"INSERT INTO Keywords (id, keyword, parent) VALUES (50, 'temp', 0);"
+			"DELETE FROM Keywords WHERE id = 50;"
+		//Directories table
+			"CREATE TABLE Directories("
+			"  id				INTEGER	PRIMARY KEY"	//AUTOINCREMENT?
+			", parent			INTEGER	NOT NULL"
+			", name				TEXT	NOT NULL"
+			", fullname			TEXT	NOT NULL"
+			", attributes		INTEGER	DEFAULT 0"
+			//Constraints
+			", UNIQUE			(parent, fullname)"
+			", FOREIGN KEY		(parent) REFERENCES Directories ON DELETE CASCADE"
+			");"
+			//Create index for parent
+			"CREATE INDEX dirParentIndex ON Directories(parent);"
+			"INSERT INTO Directories (id, name, fullname, parent) VALUES (0, 'root', '/', 0);"
+		//Albums table
+			"CREATE TABLE Albums("
+			"  id				INTEGER	PRIMARY KEY"
+			", parent			INTEGER	NOT NULL"
+			", name				TEXT	NOT NULL"
+			", attributes		INTEGER	DEFAULT 0"
+			//Constraints
+			", UNIQUE			(parent, name)"
+			", FOREIGN KEY		(parent) REFERENCES Albums ON DELETE CASCADE"
+			");"
+			"CREATE INDEX albumsParentIndex ON Albums(parent);"
+			"INSERT INTO Albums (id, name, parent) VALUES (0, 'root', 0);"
+		//Photos table
+			"CREATE TABLE Photos("
+			"  id				INTEGER	PRIMARY KEY"
+			", directory		INTEGER	NOT NULL"
+			", filename			TEXT	NOT NULL"
+			", rating			INTEGER	DEFAULT 0"
+			", datetime			INTEGER"
+			", width			INTEGER"
+			", height			INTEGER"
+			/// \todo add other attributes
+			//Constraints
+			", UNIQUE			(directory, filename)"
+			", FOREIGN KEY		(directory) REFERENCES Directories ON DELETE CASCADE"
+			");"
+			//Create index for directory
+			"CREATE INDEX photosDirIndex ON Photos(directory);"
+		//Photos-Albums relations table
+			"CREATE TABLE PhotosAlbumsRelations("
+			"  photoId			INTEGER"	//photo id
+			", albumId			INTEGER"
+			//Constraints
+			", UNIQUE			(photoId, albumId)"
+			", FOREIGN KEY		(photoId) REFERENCES Photos ON DELETE CASCADE"
+			", FOREIGN KEY		(albumId) REFERENCES Albums ON DELETE CASCADE"
+			");"
+			//Create indeces for id and albumId
+			"CREATE INDEX photosAlbumsRelationsIdIndex ON PhotosAlbumsRelations(photoId);"
+			"CREATE INDEX photosAlbumsRelationsAlbumIdIndex ON PhotosAlbumsRelations(albumId);"
+			;
+
+	std::string error_msg;
+	if(db.querryNoThrow(tables, nullptr, nullptr, error_msg))
+		throw(std::runtime_error("Error creating tables: " + error_msg));
 }
 
 } /* namespace Adapter */
