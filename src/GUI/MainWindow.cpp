@@ -47,6 +47,7 @@ MainWindow::MainWindow(Backend::BackendFactory* backend) :
 
 	signal_check_resize().connect(sigc::mem_fun(*this,&MainWindow::onWindowResize));
 	leftPaneBox.signaleNewDirectorySelected().connect(sigc::mem_fun(*this, &MainWindow::onNewDirectorySelected));
+	leftPaneBox.signaleNewAlbumSelected().connect(sigc::mem_fun(*this, &MainWindow::onNewAlbumSelected));
 }
 
 void MainWindow::fillWindow() {
@@ -85,6 +86,10 @@ void MainWindow::onWindowResize() {
 
 void MainWindow::onNewDirectorySelected(int id) {
 	centrePaneBox.fillGrid(backend->getPhotoInterface()->getChildren(id));
+}
+
+void MainWindow::onNewAlbumSelected(int id) {
+	centrePaneBox.fillGrid(backend->getPhotosAlbumsRelationsInterface()->getEntries(id));
 }
 
 

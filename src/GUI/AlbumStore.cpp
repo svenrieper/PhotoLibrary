@@ -24,9 +24,15 @@ namespace PhotoLibrary {
 namespace GUI {
 
 AlbumStore::AlbumStore(Backend::InterfaceBase<Backend::AlbumRecord>* db) : BaseTreeStore(db) {}
+//AlbumStore::AlbumStore(Backend::BackendFactory* db) :
+//		BaseTreeStore(db->getAlbumInterface()),
+//		relations(db->getPhotosAlbumsRelationsInterface()) {
+//}
 
 Glib::RefPtr<AlbumStore> AlbumStore::create(Backend::InterfaceBase<Backend::AlbumRecord>* db) {
 	return Glib::RefPtr<AlbumStore>(new AlbumStore(db));
+//Glib::RefPtr<AlbumStore> AlbumStore::create(Backend::BackendFactory* db) {
+//	return Glib::RefPtr<AlbumStore>(new AlbumStore(db));
 }
 
 void AlbumStore::onRowChanged(const TreeModel::Path& path, const TreeModel::iterator& iter) {
@@ -45,7 +51,7 @@ void AlbumStore::onRowChanged(const TreeModel::Path& path, const TreeModel::iter
 void AlbumStore::fillRow(int id, Gtk::TreeModel::Row& row) {
 	Backend::AlbumRecord album(getBackend()->getEntry(id));
 	/// \todo implement photo_count
-	int photo_count = 0;
+	int photo_count = 0;//relations->getEntries(id).size();
 	row[getColumns().id] = id;
 	row[getColumns().album_name] = album.getAlbumName();
 	row[getColumns().album_is_set] = album.getOptions() & Backend::KeywordRecord::Options::ALBUM_IS_SET;

@@ -42,9 +42,13 @@ public:
 	 * @return Glib::RefPtr to the newly created TreeStore
 	 */
 	static Glib::RefPtr<AlbumStore> create(Backend::InterfaceBase<Backend::AlbumRecord>* db);
+//	static Glib::RefPtr<AlbumStore> create(Backend::BackendFactory* db);
 
 private:
+//	Backend::RelationsInterfaceBase* relations;
+
 	AlbumStore(Backend::InterfaceBase<Backend::AlbumRecord>* db);
+//	AlbumStore(Backend::BackendFactory* db);
 
 	void fillRow(int id, Gtk::TreeModel::Row &row) override;
 

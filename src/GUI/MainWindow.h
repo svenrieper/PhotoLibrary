@@ -63,6 +63,7 @@ private:
 	void fillWindow();
 	void onWindowResize();
 	void onNewDirectorySelected(int id);
+	void onNewAlbumSelected(int id);
 };
 
 } /* namespace GUI */

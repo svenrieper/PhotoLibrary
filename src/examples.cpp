@@ -103,13 +103,17 @@ void exampleAlbums(PhotoLibrary::Backend::BackendFactory* db) {
 void examplePictures(PhotoLibrary::Backend::BackendFactory* db) {
 	using PhotoLibrary::Backend::DirectoryRecord;
 	using PhotoLibrary::Backend::PhotoRecord;
+	using PhotoLibrary::Backend::AlbumRecord;
 
 	PhotoLibrary::Backend::InterfaceBase<DirectoryRecord>* directory_interface = db->getDirectoriesInterface();
 	PhotoLibrary::Backend::InterfaceBase<PhotoRecord>* photo_interface = db->getPhotoInterface();
+	PhotoLibrary::Backend::InterfaceBase<AlbumRecord>* album_interface = db->getAlbumInterface();
+	PhotoLibrary::Backend::RelationsInterfaceBase* photos_albums_interface = db->getPhotosAlbumsRelationsInterface();
 
 	[[maybe_unused]] int here = addEntry(DirectoryRecord(0, DirectoryRecord::Options::ROW_EXPANDED, "here", "."), directory_interface);
 	[[maybe_unused]] int examples = addEntry(DirectoryRecord(here, DirectoryRecord::Options::NONE, "example pictures", "example pictures"), directory_interface);
 
+	[[maybe_unused]] int photo_0 = addEntry(PhotoRecord(examples, "0.jpg", 4, 1604149700, 1920, 1080), photo_interface);
 	[[maybe_unused]] int photo_1 = addEntry(PhotoRecord(examples, "1.jpg", 1, 1604149700, 1920, 1080), photo_interface);
 	[[maybe_unused]] int photo_2 = addEntry(PhotoRecord(examples, "2.jpg", 5, 1604149000, 1920, 1080), photo_interface);
 	[[maybe_unused]] int photo_3 = addEntry(PhotoRecord(examples, "3.jpg", 0, 1604150001, 1920, 1080), photo_interface);
@@ -144,6 +148,39 @@ void examplePictures(PhotoLibrary::Backend::BackendFactory* db) {
 	[[maybe_unused]] int photo_e = addEntry(PhotoRecord(examples, "e.jpg", 0, 1604150001, 1080, 1920), photo_interface);
 	[[maybe_unused]] int photo_f = addEntry(PhotoRecord(examples, "f.jpg", 0, 1604150001, 1080, 1920), photo_interface);
 	[[maybe_unused]] int photo_g = addEntry(PhotoRecord(examples, "g.jpg", 0, 1604150001, 1080, 1920), photo_interface);
+
+	[[maybe_unused]] int a_examples = addEntry(AlbumRecord(0, AlbumRecord::Options::ALBUM_IS_SET, "examples"), album_interface);
+	[[maybe_unused]] int a_hex_dig = addEntry(AlbumRecord(a_examples, AlbumRecord::Options::NONE, "Hex digits"), album_interface);
+	[[maybe_unused]] int a_dec_dig = addEntry(AlbumRecord(a_examples, AlbumRecord::Options::NONE, "Dec digits"), album_interface);
+	[[maybe_unused]] int a_dec_num = addEntry(AlbumRecord(a_examples, AlbumRecord::Options::NONE, "Decimal numbers"), album_interface);
+	[[maybe_unused]] int a_letters = addEntry(AlbumRecord(a_examples, AlbumRecord::Options::NONE, "Letters"), album_interface);
+	[[maybe_unused]] int a_oct_num = addEntry(AlbumRecord(a_examples, AlbumRecord::Options::NONE, "Octal numbers"), album_interface);
+	[[maybe_unused]] int a_oct_dig = addEntry(AlbumRecord(a_examples, AlbumRecord::Options::NONE, "Octal digits"), album_interface);
+
+	std::vector<int> v_hex_dig {photo_0, photo_1, photo_2, photo_3, photo_4, photo_5, photo_6, photo_7, photo_8, photo_9,
+				photo_a, photo_b, photo_c, photo_d, photo_e, photo_f};
+	std::vector<int> v_dec_dig {photo_0, photo_1, photo_2, photo_3, photo_4, photo_5, photo_6, photo_7, photo_8, photo_9};
+	std::vector<int> v_dec_num {photo_0, photo_1, photo_2, photo_3, photo_4, photo_5, photo_6, photo_7, photo_8, photo_9,
+				photo_10, photo_11, photo_12, photo_13, photo_14, photo_15, photo_16, photo_17, photo_18, photo_19,
+				photo_20, photo_21, photo_22, photo_23, photo_24, photo_25, photo_26};
+	std::vector<int> v_oct_dig {photo_0, photo_1, photo_2, photo_3, photo_4, photo_5, photo_6, photo_7};
+	std::vector<int> v_oct_num {photo_0, photo_1, photo_2, photo_3, photo_4, photo_5, photo_6, photo_7,
+				photo_10, photo_11, photo_12, photo_13, photo_14, photo_15, photo_16, photo_17,
+				photo_20, photo_21, photo_22, photo_23, photo_24, photo_25, photo_26};
+	std::vector<int> v_letters {photo_a, photo_b, photo_c, photo_d, photo_e, photo_f, photo_g};
+
+	for(int a : v_hex_dig)
+		photos_albums_interface->newRelation(a, a_hex_dig);
+	for(int a : v_dec_dig)
+		photos_albums_interface->newRelation(a, a_dec_dig);
+	for(int a : v_dec_num)
+		photos_albums_interface->newRelation(a, a_dec_num);
+	for(int a : v_oct_dig)
+		photos_albums_interface->newRelation(a, a_oct_dig);
+	for(int a : v_oct_num)
+		photos_albums_interface->newRelation(a, a_oct_num);
+	for(int a : v_letters)
+		photos_albums_interface->newRelation(a, a_letters);
 }
 
 template<class TRecord>
