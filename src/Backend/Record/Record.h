@@ -108,7 +108,7 @@ private:
  */
 template<typename Tuple>
 bool operator==(const Record<Tuple>& a, const Record<Tuple>& b) {
-	constexpr int i = 5;
+	constexpr int i = 6;
 	return &a==&b ||
 			(a.size() <= i
 			&& a.template access<1>() == b.template access<1>()
@@ -116,6 +116,7 @@ bool operator==(const Record<Tuple>& a, const Record<Tuple>& b) {
 			&& a.template access<3>() == b.template access<3>()
 			&& a.template access<4>() == b.template access<4>()
 			&& a.template access<5>() == b.template access<5>()
+			&& a.template access<6>() == b.template access<6>()
 			);
 }
 

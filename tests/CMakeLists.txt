@@ -15,6 +15,8 @@ add_executable(PhotoLibraryTests
 			DirectoryRecord_test.cpp
 			KeywordInterface_test.cpp
 			KeywordRecord_test.cpp
+			PhotoInterface_test.cpp
+			PhotoRecord_test.cpp
 			PhotosAlbumsRelationsInterface_test.cpp
 			suppport_test.cpp
 			../src/SQLiteAdapter/Database.cpp

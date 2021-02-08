@@ -384,7 +384,8 @@ void DBInterface<RType>::updateEntry(int id, const RecordType &entry) {
 
 template<class RType>
 void DBInterface<RType>::setParent(int child_id, int new_parent_id) {
-	Glib::ustring sql = "UPDATE " + table + " SET parent = '" + std::to_string(new_parent_id) +
+	RType entry_type;
+	Glib::ustring sql = "UPDATE " + table + " SET " + entry_type.getField(0) + " = '" + std::to_string(new_parent_id) +
 			"' WHERE id IS '" + std::to_string(child_id) + "'";
 	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
 
