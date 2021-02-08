@@ -43,6 +43,7 @@ public:
 	/**
 	 * Retrieve a record.
 	 *
+	 * @throws std::runtime_error if no entry with id 'id' was found.
 	 * @param id Id of the record to return
 	 * @return complete information for record with id 'id'
 	 */
