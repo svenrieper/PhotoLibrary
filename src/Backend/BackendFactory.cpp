@@ -76,6 +76,46 @@ const RelationsInterfaceBase* BackendFactory::getPhotosAlbumsRelationsInterface(
 	return db->getPhotosAlbumsRelationsInterface();
 }
 
+template<>
+InterfaceBase<KeywordRecord>* BackendFactory::getInterface<KeywordRecord>() {
+	return getKeywordInterface();
+}
+
+template<>
+const InterfaceBase<KeywordRecord>* BackendFactory::getInterface<KeywordRecord>() const {
+	return getKeywordInterface();
+}
+
+template<>
+InterfaceBase<DirectoryRecord>* BackendFactory::getInterface<DirectoryRecord>() {
+	return getDirectoriesInterface();
+}
+
+template<>
+const InterfaceBase<DirectoryRecord>* BackendFactory::getInterface<DirectoryRecord>() const {
+	return getDirectoriesInterface();
+}
+
+template<>
+InterfaceBase<AlbumRecord>* BackendFactory::getInterface<AlbumRecord>() {
+	return getAlbumInterface();
+}
+
+template<>
+const InterfaceBase<AlbumRecord>* BackendFactory::getInterface<AlbumRecord>() const {
+	return getAlbumInterface();
+}
+
+template<>
+InterfaceBase<PhotoRecord>* BackendFactory::getInterface<PhotoRecord>() {
+	return getPhotoInterface();
+}
+
+template<>
+const InterfaceBase<PhotoRecord>* BackendFactory::getInterface<PhotoRecord>() const {
+	return getPhotoInterface();
+}
+
 int BackendFactory::getWindowProperty(WindowProperties property) const {
 	return window_properties.at(property);
 }

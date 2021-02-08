@@ -185,6 +185,11 @@ TEMPLATE_TEST_CASE("Test the AlbumInterface of the backend", "[album][interface]
 	}
 }
 
+TEST_CASE("BackendFactory::getInterface<AlbumRecord>() returns the album interface", "[album][backend]") {
+	BackendFactory db {":memory:"};
+	CHECK(db.getAlbumInterface() == db.getInterface<AlbumRecord>());
+}
+
 } /* namespace DatabaseInterface */
 } /* namespace Backend */
 } /* namespace PhotoLibrary */

@@ -499,7 +499,10 @@ TEMPLATE_TEST_CASE("Test the Keyword interface of the Adapter and the Backend", 
 
 //TODO parent_id should always exist (after creation, after moving, after update, after deleting parent)
 
-
+TEST_CASE("BackendFactory::getInterface<KeywordRecord>() returns the keyword interface", "[keywords][backend]") {
+	BackendFactory db {":memory:"};
+	CHECK(db.getKeywordInterface() == db.getInterface<KeywordRecord>());
+}
 
 
 

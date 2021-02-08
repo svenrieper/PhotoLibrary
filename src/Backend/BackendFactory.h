@@ -95,6 +95,11 @@ public:
 	PhotosAlbumsRelationsInterface* getPhotosAlbumsRelationsInterface() override;
 	const PhotosAlbumsRelationsInterface* getPhotosAlbumsRelationsInterface() const override;
 
+	template<class RType>
+	InterfaceBase<RType>* getInterface();
+	template<class RType>
+	const InterfaceBase<RType>* getInterface() const;
+
 	/**
 	 * Retrieve the value of a main window property.
 	 *

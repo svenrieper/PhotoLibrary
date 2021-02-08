@@ -134,7 +134,7 @@ TEMPLATE_TEST_CASE("Test the DirectoryInterface of the Adapter and the Backend",
 			dir_2017_06_ids.push_back(dirIF->getID(dir));
 
 
-		SECTION("getChildren") {
+		SECTION("getChildren(int) returns vector of children", "[getChildren]") {
 			CHECK(dirIF->getChildren(0).size() == dir_vec.size());
 			CHECK(dirIF->getChildren(id_2014).size() == dir_2014_children.size());
 			CHECK(dirIF->getChildren(id_2017).size() == dir_2017_children.size());
@@ -142,7 +142,7 @@ TEMPLATE_TEST_CASE("Test the DirectoryInterface of the Adapter and the Backend",
 		}
 
 
-		SECTION("getEntry() == entry entered") {
+		SECTION("getEntry() == entry entered", "[getEntry]") {
 			for(int i=0; i<dir_ids.size(); ++i)
 				CHECK(dir_vec[i] == dirIF->getEntry(dir_ids[i]));
 			for(int i=0; i<dir_2014_ids.size(); ++i)
@@ -151,10 +151,15 @@ TEMPLATE_TEST_CASE("Test the DirectoryInterface of the Adapter and the Backend",
 				CHECK(dir_2017_children[i] == dirIF->getEntry(dir_2017_ids[i]));
 			for(int i=0; i<dir_2017_06_ids.size(); ++i)
 				CHECK(dir_2017_06_children[i] == dirIF->getEntry(dir_2017_06_ids[i]));
-
 		}
 
+		/// \todo tests for deleteEntry(), updateEntry(), and setParent()
 	}
+}
+
+TEST_CASE("BackendFactory::getInterface<DirectoryRecord>() returns the directory interface", "[directory][backend]") {
+	BackendFactory db {":memory:"};
+	CHECK(db.getDirectoriesInterface() == db.getInterface<DirectoryRecord>());
 }
 
 } /* namespace DatabaseInterface */
