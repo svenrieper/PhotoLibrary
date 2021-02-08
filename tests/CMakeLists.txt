@@ -10,6 +10,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # add the executable
 add_executable(PhotoLibraryTests 
 			test.cpp
+			AlbumInterface_test.cpp
 			DirectoryInterface_test.cpp
 			DirectoryRecord_test.cpp
 			KeywordInterface_test.cpp
