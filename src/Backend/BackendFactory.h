@@ -95,8 +95,18 @@ public:
 	PhotosAlbumsRelationsInterface* getPhotosAlbumsRelationsInterface() override;
 	const PhotosAlbumsRelationsInterface* getPhotosAlbumsRelationsInterface() const override;
 
+	/**
+	 * Get a pointer to the interface for the given Record.
+	 *
+	 * @tparam RType Record for which to return the interface.
+	 * @return Pointer to the interface for RType.
+	 */
 	template<class RType>
 	InterfaceBase<RType>* getInterface();
+
+	/**
+	 * \copydoc getInterface()
+	 */
 	template<class RType>
 	const InterfaceBase<RType>* getInterface() const;
 
