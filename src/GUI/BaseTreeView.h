@@ -41,6 +41,10 @@ public:
 	 * @param backend the backend interface to use for the TreeView
 	 */
 	BaseTreeView(Backend::InterfaceBase<RecordType>* backend);
+
+	/**
+	 * @param backend Pointer to the BackendFactory
+	 */
 	BaseTreeView(Backend::BackendFactory* backend);
 
 	virtual ~BaseTreeView() = default;

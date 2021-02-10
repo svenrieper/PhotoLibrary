@@ -159,6 +159,7 @@ Backend::InterfaceBase<RecordType>* BaseTreeStore<TModelColumns,RecordType>::get
 	return backend;
 }
 
+//initalise isn't called by the constructor so signalExpandRow can be connected beforehand
 template<class TModelColumns, class RecordType>
 void BaseTreeStore<TModelColumns,RecordType>::initialise() {
 	fillStore();
