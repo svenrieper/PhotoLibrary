@@ -41,6 +41,7 @@ public:
 	 * @param backend the backend interface to use for the TreeView
 	 */
 	BaseTreeView(Backend::InterfaceBase<RecordType>* backend);
+	BaseTreeView(Backend::BackendFactory* backend);
 
 	virtual ~BaseTreeView() = default;
 
@@ -113,28 +114,36 @@ private:
 	void onDragBegin(const Glib::RefPtr<Gdk::DragContext>& context);
 	void onDragEnd(const Glib::RefPtr<Gdk::DragContext>& context);
 	void onSelectionChanged();
+	void initialise();
 };
-
 
 //implementation
 template<class TStore, class RecordType>
 BaseTreeView<TStore,RecordType>::BaseTreeView(Backend::InterfaceBase<RecordType>* dbInterface) : backend_interface(dbInterface), selection_id(0) {
-	treeStore = TStore::create(dbInterface);
+	treeStore = TStore::create(backend_interface);
+	initialise();
+}
 
+template<class TStore, class RecordType>
+BaseTreeView<TStore,RecordType>::BaseTreeView(Backend::BackendFactory* backend) : backend_interface(backend->getInterface<RecordType>()), selection_id(0) {
+	treeStore = TStore::create(backend);
+	initialise();
+}
+
+template<class TStore, class RecordType>
+void BaseTreeView<TStore, RecordType>::initialise() {
 	set_model(treeStore);
 	set_headers_visible(false);
-
 	enable_model_drag_source();
 	enable_model_drag_dest();
-
 	signal_drag_begin().connect(sigc::mem_fun(*this, &BaseTreeView::onDragBegin));
 	signal_drag_end().connect(sigc::mem_fun(*this, &BaseTreeView::onDragEnd));
-
-	getTreeStore()->signalExpandRow().connect(sigc::mem_fun(*this, &BaseTreeView<TStore,RecordType>::onSignalExpandRow));
+	getTreeStore()->signalExpandRow().connect(
+			sigc::mem_fun(*this, &BaseTreeView<TStore, RecordType>::onSignalExpandRow));
 	getTreeStore()->initialise();
-
 	connectOnRowExpandedOrCollapsed();
-	get_selection()->signal_changed().connect(sigc::mem_fun(*this, &BaseTreeView<TStore,RecordType>::onSelectionChanged));
+	get_selection()->signal_changed().connect(
+			sigc::mem_fun(*this, &BaseTreeView<TStore, RecordType>::onSelectionChanged));
 }
 
 template<class TStore, class RecordType>

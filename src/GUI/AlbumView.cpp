@@ -26,7 +26,8 @@ namespace PhotoLibrary {
 namespace GUI {
 
 AlbumView::AlbumView(Backend::BackendFactory* backend) :
-		BaseTreeView(backend->getAlbumInterface()) {
+		BaseTreeView(backend) {
+//		BaseTreeView(backend->getAlbumInterface()) {
 	createView();
 
 	fillPopupMenu();

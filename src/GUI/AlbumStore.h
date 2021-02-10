@@ -38,17 +38,15 @@ public:
 	 * Create an object.
 	 * Creates an objetct of AlbumStore and returns a RefPtr to it.
 	 *
-	 * @param db album interface to the database
+	 * @param db Pointer to the BackendFactory
 	 * @return Glib::RefPtr to the newly created TreeStore
 	 */
-	static Glib::RefPtr<AlbumStore> create(Backend::InterfaceBase<Backend::AlbumRecord>* db);
-//	static Glib::RefPtr<AlbumStore> create(Backend::BackendFactory* db);
+	static Glib::RefPtr<AlbumStore> create(Backend::BackendFactory* db);
 
 private:
-//	Backend::RelationsInterfaceBase* relations;
+	Backend::RelationsInterfaceBase* relations;
 
-	AlbumStore(Backend::InterfaceBase<Backend::AlbumRecord>* db);
-//	AlbumStore(Backend::BackendFactory* db);
+	AlbumStore(Backend::BackendFactory* db);
 
 	void fillRow(int id, Gtk::TreeModel::Row &row) override;
 
