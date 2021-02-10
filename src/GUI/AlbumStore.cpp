@@ -48,7 +48,7 @@ void AlbumStore::onRowChanged(const TreeModel::Path& path, const TreeModel::iter
 void AlbumStore::fillRow(int id, Gtk::TreeModel::Row& row) {
 	Backend::AlbumRecord album(getBackend()->getEntry(id));
 	/// \todo implement photo_count
-	int photo_count = relations->getEntries(id).size();
+	int photo_count = relations->getNumberEntries(id);
 	row[getColumns().id] = id;
 	row[getColumns().album_name] = album.getAlbumName();
 	row[getColumns().album_is_set] = album.getOptions() & Backend::KeywordRecord::Options::ALBUM_IS_SET;
