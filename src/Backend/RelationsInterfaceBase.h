@@ -46,12 +46,28 @@ public:
 	virtual std::vector<int> getEntries(int collection) const = 0;
 
 	/**
+	 * Get the number of 'entries' based on a 'collection' id.
+	 * @param collection Id of the 'collection' for which the number
+	 * 		of 'entries' should be returned.
+	 * @return Number of the 'entries'
+	 */
+	virtual int getNumberEntries(int collection) const = 0;
+
+	/**
 	 * Get a vector of 'collections' based on an 'entry' id.
 	 * @param entry Id of the 'entry' for which the 'collections'
 	 * 		containig it should be returned.
 	 * @return Vector of ids of the 'collections'
 	 */
 	virtual std::vector<int> getCollections(int entry) const = 0;
+
+	/**
+	 * Get the number of 'collections' based on a 'entriy' id.
+	 * @param collection Id of the 'entry' for which the number
+	 * 		of 'collections' should be returned.
+	 * @return Number of the 'entries'
+	 */
+	virtual int getNumberCollections(int entry) const = 0;
 
 	/**
 	 * Add a new relations.

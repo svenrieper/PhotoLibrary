@@ -37,12 +37,14 @@ TEMPLATE_TEST_CASE("Test the PhotosAlbumsRelations interface of the Adapter and 
 	AlbumInterface* album_if = db.getAlbumInterface();
 	PhotoInterface* photo_if = db.getPhotoInterface();
 
-	SECTION("getEntries should return an empty vector for an empty database", "") {
+	SECTION("getEntries should return an empty vector for an empty database", "[getEntries][getNumberEntries]") {
 		CHECK(photos_albums_realtions_if->getEntries(0).size() == 0);
+		CHECK(photos_albums_realtions_if->getNumberEntries(0)== 0);
 	}
 
-	SECTION("getCollections should return an empty vector for an empty database", "") {
+	SECTION("getCollections should return an empty vector for an empty database", "[getCollections][getNumberCollections]") {
 		CHECK(photos_albums_realtions_if->getCollections(0).size() == 0);
+		CHECK(photos_albums_realtions_if->getNumberCollections(0) == 0);
 	}
 
 	AlbumRecord album_record(0, AlbumRecord::Options::ALBUM_IS_SET, "Holiday");
@@ -61,11 +63,16 @@ TEMPLATE_TEST_CASE("Test the PhotosAlbumsRelations interface of the Adapter and 
 	album_if->newEntry(album_record);
 	int a_venice = album_if->getID(album_record);
 
-	SECTION("An empty album should not contain any photos.", "") {
+	SECTION("An empty album should not contain any photos.", "[getEntries][getNumberEntries]") {
 		CHECK(photos_albums_realtions_if->getEntries(a_holiday).size() == 0);
 		CHECK(photos_albums_realtions_if->getEntries(a_zoo).size() == 0);
 		CHECK(photos_albums_realtions_if->getEntries(a_city_trips).size() == 0);
 		CHECK(photos_albums_realtions_if->getEntries(a_venice).size() == 0);
+
+		CHECK(photos_albums_realtions_if->getNumberEntries(a_holiday) == 0);
+		CHECK(photos_albums_realtions_if->getNumberEntries(a_zoo) == 0);
+		CHECK(photos_albums_realtions_if->getNumberEntries(a_city_trips) == 0);
+		CHECK(photos_albums_realtions_if->getNumberEntries(a_venice) == 0);
 	}
 
 	PhotoRecord photo_record(0, "1.jpg", 1, 1604149700, 1920, 1080);
@@ -88,12 +95,18 @@ TEMPLATE_TEST_CASE("Test the PhotosAlbumsRelations interface of the Adapter and 
 	photo_if->newEntry(photo_record);
 	int photo_5 = photo_if->getID(photo_record);
 
-	SECTION("A photo should not be in any albums if it's not asigned to any.", "") {
+	SECTION("A photo should not be in any albums if it's not asigned to any.", "[getCollections][getNumberCollections]") {
 		CHECK(photos_albums_realtions_if->getCollections(photo_1).size() == 0);
 		CHECK(photos_albums_realtions_if->getCollections(photo_2).size() == 0);
 		CHECK(photos_albums_realtions_if->getCollections(photo_3).size() == 0);
 		CHECK(photos_albums_realtions_if->getCollections(photo_4).size() == 0);
 		CHECK(photos_albums_realtions_if->getCollections(photo_5).size() == 0);
+
+		CHECK(photos_albums_realtions_if->getNumberCollections(photo_1) == 0);
+		CHECK(photos_albums_realtions_if->getNumberCollections(photo_2) == 0);
+		CHECK(photos_albums_realtions_if->getNumberCollections(photo_3) == 0);
+		CHECK(photos_albums_realtions_if->getNumberCollections(photo_4) == 0);
+		CHECK(photos_albums_realtions_if->getNumberCollections(photo_5) == 0);
 	}
 
 	photos_albums_realtions_if->newRelation(photo_1, a_holiday);
@@ -109,14 +122,19 @@ TEMPLATE_TEST_CASE("Test the PhotosAlbumsRelations interface of the Adapter and 
 	photos_albums_realtions_if->newRelation(photo_1, a_zoo);
 	photos_albums_realtions_if->newRelation(photo_4, a_zoo);
 
-	SECTION("The number of photos in an album should be equal to the number of photos added.", "") {
+	SECTION("The number of photos in an album should be equal to the number of photos added.", "[getEntries][getNumberEntries]") {
 		CHECK(photos_albums_realtions_if->getEntries(a_holiday).size() == 5);
 		CHECK(photos_albums_realtions_if->getEntries(a_zoo).size() == 2);
 		CHECK(photos_albums_realtions_if->getEntries(a_city_trips).size() == 3);
 		CHECK(photos_albums_realtions_if->getEntries(a_venice).size() == 0);
+
+		CHECK(photos_albums_realtions_if->getNumberEntries(a_holiday) == 5);
+		CHECK(photos_albums_realtions_if->getNumberEntries(a_zoo) == 2);
+		CHECK(photos_albums_realtions_if->getNumberEntries(a_city_trips) == 3);
+		CHECK(photos_albums_realtions_if->getNumberEntries(a_venice) == 0);
 	}
 
-	SECTION("getEntries(int) should return a vector that contains all the photos that were added to it.", "") {
+	SECTION("getEntries(int) should return a vector that contains all the photos that were added to it.", "[getEntries]") {
 		CHECK_THAT(photos_albums_realtions_if->getEntries(a_holiday), Catch::Matchers::UnorderedEquals(std::vector<int>{photo_1, photo_2, photo_3, photo_4, photo_5}));
 		CHECK_THAT(photos_albums_realtions_if->getEntries(a_city_trips), Catch::Matchers::UnorderedEquals(std::vector<int>{photo_3, photo_4, photo_1}));
 		CHECK_THAT(photos_albums_realtions_if->getEntries(a_zoo), Catch::Matchers::UnorderedEquals(std::vector<int>{photo_1, photo_4}));
@@ -126,15 +144,21 @@ TEMPLATE_TEST_CASE("Test the PhotosAlbumsRelations interface of the Adapter and 
 	photos_albums_realtions_if->newRelation(photo_1, a_venice);
 	photos_albums_realtions_if->newRelation(photo_4, a_venice);
 
-	SECTION("A photo should be assigned to as many albums as it was assigned to.", "") {
+	SECTION("A photo should be assigned to as many albums as it was assigned to.", "[getCollections][getNumberCollections]") {
 		CHECK(photos_albums_realtions_if->getCollections(photo_1).size() == 4);
 		CHECK(photos_albums_realtions_if->getCollections(photo_2).size() == 1);
 		CHECK(photos_albums_realtions_if->getCollections(photo_3).size() == 2);
 		CHECK(photos_albums_realtions_if->getCollections(photo_4).size() == 4);
 		CHECK(photos_albums_realtions_if->getCollections(photo_5).size() == 1);
+
+		CHECK(photos_albums_realtions_if->getNumberCollections(photo_1) == 4);
+		CHECK(photos_albums_realtions_if->getNumberCollections(photo_2) == 1);
+		CHECK(photos_albums_realtions_if->getNumberCollections(photo_3) == 2);
+		CHECK(photos_albums_realtions_if->getNumberCollections(photo_4) == 4);
+		CHECK(photos_albums_realtions_if->getNumberCollections(photo_5) == 1);
 	}
 
-	SECTION("getCollections(int) should return a vector that contains all the albums a photo was assigned to.", "") {
+	SECTION("getCollections(int) should return a vector that contains all the albums a photo was assigned to.", "[getCollections]") {
 		CHECK_THAT(photos_albums_realtions_if->getCollections(photo_1), Catch::Matchers::UnorderedEquals(std::vector<int>{a_holiday, a_city_trips, a_venice, a_zoo}));
 		CHECK_THAT(photos_albums_realtions_if->getCollections(photo_2), Catch::Matchers::UnorderedEquals(std::vector<int>{a_holiday}));
 		CHECK_THAT(photos_albums_realtions_if->getCollections(photo_3), Catch::Matchers::UnorderedEquals(std::vector<int>{a_holiday, a_city_trips}));
@@ -142,7 +166,7 @@ TEMPLATE_TEST_CASE("Test the PhotosAlbumsRelations interface of the Adapter and 
 		CHECK_THAT(photos_albums_realtions_if->getCollections(photo_5), Catch::Matchers::UnorderedEquals(std::vector<int>{a_holiday}));
 	}
 
-	SECTION("After deleting a relation the photo shouldn't be assigned to the album and vice versa. Other relations should not be affected.", "") {
+	SECTION("After deleting a relation the photo shouldn't be assigned to the album and vice versa. Other relations should not be affected.", "[deleteRelation]") {
 		CHECK_THAT(photos_albums_realtions_if->getCollections(photo_1), Catch::Matchers::VectorContains(a_venice));
 		CHECK_THAT(photos_albums_realtions_if->getCollections(photo_3), Catch::Matchers::VectorContains(a_city_trips));
 		CHECK_THAT(photos_albums_realtions_if->getEntries(a_venice), Catch::Matchers::VectorContains(photo_1));
@@ -161,7 +185,7 @@ TEMPLATE_TEST_CASE("Test the PhotosAlbumsRelations interface of the Adapter and 
 		CHECK_THAT(photos_albums_realtions_if->getEntries(a_venice), Catch::Matchers::VectorContains(photo_4));
 	}
 
-	SECTION("Adding a photo twice to the same album should not have any effect.", "") {
+	SECTION("Adding a photo twice to the same album should not have any effect.", "[newRelation]") {
 		CHECK_NOTHROW(photos_albums_realtions_if->newRelation(photo_1, a_holiday));
 		auto n_1 = photos_albums_realtions_if->getCollections(photo_1).size();
 		CHECK_NOTHROW(photos_albums_realtions_if->newRelation(photo_1, a_holiday));
@@ -173,7 +197,7 @@ TEMPLATE_TEST_CASE("Test the PhotosAlbumsRelations interface of the Adapter and 
 		CHECK(photos_albums_realtions_if->getEntries(a_zoo).size() == n_3);
 	}
 
-	SECTION("Adding a photo to a non-existing album should return a constraint_error", "") {
+	SECTION("Adding a photo to a non-existing album should return a constraint_error", "[newRelation]") {
 		int i = 1;
 		while(i == a_holiday || i == a_zoo || i == a_city_trips || i == a_venice)
 			++i;
@@ -181,7 +205,7 @@ TEMPLATE_TEST_CASE("Test the PhotosAlbumsRelations interface of the Adapter and 
 		CHECK_THROWS_AS(photos_albums_realtions_if->newRelation(photo_1, i), Backend::DatabaseInterface::constraint_error);
 	}
 
-	SECTION("Adding a non-photo to an album should return a constraint_error", "") {
+	SECTION("Adding a non-photo to an album should return a constraint_error", "[newRelation]") {
 		int i = 1;
 		while(i == photo_1 || i == photo_2 || i == photo_3 || i == photo_4 || i == photo_5)
 			++i;
@@ -189,7 +213,7 @@ TEMPLATE_TEST_CASE("Test the PhotosAlbumsRelations interface of the Adapter and 
 		CHECK_THROWS_AS(photos_albums_realtions_if->newRelation(i, a_city_trips), Backend::DatabaseInterface::constraint_error);
 	}
 
-	SECTION("After deleting a photo all its relations should be removed as well.", "") {
+	SECTION("After deleting a photo all its relations should be removed as well.", "[deleteEntry]") {
 		CHECK_NOFAIL(photos_albums_realtions_if->getCollections(photo_1).size() != 0);
 		photo_if->deleteEntry(photo_1);
 		CHECK(photos_albums_realtions_if->getCollections(photo_1).size() == 0);
@@ -199,7 +223,7 @@ TEMPLATE_TEST_CASE("Test the PhotosAlbumsRelations interface of the Adapter and 
 		CHECK(photos_albums_realtions_if->getCollections(photo_4).size() == 0);
 	}
 
-	SECTION("After deleting an album all its relations should be removed as well.", "") {
+	SECTION("After deleting an album all its relations should be removed as well.", "[deleteEntry]") {
 		CHECK_NOFAIL(photos_albums_realtions_if->getEntries(a_holiday).size() != 0);
 		album_if->deleteEntry(a_holiday);
 		CHECK(photos_albums_realtions_if->getEntries(a_holiday).size() == 0);

@@ -36,8 +36,16 @@ std::vector<int> RelationsDBInterface::getEntries(int collection) const {
 	return getVector(collection, collection_name, entry_name);
 }
 
+int RelationsDBInterface::getNumberEntries(int collection) const {
+	return getNumber(collection, collection_name, entry_name);
+}
+
 std::vector<int> RelationsDBInterface::getCollections(int entry) const {
 	return getVector(entry, entry_name, collection_name);
+}
+
+int RelationsDBInterface::getNumberCollections(int entry) const {
+	return getNumber(entry, entry_name, collection_name);
 }
 
 void RelationsDBInterface::newRelation(int entry, int collection) {
@@ -69,6 +77,17 @@ std::vector<int> RelationsDBInterface::getVector(int id, const Glib::ustring& re
 		ids.push_back(querry.getColumnInt(0));
 
 	return ids;
+}
+
+int RelationsDBInterface::getNumber(int id, const Glib::ustring& reference_id, const Glib::ustring& return_id) const {
+	Glib::ustring sql = "SELECT " + return_id + " FROM " + table + " WHERE " + reference_id + " IS '" + std::to_string(id) + "'";
+	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
+
+	int number_ids = 0;
+	while (querry.nextRow() == SQLITE_ROW)
+		++number_ids;
+
+	return number_ids;
 }
 
 } /* namespace DatabaseInterface */

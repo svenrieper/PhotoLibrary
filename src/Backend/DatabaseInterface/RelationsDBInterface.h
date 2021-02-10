@@ -47,7 +47,9 @@ public:
 	virtual ~RelationsDBInterface() = default;
 
 	std::vector<int> getEntries(int collection) const override;
+	int getNumberEntries(int collection) const override;
 	std::vector<int> getCollections(int entry) const override;
+	int getNumberCollections(int entry) const override;
 	void newRelation(int entry, int collection) override;
 	void deleteRelation(int entry, int collection) override;
 
@@ -58,6 +60,7 @@ private:
 	const Glib::ustring collection_name;
 
 	std::vector<int> getVector(int id, const Glib::ustring& reference_id, const Glib::ustring& return_id) const;
+	int getNumber(int id, const Glib::ustring& reference_id, const Glib::ustring& return_id) const;
 };
 
 } /* namespace DatabaseInterface */
