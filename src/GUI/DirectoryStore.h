@@ -37,13 +37,15 @@ public:
 	 * Create an object.
 	 * Creates an objetct of DirectoryStore and returns a RefPtr to it.
 	 *
-	 * @param db keyword interface to the database
+	 * @param db Pointer to the BackendFactory object
 	 * @return Glib::RefPtr to the newly created TreeStore
 	 */
-	static Glib::RefPtr<DirectoryStore> create(Backend::InterfaceBase<Backend::DirectoryRecord>* db);
+	static Glib::RefPtr<DirectoryStore> create(Backend::BackendFactory* db);
 
 private:
-	DirectoryStore(Backend::InterfaceBase<Backend::DirectoryRecord>* db);
+	Backend::BackendFactory* db;
+
+	DirectoryStore(Backend::BackendFactory* db);
 	void fillRow(int id, Gtk::TreeModel::Row &row) override;
 };
 

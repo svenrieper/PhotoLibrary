@@ -23,9 +23,12 @@
 namespace PhotoLibrary {
 namespace GUI {
 
-DirectoryStore::DirectoryStore(Backend::InterfaceBase<Backend::DirectoryRecord>* db) : BaseTreeStore(db) {}
+DirectoryStore::DirectoryStore(Backend::BackendFactory* db) :
+		BaseTreeStore(db->getInterface<Backend::DirectoryRecord>()),
+		db(db) {
+}
 
-Glib::RefPtr<DirectoryStore> DirectoryStore::create(Backend::InterfaceBase<Backend::DirectoryRecord>* db) {
+Glib::RefPtr<DirectoryStore> DirectoryStore::create(Backend::BackendFactory* db) {
 	return Glib::RefPtr<DirectoryStore>(new DirectoryStore(db));
 }
 
@@ -35,6 +38,7 @@ void DirectoryStore::fillRow(int id, Gtk::TreeModel::Row &row) {
 	row[getColumns().id] = id;
 	row[getColumns().name] = directory.getDirectory();
 	row[getColumns().expanded] = directory.getOptions() & Backend::DirectoryRecord::Options::ROW_EXPANDED;
+	row[getColumns().photo_count] = db->getInterface<Backend::PhotoRecord>()->getNumberChildren(id);
 }
 
 } /* namespace GUI */

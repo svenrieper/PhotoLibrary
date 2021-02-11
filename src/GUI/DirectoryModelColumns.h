@@ -38,6 +38,7 @@ public:
 		add(id);
 		add(name);
 		add(expanded);
+		add(photo_count);
 	}
 
 	~DirectoryModelColumns() = default;
@@ -45,6 +46,8 @@ public:
 	Gtk::TreeModelColumn<int> id;	/**< The id of the directory */
 	Gtk::TreeModelColumn<Glib::ustring> name;	/**< The (short) name of the directory */
 	Gtk::TreeModelColumn<bool> expanded;	/**< Whether subdierectories should be shown in the TreeView */
+	/// \todo include subdirectories
+	Gtk::TreeModelColumn<int> photo_count;	/**< Number of photos in the directory */
 };
 
 } /* namespace GUI */

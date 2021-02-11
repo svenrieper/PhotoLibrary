@@ -23,7 +23,7 @@ namespace PhotoLibrary {
 namespace GUI {
 
 DirectoryView::DirectoryView(Backend::BackendFactory* backend) :
-		BaseTreeView(backend->getDirectoriesInterface()) {
+		BaseTreeView(backend) {
 	unset_rows_drag_source();
 	unset_rows_drag_dest();
 
@@ -38,6 +38,8 @@ void DirectoryView::createView() {
 	DirectoryStore::ModelColumns& columns = getTreeStore()->getColumns();
 	//Add the TreeView's view columns:
 	append_column("Directory", columns.name);
+	int col_count = append_column("", columns.photo_count);
+	get_column_cell_renderer(col_count-1)->set_alignment(1, .5);
 }
 
 } /* namespace GUI */
