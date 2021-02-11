@@ -35,12 +35,13 @@ TEMPLATE_TEST_CASE("Test the DirectoryInterface of the Adapter and the Backend",
 	TestType db { ":memory:" };
 	DirectoryInterface* dirIF = db.getDirectoriesInterface();
 
-	SECTION( "An empty database should contain no directories", "[directory][database]" ) {
-		std::vector<int> children_of_root = dirIF->getChildren(0);
-		CHECK(children_of_root.size() == 0);
+	SECTION( "An empty database should contain no directories", "[directory][database][getChildren][getNumberChildren]" ) {
+//		std::vector<int> children_of_root = dirIF->getChildren(0);
+		CHECK(dirIF->getChildren(0).size() == 0);
+		CHECK(dirIF->getNumberChildren(0) == 0);
 	}
 
-	SECTION( "A directory needs to have a parent or 0", "[directory][database]" ) {
+	SECTION( "A directory needs to have a parent or 0", "[directory][database][newEntry]" ) {
 		DirectoryRecord invalid(5);
 		CHECK_THROWS_AS(dirIF->newEntry(invalid), constraint_error);
 	}
@@ -134,11 +135,16 @@ TEMPLATE_TEST_CASE("Test the DirectoryInterface of the Adapter and the Backend",
 			dir_2017_06_ids.push_back(dirIF->getID(dir));
 
 
-		SECTION("getChildren(int) returns vector of children", "[getChildren]") {
+		SECTION("getChildren(int) returns vector of children", "[getChildren][getNumberChildren]") {
 			CHECK(dirIF->getChildren(0).size() == dir_vec.size());
 			CHECK(dirIF->getChildren(id_2014).size() == dir_2014_children.size());
 			CHECK(dirIF->getChildren(id_2017).size() == dir_2017_children.size());
 			CHECK(dirIF->getChildren(id_2017_06).size() == dir_2017_06_children.size());
+
+			CHECK(dirIF->getNumberChildren(0) == dir_vec.size());
+			CHECK(dirIF->getNumberChildren(id_2014) == dir_2014_children.size());
+			CHECK(dirIF->getNumberChildren(id_2017) == dir_2017_children.size());
+			CHECK(dirIF->getNumberChildren(id_2017_06) == dir_2017_06_children.size());
 		}
 
 
@@ -153,7 +159,56 @@ TEMPLATE_TEST_CASE("Test the DirectoryInterface of the Adapter and the Backend",
 				CHECK(dir_2017_06_children[i] == dirIF->getEntry(dir_2017_06_ids[i]));
 		}
 
-		/// \todo tests for deleteEntry(), updateEntry(), and setParent()
+		SECTION("A directory isn't in the database anymore after it was deleted (deleteEntry(int))", "[deleteEntry]") {
+			dirIF->deleteEntry(dir_ids[2]);
+			CHECK_THROWS_AS(dirIF->getEntry(dir_ids[2]), std::runtime_error);
+
+			dirIF->deleteEntry(dir_2017_06_ids[4]);
+			CHECK_THROWS_AS(dirIF->getEntry(dir_2017_06_ids[4]), std::runtime_error);
+
+			dirIF->deleteEntry(dir_2014_ids[0]);
+			CHECK_THROWS_AS(dirIF->getEntry(dir_2014_ids[0]), std::runtime_error);
+		}
+
+		SECTION("All children are deleted along with a directory", "[deleteEntry]") {
+			dirIF->deleteEntry(id_2014);
+			CHECK_THROWS_AS(dirIF->getEntry(id_2014), std::runtime_error);
+
+			for(int dir_id : dir_2014_ids)
+				CHECK_THROWS_AS(dirIF->getEntry(dir_id), std::runtime_error);
+
+			dirIF->deleteEntry(id_2017);
+			CHECK_THROWS_AS(dirIF->getEntry(id_2017), std::runtime_error);
+
+			for(int dir_id : dir_2017_ids)
+				CHECK_THROWS_AS(dirIF->getEntry(dir_id), std::runtime_error);
+
+			for(int dir_id : dir_2017_06_ids)
+				CHECK_THROWS_AS(dirIF->getEntry(dir_id), std::runtime_error);
+		}
+
+		/// \todo change other values
+		SECTION("After updating an entry the updated entry should be in the database", "[updateEntry]") {
+			dir_2014_children[0].setDirectory() = "some other name";
+			dir_2017_06_children[3].setDirectory() = "new name";
+
+			REQUIRE_NOTHROW(dirIF->updateEntry(dir_2014_ids[0], dir_2014_children[0]));
+			REQUIRE_NOTHROW(dirIF->updateEntry(dir_2017_06_ids[3], dir_2017_06_children[3]));
+
+			for(unsigned long i=0; i<dir_ids.size(); ++i)
+				CHECK(dir_vec[i] == dirIF->getEntry(dir_ids[i]));
+			for(unsigned long i=0; i<dir_2014_ids.size(); ++i)
+				CHECK(dir_2014_children[i] == dirIF->getEntry(dir_2014_ids[i]));
+			for(unsigned long i=0; i<dir_2017_ids.size(); ++i)
+				CHECK(dir_2017_children[i] == dirIF->getEntry(dir_2017_ids[i]));
+			for(unsigned long i=0; i<dir_2017_06_ids.size(); ++i)
+				CHECK(dir_2017_06_children[i] == dirIF->getEntry(dir_2017_06_ids[i]));
+		}
+
+		SECTION("After moving a dirctory, it should be in the parent directory", "[setParent]") {
+			dirIF->setParent(dir_2017_06_ids[4], dir_ids[4]);
+			CHECK_THAT(dirIF->getChildren(dir_ids[4]), Catch::Matchers::VectorContains(dir_2017_06_ids[4]));
+		}
 	}
 }
 

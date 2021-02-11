@@ -37,7 +37,7 @@ TEMPLATE_TEST_CASE("Test the PhotoInterface of the backend", "[photos][interface
 	PhotoInterface* photoIF = db.getPhotoInterface();
 	DirectoryInterface* dirIF = db.getDirectoriesInterface();
 
-	SECTION( "A photo needs to have an existing parent", "[photos][database]" ) {
+	SECTION( "A photo needs to have an existing parent", "[photos][database][getEntry][newEntry]" ) {
 		REQUIRE_THROWS_AS(dirIF->getEntry(5), std::runtime_error);
 		PhotoRecord invalid(5);
 		CHECK_THROWS_AS(photoIF->newEntry(invalid), constraint_error);
@@ -97,9 +97,12 @@ TEMPLATE_TEST_CASE("Test the PhotoInterface of the backend", "[photos][interface
 		for(auto photo : letters_vec)
 			REQUIRE_NOTHROW(letters_ids.push_back(photoIF->getID(photo)));
 
-		SECTION("getChildren(int) returns vector of children", "[getChildren]") {
+		SECTION("getChildren(int) returns vector of children", "[getChildren][getNumberChildren]") {
 			CHECK_THAT(photoIF->getChildren(numbers), Catch::Matchers::UnorderedEquals(numbers_ids));
 			CHECK_THAT(photoIF->getChildren(letters), Catch::Matchers::UnorderedEquals(letters_ids));
+
+			CHECK(photoIF->getChildren(numbers).size() == photoIF->getNumberChildren(numbers));
+			CHECK(photoIF->getChildren(letters).size() == photoIF->getNumberChildren(letters));
 		}
 
 		SECTION("getEntry(int) == entry entered", "[getEntry]") {

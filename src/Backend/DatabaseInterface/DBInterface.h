@@ -32,12 +32,13 @@ namespace Backend {
 namespace DatabaseInterface {
 
 /**
- * Base class for database interface classes.
+ * Backend interface to the database.
  * Currently works for Backend::Record classes based on
  * up to six-tuples.
  *
- * The Backend::Record::getField(int) should return the name of the column
- * for the data returned with Backend::Record::access<int>().
+ * The RType method Backend::Record::getField(int) should return
+ * the name of the column for the data returned with
+ * Backend::Record::access<int>().
  * Backend::Record::getField(0) should hold the name of the column
  * containing the parent id or whatever come closest to the parent id.
  * Currently supported data types: int, int_least64_t, Glib::ustring, and
@@ -56,33 +57,11 @@ public:
 	 * @param table name of the associated table
 	 */
 	DBInterface(SQLiteAdapter::Database *db, Glib::ustring table);
-
 	virtual ~DBInterface() = default;
 
-	/**
-	 * Retrieve a record.
-	 *
-	 * @param id Id of the record to return
-	 * @return complete information for record with id 'id'
-	 */
 	RecordType getEntry(int id) const override;
-
-	/**
-	 * Get the children of a entry.
-	 * Returns the ids of all entries where the column RType::getField(0)
-	 * is 'parent'.
-	 *
-	 * @param parent id of the entry of which the children should be returned
-	 * @return vector of id's of the children of 'parent'
-	 */
 	std::vector<int> getChildren(int parent) const override;
-
-	/**
-	 * Add new record.
-	 *
-	 * @param entry data to be inserted for new record
-	 * @return id of the new entry
-	 */
+	int getNumberChildren(int parent) const override;
 	void newEntry(const RecordType& entry) override;
 
 	/**
@@ -111,22 +90,7 @@ public:
 	 */
 	void setParent(int child_id, int new_parent_id) override;
 
-	/**
-	 * Get the id to an entry.
-	 * @throws throws std::runtime_error if the entry wasn't found
-	 *
-	 * @param entry the record for which to return the id
-	 * @return the id of the record 'entry'
-	 */
 	int getID(const RType& entry) const override;
-
-	/**
-	 * Delete record from table.
-	 * Deletes a record, all its children, and all information
-	 * that depends on it.
-	 *
-	 * @param id Id of the record to delete
-	 */
 	void deleteEntry(int id) override;
 
 protected:
@@ -242,7 +206,6 @@ RType DBInterface<RType>::getEntry(int id) const {
 
 template<class RType>
 std::vector<int> DBInterface<RType>::getChildren(int parent) const {
-//	Glib::ustring sql = "SELECT id FROM " + table + " WHERE parent IS '" + std::to_string(parent) + "'";
 	RType entry_type;
 	Glib::ustring sql = "SELECT id FROM " + table + " WHERE " + entry_type.getField(0) + " IS '" + std::to_string(parent) + "'";
 	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
@@ -253,6 +216,20 @@ std::vector<int> DBInterface<RType>::getChildren(int parent) const {
 			ids.push_back(i);
 
 	return ids;
+}
+
+template<class RType>
+int DBInterface<RType>::getNumberChildren(int parent) const {
+	RType entry_type;
+	Glib::ustring sql = "SELECT id FROM " + table + " WHERE " + entry_type.getField(0) + " IS '" + std::to_string(parent) + "'";
+	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
+
+	int ids_number = 0;
+	while (querry.nextRow() == SQLITE_ROW)
+		if(int i = querry.getColumnInt(0))
+			++ids_number;
+
+	return ids_number;
 }
 
 template<class RType>

@@ -51,11 +51,23 @@ public:
 
 	/**
 	 * Get the children of a entry.
+	 * Returns the ids of all entries where the column RType::getField(0)
+	 * equals the value handed to the method.
 	 *
 	 * @param parent id of the entry of which the children should be returned
 	 * @return vector of id's of the children of 'parent'
 	 */
 	virtual std::vector<int> getChildren(int parent) const = 0;
+
+	/**
+	 * Get the number children of a entry.
+	 * Returns the number of entries where the column RType::getField(0)
+	 * equals the value handed to the method.
+	 *
+	 * @param Parent id of the entry of which the number children should be returned
+	 * @return Number of children of 'parent'
+	 */
+	virtual int getNumberChildren(int parent) const = 0;
 
 	/**
 	 * Add new record.

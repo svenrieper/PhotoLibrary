@@ -34,9 +34,9 @@ TEMPLATE_TEST_CASE("Test the AlbumInterface of the backend", "[album][interface]
 	TestType db { ":memory:" };
 	AlbumInterface* albumIF = db.getAlbumInterface();
 
-	SECTION( "An empty database should contain no albums", "[album][database]" ) {
-		std::vector<int> children_of_root = albumIF->getChildren(0);
-		CHECK(children_of_root.size() == 0);
+	SECTION( "An empty database should contain no albums", "[album][database][getChildren][getNumberChildren]" ) {
+		CHECK(albumIF->getChildren(0).size() == 0);
+		CHECK(albumIF->getNumberChildren(0) == 0);
 	}
 
 	SECTION( "An album needs to have an existing parent", "[album][database]" ) {
@@ -113,11 +113,16 @@ TEMPLATE_TEST_CASE("Test the AlbumInterface of the backend", "[album][interface]
 			REQUIRE_NOTHROW(album_2017_06_ids.push_back(albumIF->getID(album)));
 
 
-		SECTION("getChildren(int) returns vector of children", "[getChildren]") {
+		SECTION("getChildren(int) returns vector of children", "[getChildren][getNumberChildren]") {
 			CHECK_THAT(albumIF->getChildren(0), Catch::Matchers::UnorderedEquals(album_ids));
 			CHECK_THAT(albumIF->getChildren(id_2014), Catch::Matchers::UnorderedEquals(album_2014_ids));
 			CHECK_THAT(albumIF->getChildren(id_2017), Catch::Matchers::UnorderedEquals(album_2017_ids));
 			CHECK_THAT(albumIF->getChildren(id_2017_06), Catch::Matchers::UnorderedEquals(album_2017_06_ids));
+
+			CHECK(albumIF->getChildren(0).size() == albumIF->getNumberChildren(0));
+			CHECK(albumIF->getChildren(id_2014).size() == albumIF->getNumberChildren(id_2014));
+			CHECK(albumIF->getChildren(id_2017).size() == albumIF->getNumberChildren(id_2017));
+			CHECK(albumIF->getChildren(id_2017_06).size() == albumIF->getNumberChildren(id_2017_06));
 		}
 
 
