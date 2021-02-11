@@ -76,6 +76,14 @@ const RelationsInterfaceBase* BackendFactory::getPhotosAlbumsRelationsInterface(
 	return db->getPhotosAlbumsRelationsInterface();
 }
 
+RelationsInterfaceBase* BackendFactory::getPhotosKeywordsRelationsInterface() {
+	return db->getPhotosKeywordsRelationsInterface();
+}
+
+const RelationsInterfaceBase* BackendFactory::getPhotosKeywordsRelationsInterface() const {
+	return db->getPhotosKeywordsRelationsInterface();
+}
+
 template<>
 InterfaceBase<KeywordRecord>* BackendFactory::getInterface<KeywordRecord>() {
 	return getKeywordInterface();

@@ -1,5 +1,5 @@
 /*
- * RelationsDBInterface_test.cpp
+ * PhotosAlbumsRelationsInterface_test.cpp
  *
  * This file is part of PhotoLibrary
  * Copyright (C) 2021 Sven Rieper

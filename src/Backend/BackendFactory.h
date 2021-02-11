@@ -94,6 +94,8 @@ public:
 	const PhotoInterface* getPhotoInterface() const override;
 	PhotosAlbumsRelationsInterface* getPhotosAlbumsRelationsInterface() override;
 	const PhotosAlbumsRelationsInterface* getPhotosAlbumsRelationsInterface() const override;
+	PhotosAlbumsRelationsInterface* getPhotosKeywordsRelationsInterface() override;
+	const PhotosAlbumsRelationsInterface* getPhotosKeywordsRelationsInterface() const override;
 
 	/**
 	 * Get a pointer to the interface for the given Record.

@@ -94,6 +94,19 @@ public:
 	 * \copydoc getPhotosAlbumsRelationsInterface()
 	 */
 	virtual const RelationsInterfaceBase* getPhotosAlbumsRelationsInterface() const = 0;
+
+	/**
+	 * Get a pointer to the photos-keywords-relations interface.
+	 * Photos are considered to be the entry-type, albums are considered
+	 * to be the collection-type.
+	 * @return Pointer to the PhotosKeywordsRelations interface
+	 */
+	virtual RelationsInterfaceBase* getPhotosKeywordsRelationsInterface() = 0;
+
+	/**
+	 * \copydoc getPhotosAlbumsRelationsInterface()
+	 */
+	virtual const RelationsInterfaceBase* getPhotosKeywordsRelationsInterface() const = 0;
 };
 
 } /* namespace Backend */

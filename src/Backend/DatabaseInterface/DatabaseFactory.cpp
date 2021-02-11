@@ -29,7 +29,8 @@ DatabaseFactory::DatabaseFactory(const char* filename, bool initialise) :
 		directories_interface(&db, "Directories"),
 		album_interface(&db, "Albums"),
 		photo_interface(&db, "Photos"),
-		photos_albums_relations(&db, "PhotosAlbumsRelations", "photoId", "albumId") {
+		photos_albums_relations(&db, "PhotosAlbumsRelations", "photoId", "albumId"),
+		photos_keywords_relations(&db, "PhotosKeywordsRelations", "photoId", "keywordId") {
 	initialise=true;
 	if (!initialise);
 		//testConsistency(); /// \todo Add test for db
@@ -75,6 +76,14 @@ RelationsDBInterface* DatabaseFactory::getPhotosAlbumsRelationsInterface() {
 
 const RelationsDBInterface* DatabaseFactory::getPhotosAlbumsRelationsInterface() const {
 	return &photos_albums_relations;
+}
+
+RelationsDBInterface* DatabaseFactory::getPhotosKeywordsRelationsInterface() {
+	return &photos_keywords_relations;
+}
+
+const RelationsDBInterface* DatabaseFactory::getPhotosKeywordsRelationsInterface() const {
+	return &photos_keywords_relations;
 }
 
 void DatabaseFactory::createTables() {
@@ -144,7 +153,7 @@ void DatabaseFactory::createTables() {
 			"CREATE INDEX photosDirIndex ON Photos(directory);"
 		//Photos-Albums relations table
 			"CREATE TABLE PhotosAlbumsRelations("
-			"  photoId			INTEGER"	//photo id
+			"  photoId			INTEGER"
 			", albumId			INTEGER"
 			//Constraints
 			", UNIQUE			(photoId, albumId)"
@@ -154,6 +163,18 @@ void DatabaseFactory::createTables() {
 			//Create indeces for id and albumId
 			"CREATE INDEX photosAlbumsRelationsIdIndex ON PhotosAlbumsRelations(photoId);"
 			"CREATE INDEX photosAlbumsRelationsAlbumIdIndex ON PhotosAlbumsRelations(albumId);"
+		//Photos-Albums relations table
+			"CREATE TABLE PhotosKeywordsRelations("
+			"  photoId			INTEGER"
+			", keywordId		INTEGER"
+			//Constraints
+			", UNIQUE			(photoId, keywordId)"
+			", FOREIGN KEY		(photoId) REFERENCES Photos ON DELETE CASCADE"
+			", FOREIGN KEY		(keywordId) REFERENCES Keywords ON DELETE CASCADE"
+			");"
+			//Create indeces for id and albumId
+			"CREATE INDEX photosKeywordsRelationsIdIndex ON PhotosKeywordsRelations(photoId);"
+			"CREATE INDEX photosKeywordsRelationsKeywordIdIndex ON PhotosKeywordsRelations(keywordId);"
 			;
 
 	std::string error_msg;

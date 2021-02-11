@@ -52,6 +52,8 @@ public:
 	const DBInterface<Backend::PhotoRecord>* getPhotoInterface() const override;
 	RelationsDBInterface* getPhotosAlbumsRelationsInterface() override;
 	const RelationsDBInterface* getPhotosAlbumsRelationsInterface() const override;
+	RelationsDBInterface* getPhotosKeywordsRelationsInterface() override;
+	const RelationsDBInterface* getPhotosKeywordsRelationsInterface() const override;
 
 	//disable copying and copy construction
 	DatabaseFactory(const DatabaseFactory &other) = delete;
@@ -66,6 +68,7 @@ private:
 	DBInterface<Backend::AlbumRecord> album_interface;
 	DBInterface<Backend::PhotoRecord> photo_interface;
 	RelationsDBInterface photos_albums_relations;
+	RelationsDBInterface photos_keywords_relations;
 
 	void createTables();
 };

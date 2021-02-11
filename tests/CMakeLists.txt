@@ -18,6 +18,7 @@ add_executable(PhotoLibraryTests
 			PhotoInterface_test.cpp
 			PhotoRecord_test.cpp
 			PhotosAlbumsRelationsInterface_test.cpp
+			PhotosKeywordsRelationsInterface_test.cpp
 			suppport_test.cpp
 			../src/SQLiteAdapter/Database.cpp
 			../src/SQLiteAdapter/SQLQuerry.cpp
