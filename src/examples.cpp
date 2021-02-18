@@ -104,11 +104,14 @@ void examplePictures(PhotoLibrary::Backend::BackendFactory* db) {
 	using PhotoLibrary::Backend::DirectoryRecord;
 	using PhotoLibrary::Backend::PhotoRecord;
 	using PhotoLibrary::Backend::AlbumRecord;
+	using PhotoLibrary::Backend::KeywordRecord;
 
 	PhotoLibrary::Backend::InterfaceBase<DirectoryRecord>* directory_interface = db->getDirectoriesInterface();
 	PhotoLibrary::Backend::InterfaceBase<PhotoRecord>* photo_interface = db->getPhotoInterface();
 	PhotoLibrary::Backend::InterfaceBase<AlbumRecord>* album_interface = db->getAlbumInterface();
 	PhotoLibrary::Backend::RelationsInterfaceBase* photos_albums_interface = db->getPhotosAlbumsRelationsInterface();
+	PhotoLibrary::Backend::InterfaceBase<KeywordRecord>* keyword_interface = db->getKeywordInterface();
+	PhotoLibrary::Backend::RelationsInterfaceBase* photos_keywords_interface = db->getPhotosKeywordsRelationsInterface();
 
 	[[maybe_unused]] int here = addEntry(DirectoryRecord(0, DirectoryRecord::Options::ROW_EXPANDED, "here", "."), directory_interface);
 	[[maybe_unused]] int examples = addEntry(DirectoryRecord(here, DirectoryRecord::Options::NONE, "example pictures", "example pictures"), directory_interface);
@@ -181,6 +184,27 @@ void examplePictures(PhotoLibrary::Backend::BackendFactory* db) {
 		photos_albums_interface->newRelation(a, a_oct_num);
 	for(int a : v_letters)
 		photos_albums_interface->newRelation(a, a_letters);
+
+	[[maybe_unused]] int k_examples = addEntry(KeywordRecord(0, KeywordRecord::Options::ROW_EXPANDED, "examples"), keyword_interface);
+	[[maybe_unused]] int k_hex_dig = addEntry(KeywordRecord(k_examples, KeywordRecord::Options::NONE, "Hex digits"), keyword_interface);
+	[[maybe_unused]] int k_dec_dig = addEntry(KeywordRecord(k_examples, KeywordRecord::Options::NONE, "Dec digits"), keyword_interface);
+	[[maybe_unused]] int k_dec_num = addEntry(KeywordRecord(k_examples, KeywordRecord::Options::NONE, "Decimal numbers"), keyword_interface);
+	[[maybe_unused]] int k_letters = addEntry(KeywordRecord(k_examples, KeywordRecord::Options::NONE, "Letters"), keyword_interface);
+	[[maybe_unused]] int k_oct_num = addEntry(KeywordRecord(k_examples, KeywordRecord::Options::NONE, "Octal numbers"), keyword_interface);
+	[[maybe_unused]] int k_oct_dig = addEntry(KeywordRecord(k_examples, KeywordRecord::Options::NONE, "Octal digits"), keyword_interface);
+
+	for(int a : v_hex_dig)
+		photos_keywords_interface->newRelation(a, k_hex_dig);
+	for(int a : v_dec_dig)
+		photos_keywords_interface->newRelation(a, k_dec_dig);
+	for(int a : v_dec_num)
+		photos_keywords_interface->newRelation(a, k_dec_num);
+	for(int a : v_oct_dig)
+		photos_keywords_interface->newRelation(a, k_oct_dig);
+	for(int a : v_oct_num)
+		photos_keywords_interface->newRelation(a, k_oct_num);
+	for(int a : v_letters)
+		photos_keywords_interface->newRelation(a, k_letters);
 }
 
 template<class TRecord>
