@@ -55,19 +55,11 @@ public:
 	virtual ~Record() = default;
 
 	/**
-	 * Get the column name for the ith data field.
-	 *
-	 * @param i number of the column
-	 * @return nome of the column
-	 */
-	virtual const Glib::ustring& getField(int i) const = 0;
-
-	/**
 	 * Get the number of data fields in the record.
 	 *
 	 * @return number of data fields in the record
 	 */
-	int size() const { return std::tuple_size<Tuple>::value; }
+	static constexpr int size() { return std::tuple_size<Tuple>::value; }
 
 	/**
 	 * Access a data field.

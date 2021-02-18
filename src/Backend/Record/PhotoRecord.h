@@ -147,7 +147,7 @@ public:
 	 * @param i number of the data field
 	 * @return name of the data field
 	 */
-	const Glib::ustring& getField(int i) const override { return fields[i]; }
+	static const Glib::ustring& getField(int i) { return fields.at(i); }
 
 private:
 	static inline const std::array<Glib::ustring,6> fields {"directory", "filename", "rating", "datetime", "width", "height"};

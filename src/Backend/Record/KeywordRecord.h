@@ -20,8 +20,6 @@
 #ifndef SRC_ADAPTER_RECORD_KEYWORDRECORD_H_
 #define SRC_ADAPTER_RECORD_KEYWORDRECORD_H_
 
-#include <tuple>
-#include <array>
 #include "Record.h"
 
 namespace PhotoLibrary {
@@ -116,7 +114,7 @@ public:
 	 * @param i number of the data field
 	 * @return name of the data field
 	 */
-	const Glib::ustring& getField(int i) const override { return fields[i]; }
+	static const Glib::ustring& getField(int i) { return fields.at(i); }
 
 private:
 	static inline const std::array<Glib::ustring,4> fields {"parent", "attributes", "keyword", "synonyms"};

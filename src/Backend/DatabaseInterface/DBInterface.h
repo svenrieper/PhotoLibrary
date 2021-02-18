@@ -108,21 +108,21 @@ private:
 	}
 
 	//append the names of all data fields (table columns)
-	void appendFieldNames(RecordType entry, Glib::ustring &sql) const {
-		int i = entry.size()-1;
-		appendSQL(&sql, entry.getField(i), false);
+	void appendFieldNames(Glib::ustring &sql) const {
+		int i = RecordType::size()-1;
+		appendSQL(&sql, RecordType::getField(i), false);
 		while(i--) {
 			sql += ", ";
-			appendSQL(&sql, entry.getField(i), false);
+			appendSQL(&sql, RecordType::getField(i), false);
 		}
 	}
 
 	//append the names of all data fields (table columns) for GET
-	void appendFieldNamesReverse(RecordType entry, Glib::ustring &sql) const {
-		appendSQL(&sql, entry.getField(0), false);
-		for(int i=1; i<entry.size(); ++i) {
+	void appendFieldNamesReverse(Glib::ustring &sql) const {
+		appendSQL(&sql, RecordType::getField(0), false);
+		for(int i=1; i<RecordType::size(); ++i) {
 			sql += ", ";
-			appendSQL(&sql, entry.getField(i), false);
+			appendSQL(&sql, RecordType::getField(i), false);
 		}
 	}
 
@@ -155,7 +155,7 @@ RType DBInterface<RType>::getEntry(int id) const {
 	RecordType entry;
 
 	Glib::ustring sql = "SELECT ";
-	appendFieldNamesReverse(entry, sql);
+	appendFieldNamesReverse(sql);
 	sql += " FROM " + table + " WHERE id IS " + std::to_string(id) + "";
 	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
 
@@ -206,8 +206,7 @@ RType DBInterface<RType>::getEntry(int id) const {
 
 template<class RType>
 std::vector<int> DBInterface<RType>::getChildren(int parent) const {
-	RType entry_type;
-	Glib::ustring sql = "SELECT id FROM " + table + " WHERE " + entry_type.getField(0) + " IS '" + std::to_string(parent) + "'";
+	Glib::ustring sql = "SELECT id FROM " + table + " WHERE " + RecordType::getField(0) + " IS '" + std::to_string(parent) + "'";
 	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
 
 	std::vector<int> ids;
@@ -220,8 +219,7 @@ std::vector<int> DBInterface<RType>::getChildren(int parent) const {
 
 template<class RType>
 int DBInterface<RType>::getNumberChildren(int parent) const {
-	RType entry_type;
-	Glib::ustring sql = "SELECT id FROM " + table + " WHERE " + entry_type.getField(0) + " IS '" + std::to_string(parent) + "'";
+	Glib::ustring sql = "SELECT id FROM " + table + " WHERE " + RecordType::getField(0) + " IS '" + std::to_string(parent) + "'";
 	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
 
 	int ids_number = 0;
@@ -235,7 +233,7 @@ int DBInterface<RType>::getNumberChildren(int parent) const {
 template<class RType>
 void DBInterface<RType>::newEntry(const RecordType& entry) {
 	Glib::ustring sql = "INSERT INTO " + table + " (";
-	appendFieldNames(entry, sql);
+	appendFieldNames(sql);
 	sql += ") VALUES (";
 	switch (entry.size()) {
 	case 6:
@@ -297,7 +295,7 @@ void DBInterface<RType>::updateEntry(int id, const RecordType &entry) {
 	case 6:
 		{
 		constexpr int i = 5;
-		appendSQL(&sql, entry.getField(i), false);
+		appendSQL(&sql, RecordType::getField(i), false);
 		sql += " = ";
 		appendSQL(&sql, entry.template access<i>());
 		sql += ", ";
@@ -306,7 +304,7 @@ void DBInterface<RType>::updateEntry(int id, const RecordType &entry) {
 	case 5:
 		{
 		constexpr int i = 4;
-		appendSQL(&sql, entry.getField(i), false);
+		appendSQL(&sql, RecordType::getField(i), false);
 		sql += " = ";
 		appendSQL(&sql, entry.template access<i>());
 		sql += ", ";
@@ -315,7 +313,7 @@ void DBInterface<RType>::updateEntry(int id, const RecordType &entry) {
 	case 4:
 		{
 		constexpr int i = 3;
-		appendSQL(&sql, entry.getField(i), false);
+		appendSQL(&sql, RecordType::getField(i), false);
 		sql += " = ";
 		appendSQL(&sql, entry.template access<i>());
 		sql += ", ";
@@ -324,7 +322,7 @@ void DBInterface<RType>::updateEntry(int id, const RecordType &entry) {
 	case 3:
 		{
 		constexpr int i = 2;
-		appendSQL(&sql, entry.getField(i), false);
+		appendSQL(&sql, RecordType::getField(i), false);
 		sql += " = ";
 		appendSQL(&sql, entry.template access<i>());
 		sql += ", ";
@@ -333,7 +331,7 @@ void DBInterface<RType>::updateEntry(int id, const RecordType &entry) {
 	case 2:
 		{
 		constexpr int i = 1;
-		appendSQL(&sql, entry.getField(i), false);
+		appendSQL(&sql, RecordType::getField(i), false);
 		sql += " = ";
 		appendSQL(&sql, entry.template access<i>());
 		sql += ", ";
@@ -342,7 +340,7 @@ void DBInterface<RType>::updateEntry(int id, const RecordType &entry) {
 	case 1:
 		{
 		constexpr int i = 0;
-		appendSQL(&sql, entry.getField(i), false);
+		appendSQL(&sql, RecordType::getField(i), false);
 		sql += " = ";
 		appendSQL(&sql, entry.template access<i>());
 	}
@@ -361,8 +359,7 @@ void DBInterface<RType>::updateEntry(int id, const RecordType &entry) {
 
 template<class RType>
 void DBInterface<RType>::setParent(int child_id, int new_parent_id) {
-	RType entry_type;
-	Glib::ustring sql = "UPDATE " + table + " SET " + entry_type.getField(0) + " = '" + std::to_string(new_parent_id) +
+	Glib::ustring sql = "UPDATE " + table + " SET " + RecordType::getField(0) + " = '" + std::to_string(new_parent_id) +
 			"' WHERE id IS '" + std::to_string(child_id) + "'";
 	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
 
@@ -379,7 +376,7 @@ int DBInterface<RType>::getID(const RType& entry) const {
 	case 6:
 		{
 		constexpr int i = 5;
-		appendSQL(&sql, entry.getField(i), false);
+		appendSQL(&sql, RecordType::getField(i), false);
 		sql += " = ";
 		appendSQL(&sql, entry.template access<i>());
 		sql += " AND ";
@@ -388,7 +385,7 @@ int DBInterface<RType>::getID(const RType& entry) const {
 	case 5:
 		{
 		constexpr int i = 4;
-		appendSQL(&sql, entry.getField(i), false);
+		appendSQL(&sql, RecordType::getField(i), false);
 		sql += " = ";
 		appendSQL(&sql, entry.template access<i>());
 		sql += " AND ";
@@ -397,7 +394,7 @@ int DBInterface<RType>::getID(const RType& entry) const {
 	case 4:
 		{
 		constexpr int i = 3;
-		appendSQL(&sql, entry.getField(i), false);
+		appendSQL(&sql, RecordType::getField(i), false);
 		sql += " = ";
 		appendSQL(&sql, entry.template access<i>());
 		sql += " AND ";
@@ -406,7 +403,7 @@ int DBInterface<RType>::getID(const RType& entry) const {
 	case 3:
 		{
 		constexpr int i = 2;
-		appendSQL(&sql, entry.getField(i), false);
+		appendSQL(&sql, RecordType::getField(i), false);
 		sql += " = ";
 		appendSQL(&sql, entry.template access<i>());
 		sql += " AND ";
@@ -415,7 +412,7 @@ int DBInterface<RType>::getID(const RType& entry) const {
 	case 2:
 		{
 		constexpr int i = 1;
-		appendSQL(&sql, entry.getField(i), false);
+		appendSQL(&sql, RecordType::getField(i), false);
 		sql += " = ";
 		appendSQL(&sql, entry.template access<i>());
 		sql += " AND ";
@@ -424,7 +421,7 @@ int DBInterface<RType>::getID(const RType& entry) const {
 	case 1:
 		{
 		constexpr int i = 0;
-		appendSQL(&sql, entry.getField(i), false);
+		appendSQL(&sql, RecordType::getField(i), false);
 		sql += " = ";
 		appendSQL(&sql, entry.template access<i>());
 	}

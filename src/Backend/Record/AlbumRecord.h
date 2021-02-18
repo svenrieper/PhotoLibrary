@@ -47,15 +47,6 @@ public:
 	virtual ~AlbumRecord() = default;
 
 	/**
-	 * Get the name of a data field.
-	 * Returns the name of the column in the database.
-	 *
-	 * @param i number of the data field
-	 * @return name of the data field
-	 */
-	const Glib::ustring& getField(int i) const override { return fields[i]; }
-
-	/**
 	 * Set the parent id.
 	 * Returns a reference to the parent id.
 	 *
@@ -99,6 +90,15 @@ public:
 	 * @return value of the directory name
 	 */
 	const Glib::ustring& getAlbumName() const { return access<2>(); }
+
+	/**
+	 * Get the name of a data field.
+	 * Returns the name of the column in the database.
+	 *
+	 * @param i number of the data field
+	 * @return name of the data field
+	 */
+	static const Glib::ustring& getField(int i) { return fields.at(i); }
 
 private:
 	static inline const std::array<Glib::ustring,3> fields {"parent", "attributes", "name"};
