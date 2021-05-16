@@ -131,7 +131,7 @@ inline Options& operator^=(Options& a, const Options& b) {
 /**
  * Default bitwise and, or, and xor on two Options returns an Options
  */
-inline Options operator|(Options a, Options b) {
+inline constexpr Options operator|(Options a, Options b) {
 	return static_cast<Options>(static_cast<int>(a)|b);
 }
 }
