@@ -49,6 +49,7 @@ add_custom_command(TARGET PhotoLibrary POST_BUILD
 # Check for libraries:
 find_package(PkgConfig)
 find_package(Threads)
+find_package(Boost)
 
 pkg_check_modules (SQLITE3  sqlite3)
 pkg_check_modules (GTKMM   gtkmm-3.0>=3.16)

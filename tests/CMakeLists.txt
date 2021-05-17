@@ -35,6 +35,7 @@ target_include_directories(PhotoLibraryTests PUBLIC
 # Check for libraries:
 find_package(Catch2 REQUIRED)
 find_package(PkgConfig)
+find_package(Boost)
 
 pkg_check_modules (SQLITE3 REQUIRED sqlite3)
 pkg_check_modules (GTKMM REQUIRED  gtkmm-3.0>=3.16)

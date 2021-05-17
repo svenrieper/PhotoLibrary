@@ -26,6 +26,7 @@
 #include <iostream>
 #include "suppport.h"
 #include "../../SQLiteAdapter/Database.h"
+#include <boost/preprocessor/iteration/local.hpp>
 
 namespace PhotoLibrary {
 namespace Backend {
@@ -51,6 +52,8 @@ template<class RType>
 class DBInterface : public Backend::InterfaceBase<RType> {
 public:
 	using RecordType = RType;
+
+#define MACRO_SIZE_LIMIT 6 /// maximum size of RType
 
 	/**
 	 * @param db Handle for the database to use
@@ -103,7 +106,7 @@ private:
 		*sql += (escape?"'":"") + append + (escape?"'":"");
 	}
 
-	void appendSQL(Glib::ustring* sql, int append, bool escape=true) const {
+	void appendSQL(Glib::ustring* sql, int append, bool /*escape*/=true) const {
 		*sql += std::to_string(append);
 	}
 
@@ -163,42 +166,17 @@ RType DBInterface<RType>::getEntry(int id) const {
 			throw(std::runtime_error(std::string("Error retrieving entry with id ") + std::to_string(id) + " from " + table));
 
 	switch (entry.size()) {
-	case 6:
-		{
-		constexpr int i = 5;
-		setValue(querry, i, entry.template access<i>());
-	}
+#define BOOST_PP_LOCAL_LIMITS (0, MACRO_SIZE_LIMIT-1)
+
+#define BOOST_PP_LOCAL_MACRO(n)									\
+	case (MACRO_SIZE_LIMIT - (n)):								\
+		{														\
+			constexpr int i = MACRO_SIZE_LIMIT - (n) -1;		\
+			setValue(querry, i, entry.template access<i>());	\
+		}														\
 		[[fallthrough]];
-	case 5:
-		{
-		constexpr int i = 4;
-		setValue(querry, i, entry.template access<i>());
-	}
-		[[fallthrough]];
-	case 4:
-		{
-		constexpr int i = 3;
-		setValue(querry, i, entry.template access<i>());
-	}
-		[[fallthrough]];
-	case 3:
-		{
-		constexpr int i = 2;
-		setValue(querry, i, entry.template access<i>());
-	}
-		[[fallthrough]];
-	case 2:
-		{
-		constexpr int i = 1;
-		setValue(querry, i, entry.template access<i>());
-	}
-		[[fallthrough]];
-	case 1:
-		{
-		constexpr int i =0;
-		setValue(querry, i, entry.template access<i>());
-	}
-		[[fallthrough]];
+
+#include BOOST_PP_LOCAL_ITERATE()
 	}
 
 	return entry;
@@ -235,49 +213,23 @@ void DBInterface<RType>::newEntry(const RecordType& entry) {
 	Glib::ustring sql = "INSERT INTO " + table + " (";
 	appendFieldNames(sql);
 	sql += ") VALUES (";
+
 	switch (entry.size()) {
-	case 6:
-		{
-		constexpr int i = 5;
-		appendSQL(&sql, entry.template access<i>());
-		sql += ", ";
-	}
+#define BOOST_PP_LOCAL_LIMITS (0, MACRO_SIZE_LIMIT-1)
+
+#define BOOST_PP_LOCAL_MACRO(n)								\
+	case (MACRO_SIZE_LIMIT - (n)):							\
+		{													\
+			constexpr int i = MACRO_SIZE_LIMIT-(n)-1;		\
+			appendSQL(&sql, entry.template access<i>());	\
+			if(i)											\
+				sql += ", ";								\
+		}													\
 		[[fallthrough]];
-	case 5:
-		{
-		constexpr int i = 4;
-		appendSQL(&sql, entry.template access<i>());
-		sql += ", ";
+
+#include BOOST_PP_LOCAL_ITERATE()
 	}
-		[[fallthrough]];
-	case 4:
-		{
-		constexpr int i = 3;
-		appendSQL(&sql, entry.template access<i>());
-		sql += ", ";
-	}
-		[[fallthrough]];
-	case 3:
-		{
-		constexpr int i = 2;
-		appendSQL(&sql, entry.template access<i>());
-		sql += ", ";
-	}
-		[[fallthrough]];
-	case 2:
-		{
-		constexpr int i = 1;
-		appendSQL(&sql, entry.template access<i>());
-		sql += ", ";
-	}
-		[[fallthrough]];
-	case 1:
-		{
-		constexpr int i = 0;
-		appendSQL(&sql, entry.template access<i>());
-	}
-		[[fallthrough]];
-	}
+
 	sql += Glib::ustring(");");
 
 	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
@@ -291,63 +243,26 @@ void DBInterface<RType>::newEntry(const RecordType& entry) {
 template<class RType>
 void DBInterface<RType>::updateEntry(int id, const RecordType &entry) {
 	Glib::ustring sql = "UPDATE " + table + " SET ";
+
 	switch (entry.size()) {
-	case 6:
-		{
-		constexpr int i = 5;
-		appendSQL(&sql, RecordType::getField(i), false);
-		sql += " = ";
-		appendSQL(&sql, entry.template access<i>());
-		sql += ", ";
-	}
+#define BOOST_PP_LOCAL_LIMITS (0, MACRO_SIZE_LIMIT-1)
+
+#define BOOST_PP_LOCAL_MACRO(n)									\
+	case (MACRO_SIZE_LIMIT - (n)):								\
+		{														\
+			constexpr int i = MACRO_SIZE_LIMIT-(n)-1;			\
+			appendSQL(&sql, RecordType::getField(i), false);	\
+			sql += " = ";										\
+			appendSQL(&sql, entry.template access<i>());		\
+			if(i)												\
+				sql += ", ";									\
+		}														\
 		[[fallthrough]];
-	case 5:
-		{
-		constexpr int i = 4;
-		appendSQL(&sql, RecordType::getField(i), false);
-		sql += " = ";
-		appendSQL(&sql, entry.template access<i>());
-		sql += ", ";
+
+#include BOOST_PP_LOCAL_ITERATE()
 	}
-		[[fallthrough]];
-	case 4:
-		{
-		constexpr int i = 3;
-		appendSQL(&sql, RecordType::getField(i), false);
-		sql += " = ";
-		appendSQL(&sql, entry.template access<i>());
-		sql += ", ";
-	}
-		[[fallthrough]];
-	case 3:
-		{
-		constexpr int i = 2;
-		appendSQL(&sql, RecordType::getField(i), false);
-		sql += " = ";
-		appendSQL(&sql, entry.template access<i>());
-		sql += ", ";
-	}
-		[[fallthrough]];
-	case 2:
-		{
-		constexpr int i = 1;
-		appendSQL(&sql, RecordType::getField(i), false);
-		sql += " = ";
-		appendSQL(&sql, entry.template access<i>());
-		sql += ", ";
-	}
-		[[fallthrough]];
-	case 1:
-		{
-		constexpr int i = 0;
-		appendSQL(&sql, RecordType::getField(i), false);
-		sql += " = ";
-		appendSQL(&sql, entry.template access<i>());
-	}
-		[[fallthrough]];
-	}
+
 	sql += " WHERE id IS " + std::to_string(id) + "";
-//		std::cout << sql << std::endl;
 
 	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
 
@@ -372,61 +287,25 @@ void DBInterface<RType>::setParent(int child_id, int new_parent_id) {
 template<class RType>
 int DBInterface<RType>::getID(const RType& entry) const {
 	Glib::ustring sql = "SELECT id FROM " + table + " WHERE (";
+
 	switch (entry.size()) {
-	case 6:
-		{
-		constexpr int i = 5;
-		appendSQL(&sql, RecordType::getField(i), false);
-		sql += " = ";
-		appendSQL(&sql, entry.template access<i>());
-		sql += " AND ";
-	}
+#define BOOST_PP_LOCAL_LIMITS (0, MACRO_SIZE_LIMIT-1)
+
+#define BOOST_PP_LOCAL_MACRO(n)									\
+	case (MACRO_SIZE_LIMIT - (n)):								\
+		{														\
+			constexpr int i = MACRO_SIZE_LIMIT-(n)-1;			\
+			appendSQL(&sql, RecordType::getField(i), false);	\
+			sql += " = ";										\
+			appendSQL(&sql, entry.template access<i>());		\
+			if(i)												\
+				sql += " AND ";									\
+		}														\
 		[[fallthrough]];
-	case 5:
-		{
-		constexpr int i = 4;
-		appendSQL(&sql, RecordType::getField(i), false);
-		sql += " = ";
-		appendSQL(&sql, entry.template access<i>());
-		sql += " AND ";
+
+#include BOOST_PP_LOCAL_ITERATE()
 	}
-		[[fallthrough]];
-	case 4:
-		{
-		constexpr int i = 3;
-		appendSQL(&sql, RecordType::getField(i), false);
-		sql += " = ";
-		appendSQL(&sql, entry.template access<i>());
-		sql += " AND ";
-	}
-		[[fallthrough]];
-	case 3:
-		{
-		constexpr int i = 2;
-		appendSQL(&sql, RecordType::getField(i), false);
-		sql += " = ";
-		appendSQL(&sql, entry.template access<i>());
-		sql += " AND ";
-	}
-		[[fallthrough]];
-	case 2:
-		{
-		constexpr int i = 1;
-		appendSQL(&sql, RecordType::getField(i), false);
-		sql += " = ";
-		appendSQL(&sql, entry.template access<i>());
-		sql += " AND ";
-	}
-		[[fallthrough]];
-	case 1:
-		{
-		constexpr int i = 0;
-		appendSQL(&sql, RecordType::getField(i), false);
-		sql += " = ";
-		appendSQL(&sql, entry.template access<i>());
-	}
-		[[fallthrough]];
-	}
+
 	sql += ");";
 
 	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
@@ -447,6 +326,8 @@ void DBInterface<RType>::deleteEntry(int id) {
 	if (querry.nextRow() != SQLITE_DONE)
 		throw(std::runtime_error("Error deleting keyword."));
 }
+
+#undef MACRO_SIZE_LIMIT
 
 
 } /* namespace DatabaseInterface */
