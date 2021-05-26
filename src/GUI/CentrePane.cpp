@@ -30,8 +30,6 @@ using Backend::DirectoryRecord;
 
 CentrePane::CentrePane(Backend::BackendFactory* backend) :
 		backend(backend),
-//		tiles_to_update(0),
-//		loaded_images(0),
 		threads(backend->getWindowProperty(Backend::BackendFactory::WindowProperties::N_THREADS)),
 		tiles_per_row(0) {
 	flowbox.set_homogeneous(true);
@@ -64,14 +62,13 @@ void CentrePane::calculateTilePerRow() {
 
 void CentrePane::abortThreads() {
 	// empty queue and wait for the threads to finish
-//	for(int i; tiles_to_update.pop(i););
 	tiles_to_update.clear();
 	for(std::thread& t : threads)
 		if(t.joinable())
+			/// \todo catch std::system_error to continue loop if joining one thread fails?
+			/// \todo handle error after loop?
 			t.join();
 	// empty the queue with loaded (but not yet displayed) images
-//	for(std::pair<int,Glib::RefPtr<Gdk::Pixbuf>>* image; loaded_images.pop(image);)
-//		delete image;
 	loaded_images.clear();
 }
 
@@ -113,7 +110,6 @@ void CentrePane::loadPhotos(CentrePane* object) {
 			try {
 				int size = object->backend->getWindowProperty(BackendFactory::WindowProperties::TILE_WIDTH);
 				auto photo_image = Gdk::Pixbuf::create_from_file(filename, size, size, true);
-//				object->loaded_images.push(new std::pair<int,Glib::RefPtr<Gdk::Pixbuf>>(tile_id, photo_image));
 				/// \todo use emplace?
 				object->loaded_images.push(std::make_pair(tile_id, photo_image));
 				object->image_dispatcher.emit();
@@ -130,10 +126,6 @@ void CentrePane::loadPhotos(CentrePane* object) {
 }
 
 void CentrePane::updateDisplayedImage() try {
-//	if(std::pair<int,Glib::RefPtr<Gdk::Pixbuf>>* image; loaded_images.pop(image)) {
-//		tiles.at(image->first)->setPhoto(image->second);
-//		delete image;
-//	}
 	if(std::pair<int,Glib::RefPtr<Gdk::Pixbuf>> image; loaded_images.pop(image))
 		tiles.at(image.first)->setPhoto(image.second);
 }

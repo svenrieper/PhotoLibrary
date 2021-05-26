@@ -25,7 +25,6 @@
 #include <gtkmm/frame.h>
 #include <gtkmm/box.h>
 #include <glibmm/dispatcher.h>
-//#include <lockfree/queue.hpp>
 #include <thread>
 #include "../Backend/BackendFactory.h"
 #include "PhotoTile.h"
@@ -62,12 +61,7 @@ private:
 	Gtk::VBox box;
 	Gtk::FlowBox flowbox;
 	std::unordered_map<int,std::unique_ptr<PhotoTile>> tiles;
-	///\todo compare performance of boost::lockfree::queue and Support::ThreadSafeQueue
-//	boost::lockfree::queue<int> tiles_to_update;
 	Support::ThreadSafeQueue<int> tiles_to_update;
-//	// boost::lockfree::queue requires a type with a trivial destructor
-//	// (which neither std::pair, nor Glib::RefPtr, nor Gdk::Pixbuf satisfies)
-//	boost::lockfree::queue<std::pair<int,Glib::RefPtr<Gdk::Pixbuf>>*> loaded_images;
 	Support::ThreadSafeQueue<std::pair<int,Glib::RefPtr<Gdk::Pixbuf>>> loaded_images;
 	Glib::Dispatcher image_dispatcher;
 	std::vector<std::thread> threads;
