@@ -41,7 +41,7 @@ public:
 	/**
 	 * Creates an empty queue.
 	 */
-	ThreadSafeQueue();
+	ThreadSafeQueue() = default;
 	~ThreadSafeQueue() = default;
 	//no default moving or copying (not thread safe)
 	ThreadSafeQueue(const ThreadSafeQueue&) = delete;
@@ -108,10 +108,6 @@ private:
 
 //implementation
 template<typename T>
-ThreadSafeQueue<T>::ThreadSafeQueue() :
-		std::queue<T>() {}
-
-template<typename T>
 bool ThreadSafeQueue<T>::empty() const {
 	std::unique_lock<std::mutex> lck {queue_mutex};
 	return std::queue<T>::empty();
@@ -125,9 +121,9 @@ typename ThreadSafeQueue<T>::size_type ThreadSafeQueue<T>::size() const {
 
 template<typename T>
 bool ThreadSafeQueue<T>::pop(T& t) {
-	if(empty())
-		return false;
 	std::unique_lock<std::mutex> lck {queue_mutex};
+	if(std::queue<T>::empty())
+		return false;
 	t = std::move(std::queue<T>::front());
 	std::queue<T>::pop();
 	return true;
