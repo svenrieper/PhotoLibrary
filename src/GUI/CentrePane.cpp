@@ -104,14 +104,14 @@ void CentrePane::onSizeAllocate(Gdk::Rectangle& allocation) {
 }
 
 void CentrePane::loadPhotos(CentrePane* object) {
-	for(int tile_id; object->tiles_to_update.pop(tile_id);) try {
-		Glib::ustring filename = object->tiles.at(tile_id)->getFilename();
+	for(int photo_id; object->tiles_to_update.pop(photo_id);) try {
+		Glib::ustring filename = object->tiles.at(photo_id)->getFilename();
 		if(std::filesystem::exists(filename.c_str())) { // @suppress("Invalid arguments")
 			try {
 				int size = object->backend->getWindowProperty(BackendFactory::WindowProperties::TILE_WIDTH);
 				auto photo_image = Gdk::Pixbuf::create_from_file(filename, size, size, true);
 				/// \todo use emplace?
-				object->loaded_images.push(std::make_pair(tile_id, photo_image));
+				object->loaded_images.push(std::make_pair(photo_id, photo_image));
 				object->image_dispatcher.emit();
 			}
 			catch (const Gio::ResourceError &e) {
