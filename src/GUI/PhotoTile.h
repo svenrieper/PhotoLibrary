@@ -64,6 +64,7 @@ public:
 	 * Get the filename of the image.
 	 * Returns the full path and filename of the image
 	 * to be displayed in the tile.
+	 * \todo move to backend?
 	 *
 	 * @return Full path and filname of the image to be
 	 * 		displayed in the tile.
@@ -75,7 +76,7 @@ private:
 	Backend::PhotoRecord photo_record;
 	PhotoDrawingArea photo_image;
 
-	///\todo find better solution
+	///\todo move to backend
 	Glib::ustring getFullPath();
 };
 
