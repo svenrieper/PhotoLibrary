@@ -49,8 +49,9 @@ int SQLQuerry::columnCount() {
 	return sqlite3_column_count(sqlStmt);
 }
 
-const char* SQLQuerry::getColumnText(int colNum) {
-	return reinterpret_cast<const char*>(sqlite3_column_text(sqlStmt, colNum));
+std::string SQLQuerry::getColumnText(int colNum) {
+	const unsigned char* value = sqlite3_column_text(sqlStmt, colNum);
+	return value?reinterpret_cast<const char*>(value):std::string{};
 }
 
 int SQLQuerry::getColumnInt(int colNum) {

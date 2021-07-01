@@ -71,13 +71,13 @@ public:
 
 	/**
 	 * Get the content of a column as a string.
-	 * Returns the content of column 'colNum' as a  c-string.
+	 * Returns the content of column 'colNum' as a  utf8 string.
 	 * @see https://sqlite.org/c3ref/column_blob.html
 	 *
 	 * @param colNum number of the column from the result to return
-	 * @return content of 'colNum' converted to a c-string
+	 * @return string representation of 'colNum', empty string if content is NULL
 	 */
-	const char* getColumnText(int colNum);
+	std::string getColumnText(int colNum);
 
 	/**
 	 * Get the content of a column as an int.
