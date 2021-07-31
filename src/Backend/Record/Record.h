@@ -45,7 +45,8 @@ enum Options {
  * Base class for database records.
  *
  * @tparam Tuple class to hold the data. Should have the interface
- * of an std::tuple (inlcuding std::get and std::tuple_size).
+ * of an std::tuple inlcuding std::get and std::tuple_size
+ * (e.g. std::tuple, std::pair, or std::array only tested for std::tuple|s).
  * For constraints see also Adapter::DBInterface
  */
 template<typename Tuple>
@@ -88,6 +89,8 @@ public:
 protected:
 	/**
 	 * @param values the tuple containig the data
+         *
+         * \todo provide move constructor
 	 */
 	Record(const Tuple& values) : values(values) {}
 
