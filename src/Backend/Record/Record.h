@@ -17,8 +17,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <array>
 #include <glibmm/ustring.h>
+#include <array>
 #include <tuple>
 
 #ifndef SRC_ADAPTER_RECORD_RECORD_H_
@@ -53,7 +53,6 @@ template<typename Tuple>
 class Record {
 public:
 	using Options = RecordOptions::Options;
-	virtual ~Record() = default;
 
 	/**
 	 * Get the number of data fields in the record.
@@ -92,10 +91,24 @@ protected:
 	 */
 	Record(const Tuple& values) : values(values) {}
 
-        /**
-         * @param values the tuple containig the data
-         */
-        Record(Tuple&& values) : values(values) {}
+	/**
+	* \copydoc Record(const Tuple&)
+	*/
+	Record(Tuple&& values) : values(values) {}
+
+	/**
+	 * @tparam Ts types of the elements of Tuple
+	 * @param args initial values to be saved in the Record
+	 */
+	template<typename... Ts>
+	Record(Ts&&... args) : values{args...} {}
+
+	/**
+	 * @tparam Ts types of the elements of Tuple
+	 * @param args initial values to be saved in the Record
+	 */
+	template<typename... Ts>
+	Record(const Ts&... args) : values{args...} {}
 
 private:
 	Tuple values;
