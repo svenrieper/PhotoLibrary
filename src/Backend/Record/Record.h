@@ -89,10 +89,13 @@ public:
 protected:
 	/**
 	 * @param values the tuple containig the data
-         *
-         * \todo provide move constructor
 	 */
 	Record(const Tuple& values) : values(values) {}
+
+        /**
+         * @param values the tuple containig the data
+         */
+        Record(Tuple&& values) : values(values) {}
 
 private:
 	Tuple values;
