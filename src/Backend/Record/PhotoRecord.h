@@ -2,7 +2,7 @@
  * PhotoRecord.h
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -41,11 +41,17 @@ public:
 	 * @param directory id of the parent directory of the file
 	 * @param filename name of the file
 	 * @param rating rating of the photo
-	 * @param datetime date and time when the photo was made (unix time)
+	 * @param datetime date and time when the photo was taken (unix time)
 	 * @param width width of the photo in pixel
 	 * @param height height of the photo in pixel
 	 */
-	PhotoRecord(int directory=0, Glib::ustring filename="", int rating=0, int_least64_t datetime=0, int width=0, int height=0) :
+	PhotoRecord(int directory=0, Glib::ustring&& filename={}, int rating=0, int_least64_t datetime=0, int width=0, int height=0) :
+			Record<PhotoTuple>(std::make_tuple(directory, filename, rating, datetime, width, height)) {}
+
+	/**
+	* \copydoc PhotoRecord(int,Glib::ustring&&,int,int_least64_t,int,int)
+	*/
+	PhotoRecord(int directory, const Glib::ustring& filename, int rating=0, int_least64_t datetime=0, int width=0, int height=0) :
 			Record<PhotoTuple>(std::make_tuple(directory, filename, rating, datetime, width, height)) {}
 
 	virtual ~PhotoRecord() = default;
