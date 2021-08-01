@@ -2,7 +2,7 @@
  * Keyword.h
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -42,10 +42,14 @@ public:
 	 * @param key the keyword
 	 * @param synonyms synonyms of the keyword
 	 */
-	KeywordRecord(int parent_id=0, Options options = Options::NONE, Glib::ustring key="", Glib::ustring synonyms="") :
-		Record<KeywordTuple>(std::make_tuple(parent_id, options, key, synonyms)) {}
+	KeywordRecord(int parent_id=0, Options options = Options::NONE, Glib::ustring&& key="", Glib::ustring&& synonyms="") :
+		Record<KeywordTuple>(parent_id, options, key, synonyms) {}
 
-	~KeywordRecord() = default;
+	/**
+	 * \copydoc KeywordRecord
+	 */
+	KeywordRecord(const int parent_id, const Options options, const Glib::ustring& key, const Glib::ustring& synonyms="") :
+		Record<KeywordTuple>(parent_id, options, key, synonyms) {}
 
 	/**
 	 * Set the parent id.

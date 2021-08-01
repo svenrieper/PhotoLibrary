@@ -79,4 +79,12 @@ TEST_CASE( "test operator== and operator!= for class Keyword", "[keyword][record
 	CHECK(default_key != asian_elephant);
 }
 
+TEST_CASE("test constructors using Glib::ustring&& and const Glib::ustring& for class KeywordRecord", "[keywords][record]") {
+    Glib::ustring name{"some_name"};
+    Keyword keyword_copying_name{0, RecordOptions::Options::NONE, name};
+    Keyword keyword_moving_name{0, RecordOptions::Options::NONE, std::move(name)};
+
+    CHECK(keyword_copying_name == keyword_moving_name);
+}
+
 } /* namespace PhotoLibrary */
