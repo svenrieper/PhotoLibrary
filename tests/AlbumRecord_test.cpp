@@ -37,10 +37,10 @@ TEST_CASE( "test operator== and operator!= for class AlbumRecord", "[albums][rec
 
 TEST_CASE("test constructors using Glib::ustring&& and const Glib::ustring& for class AlbumRecord", "[albums][record]") {
 	Glib::ustring name{"some_name"};
-	Album album_copying_filename{0, RecordOptions::Options::NONE, name};
-	Album album_moving_fileanem{0, RecordOptions::Options::NONE, std::move(name)};
+	Album album_copying_name{0, RecordOptions::Options::NONE, name};
+	Album album_moving_name{0, RecordOptions::Options::NONE, std::move(name)};
 
-	CHECK(album_copying_filename == album_moving_fileanem);
+	CHECK(album_copying_name == album_moving_name);
 }
 
 } /* namespace PhotoLibrary */

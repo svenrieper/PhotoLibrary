@@ -51,5 +51,13 @@ TEST_CASE( "test operator== and operator!= for class DirectoryRecord", "[directo
 	CHECK(name_name != name_fullname);
 }
 
+TEST_CASE("test constructors using Glib::ustring&& and const Glib::ustring& for class DirectoryRecord", "[directories][record]") {
+    Glib::ustring name{"some_name"};
+    DirectoryRecord directory_copying_name{0, DirectoryRecord::Options::NONE, name};
+    DirectoryRecord directory_moving_name{0, DirectoryRecord::Options::NONE, std::move(name)};
+
+    CHECK(directory_copying_name == directory_moving_name);
+}
+
 } /* namespace Adapter */
 } /* namespace PhotoLibrary */
