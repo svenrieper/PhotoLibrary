@@ -116,6 +116,8 @@ private:
 
 /**
  * Default compare equal operator.
+ *
+ * \todo make friend of Record and use a.values == b.values
  */
 template<typename Tuple>
 bool operator==(const Record<Tuple>& a, const Record<Tuple>& b) {
