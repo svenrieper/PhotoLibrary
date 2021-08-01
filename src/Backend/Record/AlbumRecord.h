@@ -2,7 +2,7 @@
  * AlbumRecord.h
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -41,10 +41,14 @@ public:
 	 * @param options options of the album (can be any combination of RecordOptions::Options)
 	 * @param name the album name
 	 */
-	AlbumRecord(int parent_id=0, Options options = Options::NONE, Glib::ustring name="") :
-		Record<AlbumTuple>(std::make_tuple(parent_id, options, name)) {};
+	AlbumRecord(int parent_id=0, Options options = Options::NONE, Glib::ustring&& name="") :
+		Record<AlbumTuple>(parent_id, options, name) {};
 
-	virtual ~AlbumRecord() = default;
+	/**
+	 * \copydoc AlbumRecord
+	 */
+	AlbumRecord(const int parent_id, const Options options, const Glib::ustring& name) :
+		Record<AlbumTuple>(parent_id, options, name) {}
 
 	/**
 	 * Set the parent id.

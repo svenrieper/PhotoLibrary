@@ -17,6 +17,7 @@ add_executable(PhotoLibraryTests
 			KeywordRecord_test.cpp
 			PhotoInterface_test.cpp
 			PhotoRecord_test.cpp
+			AlbumRecord_test.cpp
 			PhotosAlbumsRelationsInterface_test.cpp
 			PhotosKeywordsRelationsInterface_test.cpp
 			suppport_test.cpp
