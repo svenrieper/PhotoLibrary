@@ -31,6 +31,7 @@ namespace RecordOptions {
 /**
  * Possible options of a record.
  */
+//can't be part of Record since that is a template and Options is needed as part ot the template argument
 enum Options {
 	NONE = 0, /**< No options are set */
 	ROW_EXPANDED = 1, /**< The row is expanded in the GUI::BaseTreeView */
