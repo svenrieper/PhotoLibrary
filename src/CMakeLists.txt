@@ -47,12 +47,12 @@ add_custom_command(TARGET PhotoLibrary POST_BUILD
 		"$<TARGET_FILE_DIR:PhotoLibrary>/example pictures/")
 
 # Check for libraries:
-find_package(PkgConfig)
-find_package(Threads)
-find_package(Boost)
+find_package(PkgConfig REQUIRED)
+find_package(Threads REQUIRED)
+find_package(Boost REQUIRED)
 
-pkg_check_modules (SQLITE3  sqlite3)
-pkg_check_modules (GTKMM   gtkmm-3.0>=3.16)
+pkg_check_modules (SQLITE3 REQUIRED sqlite3)
+pkg_check_modules (GTKMM  REQUIRED gtkmm-3.0>=3.16)
 
 
 include_directories(${EXTRA_INCDIR}
