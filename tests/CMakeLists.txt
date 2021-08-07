@@ -21,6 +21,7 @@ add_executable(PhotoLibraryTests
 			PhotosAlbumsRelationsInterface_test.cpp
 			PhotosKeywordsRelationsInterface_test.cpp
 			suppport_test.cpp
+			ThreadSafeQueue_tests.cpp
 			../src/SQLiteAdapter/Database.cpp
 			../src/SQLiteAdapter/SQLQuerry.cpp
 			../src/Backend/DatabaseInterface/DatabaseFactory.cpp
@@ -35,8 +36,9 @@ target_include_directories(PhotoLibraryTests PUBLIC
 
 # Check for libraries:
 find_package(Catch2 REQUIRED)
-find_package(PkgConfig)
-find_package(Boost)
+find_package(PkgConfig REQUIRED)
+find_package(Boost REQUIRED)
+find_package(Threads REQUIRED)
 
 pkg_check_modules (SQLITE3 REQUIRED sqlite3)
 pkg_check_modules (GTKMM REQUIRED  gtkmm-3.0>=3.16)
@@ -57,5 +59,6 @@ target_link_libraries(PhotoLibraryTests
 	Catch2::Catch2
 	${GTKMM_LIBRARIES}
 	${SQLITE3_LIBRARIES}
+	Threads::Threads
 	)
 
