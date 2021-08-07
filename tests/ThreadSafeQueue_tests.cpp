@@ -124,15 +124,10 @@ TEST_CASE( "clear()", "[support][ThreadSafeQueue]" ) {
 }
 
 TEST_CASE("Test ThreadSafty", "[support][ThreadSafeQueue]" ) {
-	std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dist(-1000000, 1000000);
-
 	std::vector<int> in_vec;
 	std::vector<int> out_vec;
 
 	for(int i=0; i<100000; ++i) {
-		//in_vec.push_back(dist(gen));
 		in_vec.push_back(i);
 	}
 
