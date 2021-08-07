@@ -2,7 +2,7 @@
  * ThreadSafeQueue.h
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -22,6 +22,7 @@
 
 #include <queue>
 #include <mutex>
+#include <utility>
 
 namespace PhotoLibrary {
 namespace Support {
@@ -29,9 +30,13 @@ namespace Support {
 /**
  * Thread safe interface for an std::queue.
  *
- * @tparam T type of the Elements; \c T needs to be movable
+ * @tparam T type of the Elements; \c T needs to be MoveAssignable
+ * 		and MoveConstructible
  *
- * \todo add emplace()?
+ * @throws std::system_error Any method not marked as noexcept
+ * 		may throw a std::system_error if the mutex cannot be locked.
+ *
+ * \todo add unsafe methods
  */
 template<typename T>
 class ThreadSafeQueue : private std::queue<T> {
@@ -41,8 +46,13 @@ public:
 	/**
 	 * Creates an empty queue.
 	 */
-	ThreadSafeQueue() = default;
+	ThreadSafeQueue() noexcept = default;
+
+	/**
+	 * @throws noexcept unless ~T() throws
+	 */
 	~ThreadSafeQueue() = default;
+
 	//no default moving or copying (not thread safe)
 	ThreadSafeQueue(const ThreadSafeQueue&) = delete;
 	ThreadSafeQueue(ThreadSafeQueue&&) = delete;
@@ -55,14 +65,14 @@ public:
 	 * @retval true if the queue is empty
 	 * @retval false otherwise
 	 */
-	bool empty() const;
+	bool empty() const noexcept;
 
 	/**
 	 * Number of elements in the queue.
 	 *
 	 * @return number of elements in the queue
 	 */
-	size_type size() const;
+	size_type size() const noexcept;
 
 	/**
 	 * Retrieve the first element from the queue.
@@ -81,6 +91,8 @@ public:
 	 * Copies an element to the end of the queue.
 	 *
 	 * @param t item to copy to the queue
+	 *
+	 * @throws Any exception thrown during allocation or copying T
 	 */
 	void push(const T& t);
 
@@ -90,8 +102,26 @@ public:
 	 * Moves an element to the end of the queue.
 	 *
 	 * @param t item to move to the end of the queue
+	 *
+	 * @throws Any exception thrown during allocation or moving/copying T
 	 */
 	void push(T&& t);
+
+	/**
+	 * \copybrief push(const T&)
+	 *
+	 * Create new element at the end of the queue
+	 *
+	 * @tparam Args... Argument types of the constructor of T
+	 * @param args... Arguments of the constructor of T for the 
+	 * 		construction of the new element
+	 *
+	 * @returns Reference to the newly created element at the end of the queue
+	 *
+	 * @throws Any exception thrown by the constructor if T or the allocator
+	 */
+	template<typename... Args>
+	T& emplace(Args&&... args);
 
 	/**
 	 * Empty the queue.
@@ -108,14 +138,12 @@ private:
 
 //implementation
 template<typename T>
-bool ThreadSafeQueue<T>::empty() const {
-	std::unique_lock<std::mutex> lck {queue_mutex};
+bool ThreadSafeQueue<T>::empty() const noexcept {
 	return std::queue<T>::empty();
 }
 
 template<typename T>
-typename ThreadSafeQueue<T>::size_type ThreadSafeQueue<T>::size() const {
-	std::unique_lock<std::mutex> lck {queue_mutex};
+typename ThreadSafeQueue<T>::size_type ThreadSafeQueue<T>::size() const noexcept {
 	return std::queue<T>::size();
 }
 
@@ -124,7 +152,7 @@ bool ThreadSafeQueue<T>::pop(T& t) {
 	std::unique_lock<std::mutex> lck {queue_mutex};
 	if(std::queue<T>::empty())
 		return false;
-	t = std::move(std::queue<T>::front());
+	std::swap(t, std::queue<T>::front());
 	std::queue<T>::pop();
 	return true;
 }
@@ -139,6 +167,13 @@ template<typename T>
 void ThreadSafeQueue<T>::push(T&& t) {
 	std::unique_lock<std::mutex> lck {queue_mutex};
 	std::queue<T>::push(std::move(t));
+}
+
+template<typename T>
+template<typename... Args>
+T& ThreadSafeQueue<T>::emplace(Args&&... args) {
+	std::unique_lock<std::mutex> lck {queue_mutex};
+	return std::queue<T>::emplace(std::forward<Args>(args)...);
 }
 
 template<typename T>
