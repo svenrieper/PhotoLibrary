@@ -43,9 +43,7 @@ Database::~Database() noexcept {
 void Database::querry(const char* sql, int (*callback)(void*,int,char**,char**), void* data) {
 	char* zErrMsg = nullptr;
 	if(sqlite3_exec(db, sql, callback, data, &zErrMsg)) {
-		// may throw if memory allocation fails
 		std::string error_msg = "Error executing SQL command: " + std::string(zErrMsg);
-		// leaks of std::string throws
 		sqlite3_free(zErrMsg);
 		throw(std::runtime_error(error_msg));
 	}
