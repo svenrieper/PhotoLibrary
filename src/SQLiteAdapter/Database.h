@@ -2,7 +2,7 @@
  * Database.h
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -20,26 +20,25 @@
 #ifndef SRC_SQLITEADAPTER_DATABASE_H_
 #define SRC_SQLITEADAPTER_DATABASE_H_
 
-#include <sqlite3.h>
 #include "SQLQuerry.h"
+#include <sqlite3.h>
 
 namespace PhotoLibrary {
 namespace SQLiteAdapter {
 
 /**
- * SQLite database handle. It holds the connection to the SQLite
- * database, prepares new databases, and performs rudimentary
- * consistency tests on existing databases.
+ * SQLite database handle.
+ * It holds the connection to the SQLite database.
  */
 class Database {
 public:
 	/**
 	 * @param filename filename of the SQLite database
-	 * @param initialise create new database or open existing?
-	 * 		If true filename must not exist.
+	 *
+	 * @throws std::runtime_error if database can't be opened
 	 */
-	Database(const char* filename, bool create);
-	~Database();
+	Database(const char* filename, bool =true);
+	~Database() noexcept;
 
 	//prevent copy-construction and copying
 	Database(Database&&) = delete;
@@ -53,7 +52,9 @@ public:
 	 * For details see the SQLite C/C++ API documentation (sqlite3_exec).
 	 * @see https://sqlite.org/c3ref/exec.html
 	 *
-	 * @throw Throws an std::runtime_error if it encounters any problems.
+	 * @throw std::runtime_error Thrown if any problems are encountered.
+	 * @throw other May throw other exceptions if it encounters any problems and
+	 * 		the memory allocation for an std::string fails (leaks memory if that happens).
 	 */
 	void querry(const char* sql, int (*callback)(void*,int,char**,char**), void* data);
 
@@ -65,6 +66,8 @@ public:
 	 *
 	 * @param error_msg String into which the error message will be written if an error occurs during execution
 	 * @return Return the SQLite Error code.
+	 *
+	 * @throw std::string may throw, otherwise noexcept
 	 */
 	int querryNoThrow(const char* sql, int (*callback)(void*,int,char**,char**), void* data, std::string& error_msg);
 

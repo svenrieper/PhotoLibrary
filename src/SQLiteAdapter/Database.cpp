@@ -2,7 +2,7 @@
  * Database.cpp
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -28,26 +28,24 @@ Database::Database(const char*, bool) :
 	db(nullptr) {
 	/// \todo Add support for persistence
 	const char* filename = ":memory:";
-	[[maybe_unused]] bool create = true; /// \todo test: file_exists(filename)
 
-	int rc;
-	rc = sqlite3_open(filename, &db);
-
-	if(rc) {
+	if(int rc = sqlite3_open(filename, &db)) { /// \todo add more expressive error messages
 		sqlite3_close(db);
 		throw(std::runtime_error(std::string("Database ") + filename +
-				" couldn't be opened: ")); // + sqlite3_errmsg(db)
+				" couldn't be opened: error code " + std::to_string(rc))); /// \todo prepare for internationalisation
 	}
 }
 
-Database::~Database() {
+Database::~Database() noexcept {
 	sqlite3_close(db);
 }
 
 void Database::querry(const char* sql, int (*callback)(void*,int,char**,char**), void* data) {
 	char* zErrMsg = nullptr;
 	if(sqlite3_exec(db, sql, callback, data, &zErrMsg)) {
-		std::string error_msg = "Error executing SQL command: " + *zErrMsg;
+		// may throw if memory allocation fails
+		std::string error_msg = "Error executing SQL command: " + std::string(zErrMsg);
+		// leaks of std::string throws
 		sqlite3_free(zErrMsg);
 		throw(std::runtime_error(error_msg));
 	}
