@@ -57,7 +57,7 @@ TEMPLATE_TEST_CASE("Test the Keyword interface of the Adapter and the Backend", 
 		CHECK( keyIF->getEntry(keyId2) == key2 );
 		CHECK( keyIF->getEntry(keyId2).getKeyword() == keyword2 );
 
-		Glib::ustring keyword3 = u8"åöß";
+		Glib::ustring keyword3 = "åöß";
 		KeywordRecord key3(0, KeywordRecord::Options::NONE, keyword3);
 		int keyId3;
 		REQUIRE_NOTHROW(keyIF->newEntry(key3));
