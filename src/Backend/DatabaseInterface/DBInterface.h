@@ -2,7 +2,7 @@
  * DBInterface.h
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2001 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -53,13 +53,23 @@ class DBInterface : public Backend::InterfaceBase<RType> {
 public:
 	using RecordType = RType;
 
-#define MACRO_SIZE_LIMIT 6 /// maximum size of RType
+#define MACRO_SIZE_LIMIT 6 /**< maximum size of RType */
 
 	/**
 	 * @param db Handle for the database to use
 	 * @param table name of the associated table
 	 */
-	DBInterface(SQLiteAdapter::Database *db, Glib::ustring table);
+	DBInterface(SQLiteAdapter::Database& db, const Glib::ustring& table);
+
+	/**
+	 * @param db Handle for the database to use
+	 * 		(if db is nullptr behaviour is undefined)
+	 * @param table name of the associated table
+	 *
+	 * \deprecated use DBInterface(SQLiteAdapter::Database&,Glib::ustring&) instead
+	 */
+	[[deprecated("use DBInterface(SQLiteAdapter::Database&,Glib::ustring&) instead")]]
+	DBInterface(SQLiteAdapter::Database *db, const Glib::ustring& table);
 	virtual ~DBInterface() = default;
 
 	RecordType getEntry(int id) const override;
@@ -97,7 +107,7 @@ public:
 	void deleteEntry(int id) override;
 
 protected:
-	SQLiteAdapter::Database* const db;	/**< Database hande used */
+	SQLiteAdapter::Database& db;	/**< Database hande used */
 	const Glib::ustring table; /**< name of the table associated with the derived interface class */
 
 private:
@@ -132,7 +142,7 @@ private:
 	//update 'field' with the retrieved data
 	//use overloaded functions to get the right type
 	void setValue(SQLiteAdapter::SQLQuerry& querry, int column, int_least64_t& field) const {
-		field = querry.getColumnInt64(column);
+		field = querry.getColumnInt<int_least64_t>(column);
 	}
 	void setValue(SQLiteAdapter::SQLQuerry& querry, int column, int& field) const {
 		field = querry.getColumnInt(column);
@@ -149,8 +159,13 @@ private:
 
 //implementation
 template<class RType>
-DBInterface<RType>::DBInterface(SQLiteAdapter::Database *db, Glib::ustring table) :
+DBInterface<RType>::DBInterface(SQLiteAdapter::Database& db, const Glib::ustring& table) :
 		db(db), table(table) {
+}
+
+template<class RType>
+DBInterface<RType>::DBInterface(SQLiteAdapter::Database *db, const Glib::ustring& table) :
+		db(*db), table(table) {
 }
 
 template<class RType>
