@@ -49,17 +49,6 @@ public:
 			const Glib::ustring& entry_name,
 			const Glib::ustring& collection_name);
 
-	/**
-	 * @param db Handle for the database to use
-	 * 		(if db is nullptr behaviour is undefined)
-	 * @param table Name of the associated table
-	 * @param entry_name Name of the database column containing the entry-like ids.
-	 * @param collection_name Name of the database column containing the collection-like ids.
-	 *
-	 * \deprecated use RelationsDBInterface(SQLiteAdapter::Database&,const Glib::ustring&,const Glib::ustring&,const Glib::ustring&) instead
-	 */
-	[[deprecated("use RelationsDBInterface(SQLiteAdapter::Database&,const Glib::ustring&,const Glib::ustring&,const Glib::ustring&) instead")]]
-	RelationsDBInterface(SQLiteAdapter::Database* db, const Glib::ustring& table, const Glib::ustring& entry_name, const Glib::ustring& collection_name);
 	virtual ~RelationsDBInterface() = default;
 
 	std::vector<int> getEntries(int collection) const override;
