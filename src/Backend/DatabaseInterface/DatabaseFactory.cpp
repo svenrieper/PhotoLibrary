@@ -2,7 +2,7 @@
  * DatabaseFactory.cpp
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -25,10 +25,10 @@ namespace DatabaseInterface {
 
 DatabaseFactory::DatabaseFactory(const char* filename, bool initialise) :
 		db(/*filename*/ ":memory:", /*initialise*/ true),
-		keyword_interface(&db, "Keywords"),
-		directories_interface(&db, "Directories"),
-		album_interface(&db, "Albums"),
-		photo_interface(&db, "Photos"),
+		keyword_interface(db, "Keywords"),
+		directories_interface(db, "Directories"),
+		album_interface(db, "Albums"),
+		photo_interface(db, "Photos"),
 		photos_albums_relations(&db, "PhotosAlbumsRelations", "photoId", "albumId"),
 		photos_keywords_relations(&db, "PhotosKeywordsRelations", "photoId", "keywordId") {
 	initialise=true;
