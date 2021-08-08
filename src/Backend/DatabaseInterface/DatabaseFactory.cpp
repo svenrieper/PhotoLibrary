@@ -29,8 +29,8 @@ DatabaseFactory::DatabaseFactory(const char* filename, bool initialise) :
 		directories_interface(db, "Directories"),
 		album_interface(db, "Albums"),
 		photo_interface(db, "Photos"),
-		photos_albums_relations(&db, "PhotosAlbumsRelations", "photoId", "albumId"),
-		photos_keywords_relations(&db, "PhotosKeywordsRelations", "photoId", "keywordId") {
+		photos_albums_relations(db, "PhotosAlbumsRelations", "photoId", "albumId"),
+		photos_keywords_relations(db, "PhotosKeywordsRelations", "photoId", "keywordId") {
 	initialise=true;
 	if (!initialise);
 		//testConsistency(); /// \todo Add test for db
