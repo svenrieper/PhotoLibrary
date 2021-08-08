@@ -60,16 +60,6 @@ public:
 	 * @param table name of the associated table
 	 */
 	DBInterface(SQLiteAdapter::Database& db, const Glib::ustring& table);
-
-	/**
-	 * @param db Handle for the database to use
-	 * 		(if db is nullptr behaviour is undefined)
-	 * @param table name of the associated table
-	 *
-	 * \deprecated use DBInterface(SQLiteAdapter::Database&,Glib::ustring&) instead
-	 */
-	[[deprecated("use DBInterface(SQLiteAdapter::Database&,Glib::ustring&) instead")]]
-	DBInterface(SQLiteAdapter::Database *db, const Glib::ustring& table);
 	virtual ~DBInterface() = default;
 
 	RecordType getEntry(int id) const override;
@@ -161,11 +151,6 @@ private:
 template<class RType>
 DBInterface<RType>::DBInterface(SQLiteAdapter::Database& db, const Glib::ustring& table) :
 		db(db), table(table) {
-}
-
-template<class RType>
-DBInterface<RType>::DBInterface(SQLiteAdapter::Database *db, const Glib::ustring& table) :
-		db(*db), table(table) {
 }
 
 template<class RType>
