@@ -32,8 +32,8 @@ namespace DatabaseInterface {
  * Implementation of the relations interface for the SQLite database.
  * Used to get, add, and delete relations for many-to-many relationships
  * with integer keys.
- * The interface assumes that there is some kind of collections-entries
- * relationship.
+ * The naming of the interface assumes that there is some kind of
+ * collections-entries relationship.
  */
 class RelationsDBInterface: public Backend::RelationsInterfaceBase {
 public:
@@ -43,6 +43,22 @@ public:
 	 * @param entry_name Name of the database column containing the entry-like ids.
 	 * @param collection_name Name of the database column containing the collection-like ids.
 	 */
+	RelationsDBInterface(
+			SQLiteAdapter::Database& db,
+			const Glib::ustring& table,
+			const Glib::ustring& entry_name,
+			const Glib::ustring& collection_name);
+
+	/**
+	 * @param db Handle for the database to use
+	 * 		(if db is nullptr behaviour is undefined)
+	 * @param table Name of the associated table
+	 * @param entry_name Name of the database column containing the entry-like ids.
+	 * @param collection_name Name of the database column containing the collection-like ids.
+	 *
+	 * \deprecated use RelationsDBInterface(SQLiteAdapter::Database&,const Glib::ustring&,const Glib::ustring&,const Glib::ustring&) instead
+	 */
+	[[deprecated("use RelationsDBInterface(SQLiteAdapter::Database&,const Glib::ustring&,const Glib::ustring&,const Glib::ustring&) instead")]]
 	RelationsDBInterface(SQLiteAdapter::Database* db, const Glib::ustring& table, const Glib::ustring& entry_name, const Glib::ustring& collection_name);
 	virtual ~RelationsDBInterface() = default;
 
@@ -54,7 +70,7 @@ public:
 	void deleteRelation(int entry, int collection) override;
 
 private:
-	SQLiteAdapter::Database* const db;
+	SQLiteAdapter::Database& db;
 	const Glib::ustring table;
 	const Glib::ustring entry_name;
 	const Glib::ustring collection_name;

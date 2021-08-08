@@ -24,9 +24,20 @@ namespace PhotoLibrary {
 namespace Backend {
 namespace DatabaseInterface {
 
+RelationsDBInterface::RelationsDBInterface(
+		SQLiteAdapter::Database& db,
+		const Glib::ustring& table,
+		const Glib::ustring& entry_name,
+		const Glib::ustring& collection_name) :
+				db(db),
+				table(table),
+				entry_name(entry_name),
+				collection_name(collection_name) {
+}
+
 RelationsDBInterface::RelationsDBInterface(SQLiteAdapter::Database* db, const Glib::ustring& table,
 		const Glib::ustring& entry_name, const Glib::ustring& collection_name) :
-				db(db),
+				db(*db),
 				table(table),
 				entry_name(entry_name),
 				collection_name(collection_name) {
