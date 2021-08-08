@@ -2,7 +2,7 @@
  * SQLQuerry.h
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -20,8 +20,9 @@
 #ifndef SRC_SQLQUERRY_H_
 #define SRC_SQLQUERRY_H_
 
-#include <string>
+#include "../src/Support/Concepts.h"
 #include <sqlite3.h>
+#include <string>
 #include <cstdint>
 
 namespace PhotoLibrary {
@@ -45,12 +46,23 @@ class Database;
 class SQLQuerry {
 public:
 	/**
+	 * @param db Handle for the database to send the querry to
+	 * @param querry Semicolon seperated list of SQL querries
 	 * @throws std::runtime_error if preparing the first SQL statement fails.
-	 * @param db handle for the database to send the querry to
-	 * @param querry semicolon seperated list of SQL querries
 	 */
+	SQLQuerry(Database& db, const char* querry);
+
+	/**
+	 * @param db Handle for the database to send the querry to.
+	 * 		If db is nullptr behaviour is undefined.
+	 * @param querry Semicolon seperated list of SQL querries
+	 * @throws std::runtime_error if preparing the first SQL statement fails.
+	 *
+	 * \deprecated use SQLQuerry(Database& db, const char* querry) instead
+	 */
+	[[deprecated("use SQLQuerry(Database& db, const char* querry) instead")]]
 	SQLQuerry(Database* db, const char* querry);
-	~SQLQuerry();
+	~SQLQuerry() noexcept;
 
 	/**
 	 * Evalueate the SQL statement.
@@ -59,7 +71,7 @@ public:
 	 *
 	 * @return returns the return value of sqlite3_step(sqlite3_stmt*)
 	 */
-	int nextRow();
+	int nextRow() noexcept;
 
 	/**
 	 * Get the number of columns in the result set.
@@ -67,35 +79,53 @@ public:
 	 *
 	 * @return number of columns in the result set.
 	 */
-	int columnCount();
+	int columnCount() noexcept;
 
 	/**
 	 * Get the content of a column as a string.
 	 * Returns the content of column 'colNum' as a  utf8 string.
+	 *
+	 * The access is unchecked:
+	 * The behaviour is undefined if colNum not in [0;columnCount()),
+	 * or the last call to nextRow() didn't return 100(SQLITE_ROW) or
+	 * nextRow() wasn't called since construction ot the last call of nextStatement().
 	 * @see https://sqlite.org/c3ref/column_blob.html
 	 *
+	 * @tparam S Support::String_type that should be returned (default: std::string)
 	 * @param colNum number of the column from the result to return
-	 * @return string representation of 'colNum', empty string if content is NULL
+	 * @return Text representation of 'colNum', empty string if content is NULL
+	 *
+	 * @throws Anything thrown by the constructor of S (S() or S(const char*))
 	 */
-	std::string getColumnText(int colNum);
+	template<Support::String_type S=std::string>
+	S getColumnText(int colNum);
 
 	/**
 	 * Get the content of a column as an int.
 	 * @see https://sqlite.org/c3ref/column_blob.html
+	 * @see getColumnText(int)
 	 *
+	 * @tparam I Integral type to be returned (default: int)
 	 * @param colNum number of the column from the result to return
 	 * @return value of 'colNum'
+	 *
+	 * \todo allow enum|s?
 	 */
-	int getColumnInt(int colNum);
+	template<std::integral I=int>
+	I getColumnInt(int colNum) noexcept;
 
 	/**
 	 * Get the content of a column as an int_least64_t.
 	 * @see https://sqlite.org/c3ref/column_blob.html
+	 * @see getColumnText(int)
 	 *
 	 * @param colNum number of the column from the result to return
 	 * @return value of 'colNum'
+	 *
+	 * \deprecated Use getColumnInt<int_least64_t>(int) instead
 	 */
-	int_least64_t getColumnInt64(int colNum);
+	[[deprecated("use getColumnInt<int_least64_t> instead")]]
+	int_least64_t getColumnInt64(int colNum) noexcept;
 
 	/**
 	 * Prepare the next SQL querry.
@@ -105,13 +135,25 @@ public:
 	void nextStatement();
 
 private:
-	Database* db;
+	Database& db;
 	sqlite3_stmt* sqlStmt;
 	const char* nextStmt;
 
 	void prepareStmt();
 	friend Database;	//is there another solution to make (private) prepareStmt a friend of Database?
 };
+
+//implementation
+template<Support::String_type S>
+S SQLQuerry::getColumnText(int colNum) {
+	const unsigned char* value = sqlite3_column_text(sqlStmt, colNum);
+	return value?S{reinterpret_cast<const char*>(value)}:S{};
+}
+
+template<std::integral I>
+I SQLQuerry::getColumnInt(int colNum) noexcept {
+	return sqlite3_column_int64(sqlStmt, colNum);
+}
 
 } /* namespace SQLiteAdapter */
 } /* namespace PhotoLibrary */
