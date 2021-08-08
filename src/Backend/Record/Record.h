@@ -2,7 +2,7 @@
  * Record.h
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -102,7 +102,7 @@ protected:
 	 * @param args initial values to be saved in the Record
 	 */
 	template<typename... Ts>
-	Record(Ts&&... args) : values{args...} {}
+	Record(Ts&&... args) : values{std::forward<Ts>(args)...} {}
 
 	/**
 	 * @tparam Ts types of the elements of Tuple

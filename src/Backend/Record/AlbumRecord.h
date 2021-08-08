@@ -42,12 +42,12 @@ public:
 	 * @param name the album name
 	 */
 	AlbumRecord(int parent_id=0, Options options = Options::NONE, Glib::ustring&& name="") :
-		Record<AlbumTuple>(parent_id, options, name) {};
+		Record<AlbumTuple>(parent_id, options, std::move(name)) {};
 
 	/**
 	 * \copydoc AlbumRecord
 	 */
-	AlbumRecord(const int parent_id, const Options options, const Glib::ustring& name) :
+	AlbumRecord(int parent_id, Options options, const Glib::ustring& name) :
 		Record<AlbumTuple>(parent_id, options, name) {}
 
 	/**

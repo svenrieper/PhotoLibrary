@@ -43,12 +43,12 @@ public:
 	 * @param synonyms synonyms of the keyword
 	 */
 	KeywordRecord(int parent_id=0, Options options = Options::NONE, Glib::ustring&& key="", Glib::ustring&& synonyms="") :
-		Record<KeywordTuple>(parent_id, options, key, synonyms) {}
+		Record<KeywordTuple>(parent_id, options, std::move(key), std::move(synonyms)) {}
 
 	/**
 	 * \copydoc KeywordRecord
 	 */
-	KeywordRecord(const int parent_id, const Options options, const Glib::ustring& key, const Glib::ustring& synonyms="") :
+	KeywordRecord(int parent_id, Options options, const Glib::ustring& key, const Glib::ustring& synonyms="") :
 		Record<KeywordTuple>(parent_id, options, key, synonyms) {}
 
 	/**

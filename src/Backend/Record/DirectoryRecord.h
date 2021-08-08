@@ -43,12 +43,12 @@ public:
 	 * @param fullname full path for 'root' directories, the directory name otherwise
 	 */
 	DirectoryRecord(int parent_id=0, Options options = Options::NONE, Glib::ustring&& name="", Glib::ustring&& fullname="") :
-		Record<DirectoryTuple>(parent_id, options, name, fullname) {}
+		Record<DirectoryTuple>(parent_id, options, std::move(name), std::move(fullname)) {}
 
 	/**
 	 * \copydoc DirectoryRecord
 	 */
-	DirectoryRecord(const int parent_id, const Options options, const Glib::ustring& name, const Glib::ustring& fullname="") :
+	DirectoryRecord(int parent_id, Options options, const Glib::ustring& name, const Glib::ustring& fullname="") :
 		Record<DirectoryTuple>(parent_id, options, name, fullname) {}
 
 	/**

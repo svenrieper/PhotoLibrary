@@ -46,12 +46,12 @@ public:
 	 * @param height height of the photo in pixel
 	 */
 	PhotoRecord(int directory=0, Glib::ustring&& filename={}, int rating=0, int_least64_t datetime=0, int width=0, int height=0) :
-			Record<PhotoTuple>(directory, filename, rating, datetime, width, height) {}
+			Record<PhotoTuple>(directory, std::move(filename), rating, datetime, width, height) {}
 
 	/**
 	* \copydoc PhotoRecord(int,Glib::ustring&&,int,int_least64_t,int,int)
 	*/
-	PhotoRecord(const int directory, const Glib::ustring& filename, const int rating=0, const int_least64_t datetime=0, const int width=0, const int height=0) :
+	PhotoRecord(int directory, const Glib::ustring& filename, int rating=0, int_least64_t datetime=0, int width=0, int height=0) :
 			Record<PhotoTuple>(directory, filename, rating, datetime, width, height) {}
 
 	/**
