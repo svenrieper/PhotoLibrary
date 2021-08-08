@@ -25,17 +25,6 @@
 namespace PhotoLibrary {
 namespace SQLiteAdapter {
 
-SQLQuerry::SQLQuerry(Database* db, const char* querry) : db(*db), sqlStmt(nullptr), nextStmt(querry) {
-	try {
-		prepareStmt();
-	}
-	catch (...) {
-		sqlite3_finalize(sqlStmt);
-		sqlStmt = nullptr;
-		throw;
-	}
-}
-
 SQLQuerry::SQLQuerry(Database& db, const char* querry) : db(db), sqlStmt(nullptr), nextStmt(querry) {
 	try {
 		prepareStmt();
@@ -57,10 +46,6 @@ int SQLQuerry::nextRow() noexcept {
 
 int SQLQuerry::columnCount() noexcept {
 	return sqlite3_column_count(sqlStmt);
-}
-
-int_least64_t SQLQuerry::getColumnInt64(int colNum) noexcept {
-	return sqlite3_column_int64(sqlStmt, colNum);
 }
 
 void SQLQuerry::nextStatement() {

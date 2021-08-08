@@ -52,16 +52,6 @@ public:
 	 */
 	SQLQuerry(Database& db, const char* querry);
 
-	/**
-	 * @param db Handle for the database to send the querry to.
-	 * 		If db is nullptr behaviour is undefined.
-	 * @param querry Semicolon seperated list of SQL querries
-	 * @throws std::runtime_error if preparing the first SQL statement fails.
-	 *
-	 * \deprecated use SQLQuerry(Database& db, const char* querry) instead
-	 */
-	[[deprecated("use SQLQuerry(Database& db, const char* querry) instead")]]
-	SQLQuerry(Database* db, const char* querry);
 	~SQLQuerry() noexcept;
 
 	/**
@@ -113,19 +103,6 @@ public:
 	 */
 	template<std::integral I=int>
 	I getColumnInt(int colNum) noexcept;
-
-	/**
-	 * Get the content of a column as an int_least64_t.
-	 * @see https://sqlite.org/c3ref/column_blob.html
-	 * @see getColumnText(int)
-	 *
-	 * @param colNum number of the column from the result to return
-	 * @return value of 'colNum'
-	 *
-	 * \deprecated Use getColumnInt<int_least64_t>(int) instead
-	 */
-	[[deprecated("use getColumnInt<int_least64_t> instead")]]
-	int_least64_t getColumnInt64(int colNum) noexcept;
 
 	/**
 	 * Prepare the next SQL querry.
