@@ -100,7 +100,7 @@ protected:
 
 private:
 	void appendSQL(Glib::ustring* sql, Glib::ustring append, bool escape=true) const {
-		escapeSingleQuotes(&append);
+		escapeSingleQuotes(append);
 		*sql += (escape?"'":"") + append + (escape?"'":"");
 	}
 

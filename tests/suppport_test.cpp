@@ -27,22 +27,22 @@ namespace DatabaseInterface {
 TEST_CASE( "escapeSingleQuotes doesn't change a string that doesn't contain singel quotes",
 		"[support][ustring][escapeSingleQuotes]" ) {
 	Glib::ustring str = "some test string";
-	escapeSingleQuotes(&str);
+	escapeSingleQuotes(str);
 	CHECK(str == "some test string");
 
 	Glib::ustring str2 = "";
-	escapeSingleQuotes(&str2);
+	escapeSingleQuotes(str2);
 	CHECK(str2 == "");
 }
 
 TEST_CASE( "escapeSingleQuotes escapes singel quotes", "[support][ustring][escapeSingleQuotes]" ) {
 	Glib::ustring str = "some 'test' string";
-	escapeSingleQuotes(&str);
+	escapeSingleQuotes(str);
 	CHECK(str == "some ''test'' string");
 
 
 	Glib::ustring str2 = "'some' ''test'' 'string'''";
-	escapeSingleQuotes(&str2);
+	escapeSingleQuotes(str2);
 	CHECK(str2 == "''some'' ''''test'''' ''string''''''");
 }
 
