@@ -34,11 +34,9 @@ namespace DatabaseInterface {
 
 /**
  * Backend interface to the database.
- * Currently works for Backend::Record classes based on
- * up to six-tuples.
  *
  * The RType method Backend::Record::getField(int) should return
- * the name of the column for the data returned with
+ * the name of the database column for the data returned with
  * Backend::Record::access<int>().
  * Backend::Record::getField(0) should hold the name of the column
  * containing the parent id or whatever come closest to the parent id.
@@ -53,7 +51,7 @@ class DBInterface : public Backend::InterfaceBase<RType> {
 public:
 	using RecordType = RType;
 
-#define MACRO_SIZE_LIMIT 6 /**< maximum size of RType */
+#define MACRO_SIZE_LIMIT MACRO_PHOTOLIBRARY_TUPLE_SIZE_LIMIT /**< maximum size of RType */
 
 	/**
 	 * @param db Handle for the database to use

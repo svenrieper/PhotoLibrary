@@ -28,6 +28,8 @@ namespace PhotoLibrary {
 namespace Backend {
 
 namespace RecordOptions {
+#define MACRO_PHOTOLIBRARY_TUPLE_SIZE_LIMIT 6 /**< maximum number of elements for Record|s Tuple parameter */
+
 /**
  * Possible options of a record.
  */
@@ -47,12 +49,14 @@ enum Options {
  *
  * @tparam Tuple class to hold the data. Should have the interface
  * of an std::tuple inlcuding std::get and std::tuple_size
- * (e.g. std::tuple, std::pair, or std::array only tested for std::tuple|s).
- * For constraints see also Adapter::DBInterface
+ * (e.g. std::tuple, std::pair, or std::array; only tested for std::tuple|s).
+ * It works with a tuple size up to six (defined in the
+ * MACRO_PHOTOLIBRARY_TUPLE_SIZE_LIMIT macro).
  */
 template<typename Tuple>
 class Record {
 public:
+	static_assert(std::tuple_size<Tuple>::value <= MACRO_PHOTOLIBRARY_TUPLE_SIZE_LIMIT);
 	using Options = RecordOptions::Options;
 
 	/**
@@ -60,7 +64,7 @@ public:
 	 *
 	 * @return number of data fields in the record
 	 */
-	static constexpr int size() { return std::tuple_size<Tuple>::value; }
+	static constexpr int size() noexcept { return std::tuple_size<Tuple>::value; }
 
 	/**
 	 * Access a data field.
@@ -70,8 +74,8 @@ public:
 	 * @return reference to the data
 	 */
 	template<int N>
-	auto& access() {
-		return std::get<N%std::tuple_size<Tuple>::value>(values);
+	auto& access() noexcept {
+		return std::get<N%size()>(values);
 	}
 
 	/**
@@ -82,24 +86,32 @@ public:
 	 * @return value to the data
 	 */
 	template<int N>
-	const auto& access() const {
-		return std::get<N%std::tuple_size<Tuple>::value>(values);
+	const auto& access() const noexcept {
+		return std::get<N%size()>(values);
 	}
 
 protected:
 	/**
 	 * @param values the tuple containig the data
+	 *
+	 * @throws Anything the copy constructors of the
+	 * Types arguments of Tuple may throw
 	 */
 	Record(const Tuple& values) : values(values) {}
 
 	/**
-	* \copydoc Record(const Tuple&)
-	*/
-	Record(Tuple&& values) : values(values) {}
+	 * @param values the tuple containig the data
+	 *
+	 * @throws Anything the copy or move constructors
+	 * of the Types arguments of Tuple may throw
+	 */
+	Record(Tuple&& values) : values(std::move(values)) {}
 
 	/**
 	 * @tparam Ts types of the elements of Tuple
 	 * @param args initial values to be saved in the Record
+	 *
+	 * @throws Anything Ts' move or copy constructors may throw
 	 */
 	template<typename... Ts>
 	Record(Ts&&... args) : values{std::forward<Ts>(args)...} {}
@@ -107,53 +119,49 @@ protected:
 	/**
 	 * @tparam Ts types of the elements of Tuple
 	 * @param args initial values to be saved in the Record
+	 *
+	 * @throws Anything Ts' copy constructors may throw
 	 */
 	template<typename... Ts>
 	Record(const Ts&... args) : values{args...} {}
 
 private:
 	Tuple values;
+
+	template<typename T>
+	friend constexpr auto operator<=>(const Record<T>&, const Record<T>&);
+	template<typename T>
+	friend constexpr bool operator==(const Record<T>&, const Record<T>&);
 };
 
 /**
- * Default compare equal operator.
- *
- * \todo make friend of Record and use a.values == b.values
+ * Default compare equal operator for Record<Tuple>|s.
  */
 template<typename Tuple>
-bool operator==(const Record<Tuple>& a, const Record<Tuple>& b) {
-	constexpr int i = 6;
-	return &a==&b ||
-			(a.size() <= i
-			&& a.template access<1>() == b.template access<1>()
-			&& a.template access<2>() == b.template access<2>()
-			&& a.template access<3>() == b.template access<3>()
-			&& a.template access<4>() == b.template access<4>()
-			&& a.template access<5>() == b.template access<5>()
-			&& a.template access<6>() == b.template access<6>()
-			);
+constexpr bool operator==(const Record<Tuple>& a, const Record<Tuple>& b) {
+	return a.values == b.values;
 }
 
 /**
- * Default compare not equal operator.
+ * Default three-way comparison operator for Record<Tuple>|s
  */
 template<typename Tuple>
-bool operator!=(const Record<Tuple>& a, const Record<Tuple>& b) {
-	return !(a==b);
+constexpr auto operator<=>(const Record<Tuple>& a, const Record<Tuple>& b) {
+	return a.values <=> b.values;
 }
 
 namespace RecordOptions {
 /**
  * Default bitwise and, or, and xor on two Options returns an Options
  */
-inline Options& operator^=(Options& a, const Options& b) {
+inline Options& operator^=(Options& a, const Options& b) noexcept {
 	return (a = static_cast<Options>(a ^ b));
 }
 
 /**
  * Default bitwise and, or, and xor on two Options returns an Options
  */
-inline constexpr Options operator|(Options a, Options b) {
+inline constexpr Options operator|(Options a, Options b) noexcept {
 	return static_cast<Options>(static_cast<int>(a)|b);
 }
 }
