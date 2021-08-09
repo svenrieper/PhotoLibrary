@@ -31,6 +31,14 @@ namespace DatabaseInterface {
  * Escapes single quotes (') with single quotes for SQLite querries.
  * @param[in, out] string the string to be escaped
  */
+void escapeSingleQuotes(Glib::ustring& string);
+
+/**
+ * \copydoc escapeSingleQuotes(Glib::ustring&)
+ *
+ * \deprecated Use escapeSingleQuotes(Glib::ustring&) instead
+ */
+[[deprecated("Use escapeSingleQuotes(Glib::ustring&) instead")]]
 void escapeSingleQuotes(Glib::ustring* string);
 
 //namespace Adapter {

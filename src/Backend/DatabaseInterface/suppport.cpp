@@ -24,11 +24,15 @@ namespace PhotoLibrary {
 namespace Backend {
 namespace DatabaseInterface {
 
-void escapeSingleQuotes(Glib::ustring* string) {
-	for(auto iter = string->begin();
-			(iter = std::find(iter, string->end(), '\'')) != string->end();
+void escapeSingleQuotes(Glib::ustring& string) {
+	for(auto iter = string.begin();
+			(iter = std::find(iter, string.end(), '\'')) != string.end();
 			++(++iter))
-		iter = string->insert(iter, '\'');
+		iter = string.insert(iter, '\'');
+}
+
+void escapeSingleQuotes(Glib::ustring* string) {
+	escapeSingleQuotes(*string);
 }
 
 } /* namespace DatabaseInterface */
