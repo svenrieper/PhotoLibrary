@@ -155,6 +155,8 @@ public:
 
 private:
 	static inline const std::array<Glib::ustring,6> fields {"directory", "filename", "rating", "datetime", "width", "height"};
+
+	static_assert(fields.size() == size());
 };
 
 } /* namespace Backend */

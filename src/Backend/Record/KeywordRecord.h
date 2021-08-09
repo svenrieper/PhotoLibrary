@@ -122,6 +122,8 @@ public:
 
 private:
 	static inline const std::array<Glib::ustring,4> fields {"parent", "attributes", "keyword", "synonyms"};
+
+	static_assert(fields.size() == size());
 };
 
 /**
