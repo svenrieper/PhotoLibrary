@@ -34,15 +34,6 @@ namespace DatabaseInterface {
 void escapeSingleQuotes(Glib::ustring& string);
 
 /**
- * \copydoc escapeSingleQuotes(Glib::ustring&)
- *
- * \deprecated Use escapeSingleQuotes(Glib::ustring&) instead
- */
-[[deprecated("Use escapeSingleQuotes(Glib::ustring&) instead")]]
-void escapeSingleQuotes(Glib::ustring* string);
-
-//namespace Adapter {
-/**
  * Thrown to indicate constraint violations.
  * Thrown when INSERT|s and UPDATE|s in the databaes fail due to constraint violations
  * so that they can be discriminated from other runtime_error|s and handled appropriately.

@@ -31,10 +31,6 @@ void escapeSingleQuotes(Glib::ustring& string) {
 		iter = string.insert(iter, '\'');
 }
 
-void escapeSingleQuotes(Glib::ustring* string) {
-	escapeSingleQuotes(*string);
-}
-
 } /* namespace DatabaseInterface */
 } /* namespace Backend */
 } /* namespace PhotoLibrary */
