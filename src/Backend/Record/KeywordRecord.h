@@ -42,14 +42,33 @@ public:
 	 * @param key the keyword
 	 * @param synonyms synonyms of the keyword
 	 */
-	KeywordRecord(int parent_id=0, Options options = Options::NONE, Glib::ustring&& key="", Glib::ustring&& synonyms="") :
+	KeywordRecord(
+			int parent_id=0,
+			Options options=Options::NONE,
+			const Glib::ustring& key={},
+			const Glib::ustring& synonyms={}
+			) :
+		Record<KeywordTuple>(parent_id, options, key, synonyms) {}
+
+	/**
+	 * \copydoc KeywordRecord
+	 */
+	KeywordRecord(int parent_id, Options options, Glib::ustring&& key, const Glib::ustring& synonyms={}) :
+		Record<KeywordTuple>(parent_id, options, std::move(key), synonyms) {}
+
+	/**
+	 * \copydoc KeywordRecord
+	 */
+	KeywordRecord(int parent_id, Options options, Glib::ustring&& key, Glib::ustring&& synonyms) :
 		Record<KeywordTuple>(parent_id, options, std::move(key), std::move(synonyms)) {}
 
 	/**
 	 * \copydoc KeywordRecord
 	 */
-	KeywordRecord(int parent_id, Options options, const Glib::ustring& key, const Glib::ustring& synonyms="") :
-		Record<KeywordTuple>(parent_id, options, key, synonyms) {}
+	KeywordRecord(int parent_id, Options options, const Glib::ustring& key, Glib::ustring&& synonyms) :
+		Record<KeywordTuple>(parent_id, options, key, std::move(synonyms)) {}
+
+	virtual ~KeywordRecord() noexcept = default;
 
 	/**
 	 * Set the parent id.
@@ -57,14 +76,14 @@ public:
 	 *
 	 * @return reference to the parent id
 	 */
-	int& setParent() { return access<0>(); }
+	int& setParent() noexcept { return access<0>(); }
 
 	/**
 	 * Get the parent id.
 	 *
 	 * @return value of the parent id
 	 */
-	int getParent() const { return access<0>(); }
+	int getParent() const noexcept { return access<0>(); }
 
 	/**
 	 * Set the options.
@@ -72,14 +91,14 @@ public:
 	 *
 	 * @return reference to the options
 	 */
-	Options& setOptions() { return access<1>(); }
+	Options& setOptions() noexcept { return access<1>(); }
 
 	/**
 	 * Get the options.
 	 *
 	 * @return value ot the options
 	 */
-	const Options& getOptions() const { return access<1>(); }
+	const Options getOptions() const noexcept { return access<1>(); }
 
 	/**
 	 * Set the keyword.
@@ -87,14 +106,14 @@ public:
 	 *
 	 * @return reference to the keyword
 	 */
-	Glib::ustring& setKeyword() { return access<2>(); }
+	Glib::ustring& setKeyword() noexcept { return access<2>(); }
 
 	/**
 	 * Get the keyword.
 	 *
 	 * @return value of the keyword
 	 */
-	const Glib::ustring& getKeyword() const { return access<2>(); }
+	const Glib::ustring& getKeyword() const noexcept { return access<2>(); }
 
 	/**
 	 * Set the synonyms.
@@ -102,14 +121,14 @@ public:
 	 *
 	 * @return reference to the synonyms
 	 */
-	Glib::ustring& setSynonyms() { return access<3>(); }
+	Glib::ustring& setSynonyms() noexcept { return access<3>(); }
 
 	/**
 	 * Get the synonyms.
 	 *
 	 * @return value of the synonyms
 	 */
-	const Glib::ustring& getSynonyms() const { return access<3>(); }
+	const Glib::ustring& getSynonyms() const noexcept { return access<3>(); }
 
 	/**
 	 * Get the name of a data field.
@@ -117,11 +136,13 @@ public:
 	 *
 	 * @param i number of the data field
 	 * @return name of the data field
+	 *
+	 * @throws std::out_of_range if std::array<T>::operator[] is range checked and i is not in [0;size())
 	 */
-	static const Glib::ustring& getField(int i) { return fields.at(i); }
+	static const Glib::ustring& getField(int i) { return fields[i]; }
 
 private:
-	static inline const std::array<Glib::ustring,4> fields {"parent", "attributes", "keyword", "synonyms"};
+	static inline const std::array<const Glib::ustring,4> fields {"parent", "attributes", "keyword", "synonyms"};
 
 	static_assert(fields.size() == size());
 };
@@ -140,8 +161,33 @@ public:
 	 * @param key the keyword
 	 * @param synonyms synonyms of the keyword
 	 */
-	NewKeywordRecord(int parent_id, Options options = Options::NONE, Glib::ustring key="", Glib::ustring synonyms="") :
+	NewKeywordRecord(
+			int parent_id,
+			Options options = Options::NONE,
+			const Glib::ustring& key={},
+			const Glib::ustring& synonyms={}
+			) :
 		KeywordRecord(parent_id, options, key, synonyms), new_parent_id_backup(parent_id) {}
+
+	/**
+	 * \copydoc NewKeywordRecord
+	 */
+	NewKeywordRecord(int parent_id, Options options, Glib::ustring&& key, const Glib::ustring& synonyms={}) :
+		KeywordRecord(parent_id, options, std::move(key), synonyms), new_parent_id_backup(parent_id) {}
+
+	/**
+	 * \copydoc NewKeywordRecord
+	 */
+	NewKeywordRecord(int parent_id, Options options, Glib::ustring&& key, Glib::ustring&& synonyms) :
+		KeywordRecord(parent_id, options, std::move(key), std::move(synonyms)), new_parent_id_backup(parent_id) {}
+
+	/**
+	 * \copydoc NewKeywordRecord
+	 */
+	NewKeywordRecord(int parent_id, Options options, const Glib::ustring& key, Glib::ustring&& synonyms) :
+		KeywordRecord(parent_id, options, key, std::move(synonyms)), new_parent_id_backup(parent_id) {}
+
+	virtual ~NewKeywordRecord() noexcept = default;
 
 	int new_parent_id_backup;	/**< Id of the potential parent of the new keyword */
 };

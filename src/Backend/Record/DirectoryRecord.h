@@ -42,14 +42,31 @@ public:
 	 * @param name the directory name
 	 * @param fullname full path for 'root' directories, the directory name otherwise
 	 */
-	DirectoryRecord(int parent_id=0, Options options = Options::NONE, Glib::ustring&& name="", Glib::ustring&& fullname="") :
+	DirectoryRecord(
+			int parent_id=0,
+			Options options=Options::NONE,
+			const Glib::ustring& name={},
+			const Glib::ustring& fullname={}
+			) :
+		Record<DirectoryTuple>(parent_id, options, name, fullname) {}
+
+	/**
+	 * \copydoc DirectoryRecord
+	 */
+	DirectoryRecord(int parent_id, Options options, Glib::ustring&& name, const Glib::ustring& fullname={}) :
+		Record<DirectoryTuple>(parent_id, options, std::move(name), fullname) {}
+
+	/**
+	 * \copydoc DirectoryRecord
+	 */
+	DirectoryRecord(int parent_id, Options options, Glib::ustring&& name, Glib::ustring&& fullname) :
 		Record<DirectoryTuple>(parent_id, options, std::move(name), std::move(fullname)) {}
 
 	/**
 	 * \copydoc DirectoryRecord
 	 */
-	DirectoryRecord(int parent_id, Options options, const Glib::ustring& name, const Glib::ustring& fullname="") :
-		Record<DirectoryTuple>(parent_id, options, name, fullname) {}
+	DirectoryRecord(int parent_id, Options options, const Glib::ustring& name, Glib::ustring&& fullname) :
+		Record<DirectoryTuple>(parent_id, options, name, std::move(fullname)) {}
 
 	/**
 	 * Set the parent id.
@@ -57,14 +74,14 @@ public:
 	 *
 	 * @return reference to the parent id
 	 */
-	int& setParent() { return access<0>(); }
+	int& setParent() noexcept { return access<0>(); }
 
 	/**
 	 * Get the parent id.
 	 *
 	 * @return value of the parent id
 	 */
-	int getParent() const { return access<0>(); }
+	int getParent() const noexcept { return access<0>(); }
 
 	/**
 	 * Set the options.
@@ -72,14 +89,14 @@ public:
 	 *
 	 * @return reference to the options
 	 */
-	Options& setOptions() { return access<1>(); }
+	Options& setOptions() noexcept { return access<1>(); }
 
 	/**
 	 * Get the options.
 	 *
 	 * @return value ot the options
 	 */
-	const Options& getOptions() const { return access<1>(); }
+	const Options getOptions() const noexcept { return access<1>(); }
 
 	/**
 	 * Set the directroy name.
@@ -87,14 +104,14 @@ public:
 	 *
 	 * @return reference to the directory name
 	 */
-	Glib::ustring& setDirectory() { return access<2>(); }
+	Glib::ustring& setDirectory() noexcept { return access<2>(); }
 
 	/**
 	 * Get the dierectory name.
 	 *
 	 * @return value of the directory name
 	 */
-	const Glib::ustring& getDirectory() const { return access<2>(); }
+	const Glib::ustring& getDirectory() const noexcept { return access<2>(); }
 
 	/**
 	 * Set the full directory name.
@@ -102,14 +119,14 @@ public:
 	 *
 	 * @return reference to the full directory name
 	 */
-	Glib::ustring& setFullDirectory() { return access<3>(); }
+	Glib::ustring& setFullDirectory() noexcept { return access<3>(); }
 
 	/**
 	 * Get the full directory name.
 	 *
 	 * @return value of the full directory name
 	 */
-	const Glib::ustring& getFullDirectory() const { return access<3>(); }
+	const Glib::ustring& getFullDirectory() const noexcept { return access<3>(); }
 
 	/**
 	 * Get the name of a data field.
@@ -117,11 +134,13 @@ public:
 	 *
 	 * @param i number of the data field
 	 * @return name of the data field
+	 *
+	 * @throws @throws std::out_of_range if std::array<T>::operator[] is range checked and i is not in [0;size())
 	 */
-	static const Glib::ustring& getField(int i) { return fields.at(i); }
+	static const Glib::ustring& getField(int i) { return fields[i]; }
 
 private:
-	static inline const std::array<Glib::ustring,4> fields {"parent", "attributes", "name", "fullname"};
+	static inline const std::array<const Glib::ustring,4> fields {"parent", "attributes", "name", "fullname"};
 
 	static_assert(fields.size() == size());
 };

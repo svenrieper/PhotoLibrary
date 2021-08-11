@@ -45,14 +45,28 @@ public:
 	 * @param width width of the photo in pixel
 	 * @param height height of the photo in pixel
 	 */
-	PhotoRecord(int directory=0, Glib::ustring&& filename={}, int rating=0, int_least64_t datetime=0, int width=0, int height=0) :
-			Record<PhotoTuple>(directory, std::move(filename), rating, datetime, width, height) {}
+	PhotoRecord(
+			int directory=0,
+			const Glib::ustring& filename={},
+			int rating=0,
+			int_least64_t datetime=0,
+			int width=0,
+			int height=0
+			) :
+		Record<PhotoTuple>(directory, filename, rating, datetime, width, height) {}
 
 	/**
 	* \copydoc PhotoRecord(int,Glib::ustring&&,int,int_least64_t,int,int)
 	*/
-	PhotoRecord(int directory, const Glib::ustring& filename, int rating=0, int_least64_t datetime=0, int width=0, int height=0) :
-			Record<PhotoTuple>(directory, filename, rating, datetime, width, height) {}
+	PhotoRecord(
+			int directory,
+			Glib::ustring&& filename,
+			int rating=0,
+			int_least64_t datetime=0,
+			int width=0,
+			int height=0
+			) :
+		Record<PhotoTuple>(directory, std::move(filename), rating, datetime, width, height) {}
 
 	/**
 	 * Set the directory.
@@ -60,14 +74,14 @@ public:
 	 *
 	 * @return reference to the directory id
 	 */
-	int& setDirectory() { return access<0>(); }
+	int& setDirectory() noexcept { return access<0>(); }
 
 	/**
 	 * Get the directory id.
 	 *
 	 * @return value of the directory id
 	 */
-	int getDirectory() const { return access<0>(); }
+	int getDirectory() const noexcept { return access<0>(); }
 
 	/**
 	 * Set the filename of the photo.
@@ -75,14 +89,14 @@ public:
 	 *
 	 * @return reference to the filename of the photo
 	 */
-	Glib::ustring& setFilename() { return access<1>(); }
+	Glib::ustring& setFilename() noexcept { return access<1>(); }
 
 	/**
 	 * Get the filename of the photo.
 	 *
 	 * @return value of the filename of the photo
 	 */
-	const Glib::ustring& getFilename() const { return access<1>(); }
+	const Glib::ustring& getFilename() const noexcept { return access<1>(); }
 
 	/**
 	 * Set the rating.
@@ -90,14 +104,14 @@ public:
 	 *
 	 * @return reference to the rating
 	 */
-	int& setRating() { return access<2>(); }
+	int& setRating() noexcept { return access<2>(); }
 
 	/**
 	 * Get the rating.
 	 *
 	 * @return value of the rating
 	 */
-	int getRating() const { return access<2>(); }
+	int getRating() const noexcept { return access<2>(); }
 
 	/**
 	 * Set the date and time.
@@ -105,14 +119,14 @@ public:
 	 *
 	 * @return reference to the date_time
 	 */
-	int_least64_t& setDatetime() { return access<3>(); }
+	int_least64_t& setDatetime() noexcept { return access<3>(); }
 
 	/**
 	 * Get the date and time.
 	 *
 	 * @return value of the date_time
 	 */
-	int_least64_t getDatetime() const { return access<3>(); }
+	int_least64_t getDatetime() const noexcept { return access<3>(); }
 
 	/**
 	 * Set the width.
@@ -120,14 +134,14 @@ public:
 	 *
 	 * @return reference to the width in pixel
 	 */
-	int& setWidth() { return access<4>(); }
+	int& setWidth() noexcept { return access<4>(); }
 
 	/**
 	 * Get the width.
 	 *
 	 * @return value of the width in pixel
 	 */
-	int getWidth() const { return access<4>(); }
+	int getWidth() const noexcept { return access<4>(); }
 
 	/**
 	 * Set the height.
@@ -135,14 +149,14 @@ public:
 	 *
 	 * @return reference to the height in pixel
 	 */
-	int& setHeight() { return access<5>(); }
+	int& setHeight() noexcept { return access<5>(); }
 
 	/**
 	 * Get the height.
 	 *
 	 * @return value of the height in pixel
 	 */
-	int getHeight() const { return access<5>(); }
+	int getHeight() const noexcept { return access<5>(); }
 
 	/**
 	 * Get the name of a data field.
@@ -150,11 +164,14 @@ public:
 	 *
 	 * @param i number of the data field
 	 * @return name of the data field
+	 *
+	 * @throws std::out_of_range if std::array<T>::operator[] is range checked and i is not in [0;size())
 	 */
-	static const Glib::ustring& getField(int i) { return fields.at(i); }
+	static const Glib::ustring& getField(int i) { return fields[i]; }
 
 private:
-	static inline const std::array<Glib::ustring,6> fields {"directory", "filename", "rating", "datetime", "width", "height"};
+	static inline const std::array<const Glib::ustring,6>
+		fields {"directory", "filename", "rating", "datetime", "width", "height"};
 
 	static_assert(fields.size() == size());
 };
