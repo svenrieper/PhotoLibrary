@@ -2,7 +2,7 @@
  * KeywordsView.h
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -31,7 +31,7 @@ namespace GUI {
  * TreeView for the keywords.
  * BaseTreeView based TreeView for the keywords for the side pane.
  */
-class KeywordsView: public BaseTreeView<KeywordsStore, Backend::KeywordRecord> {
+class KeywordsView: public BaseTreeView<KeywordsStore, Backend::RecordClasses::KeywordRecord> {
 public:
 	/**
 	 * @param backend the backend interface factory object

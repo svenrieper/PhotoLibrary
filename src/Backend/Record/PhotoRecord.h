@@ -25,6 +25,7 @@
 
 namespace PhotoLibrary {
 namespace Backend {
+namespace RecordClasses {
 
 using PhotoTuple = std::tuple<int,Glib::ustring,int,int_least64_t,int,int>;
 
@@ -176,6 +177,7 @@ private:
 	static_assert(fields.size() == size());
 };
 
+} /* namespace RecordClasses */
 } /* namespace Backend */
 } /* namespace PhotoLibrary */
 

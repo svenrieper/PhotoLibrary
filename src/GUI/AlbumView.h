@@ -2,7 +2,7 @@
  * AlbumView.h
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -32,7 +32,7 @@ namespace GUI {
  *
  * \todo optical discrimination between albums, album sets, and smart albums
  */
-class AlbumView: public BaseTreeView<AlbumStore, Backend::AlbumRecord> {
+class AlbumView: public BaseTreeView<AlbumStore, Backend::RecordClasses::AlbumRecord> {
 public:
 	/**
 	 * @param backend the backend interface factory object
@@ -44,7 +44,7 @@ private:
 	void createView() override;
 	void fillPopupMenu();
 	void addPopupMenuEntry(Glib::ustring text, void(PhotoLibrary::GUI::AlbumView::* callback)(), Gtk::MenuItem* item);
-	void addNewAlbum(Backend::AlbumRecord::Options options=Backend::AlbumRecord::Options::NONE);
+	void addNewAlbum(Backend::RecordClasses::AlbumRecord::Options options=Backend::RecordClasses::AlbumRecord::Options::NONE);
 
 	bool on_button_press_event(GdkEventButton* button_event) override;
 	void onMenuAddNewAlbum();

@@ -2,7 +2,7 @@
  * KeywordsView.cpp
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -29,6 +29,8 @@
 
 namespace PhotoLibrary {
 namespace GUI {
+
+using Backend::RecordClasses::KeywordRecord;
 
 KeywordsView::KeywordsView(Backend::BackendFactory* backend) :
 		BaseTreeView(backend->getKeywordInterface()) {
@@ -95,7 +97,10 @@ void KeywordsView::onMenuAddNewKeyword() {
 
 	int				parent_id	= iter?(*iter)[getTreeStore()->getColumns().id]:0;
 	Glib::ustring	parent_key	= iter?(*iter)[getTreeStore()->getColumns().keyword]:Glib::ustring();
-	Backend::NewKeywordRecord new_keyword(parent_id, (Backend::KeywordRecord::Options::INCLUDE_ON_EXPORT|Backend::KeywordRecord::Options::INCLUDE_SYNONYMS_ON_EXPORT));
+	Backend::RecordClasses::NewKeywordRecord new_keyword(
+			parent_id,
+			(KeywordRecord::Options::INCLUDE_ON_EXPORT | KeywordRecord::Options::INCLUDE_SYNONYMS_ON_EXPORT)
+			);
 
 	NewKeywordDialogue dialogue(&new_keyword, parent_key);
 	while(dialogue.run() == Gtk::RESPONSE_OK) {
@@ -122,7 +127,7 @@ void KeywordsView::onMenuEditKeyword() {
 		iter = refSelection->get_selected();
 	if(!iter)
 		return;
-	Backend::KeywordRecord keyword(getDBInterface()->getEntry((*iter)[getTreeStore()->getColumns().id]));
+	KeywordRecord keyword(getDBInterface()->getEntry((*iter)[getTreeStore()->getColumns().id]));
 	EditKeywordDialogue dialogue(&keyword);
 	while (dialogue.run() == Gtk::RESPONSE_OK) {
 		try {

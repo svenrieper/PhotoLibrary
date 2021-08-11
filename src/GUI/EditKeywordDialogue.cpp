@@ -2,7 +2,7 @@
  * EditKeywordDialogue.cpp
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -24,9 +24,9 @@
 namespace PhotoLibrary {
 namespace GUI {
 
-using Backend::KeywordRecord;
+using Backend::RecordClasses::KeywordRecord;
 
-EditKeywordDialogue::EditKeywordDialogue(Backend::KeywordRecord *keyword) :
+EditKeywordDialogue::EditKeywordDialogue(KeywordRecord *keyword) :
 		/// \todo add support for internationalisation
 		keyword(keyword),
 		keyword_label("Keyword:"),
@@ -90,15 +90,15 @@ void EditKeywordDialogue::updateSynonyms() {
 }
 
 void EditKeywordDialogue::onPrivateClicked() {
-	keyword->setOptions() ^= Backend::KeywordRecord::Options::PRIVATE;
+	keyword->setOptions() ^= KeywordRecord::Options::PRIVATE;
 }
 
 void EditKeywordDialogue::onExportClicked() {
-	keyword->setOptions() ^= Backend::KeywordRecord::Options::INCLUDE_ON_EXPORT;
+	keyword->setOptions() ^= KeywordRecord::Options::INCLUDE_ON_EXPORT;
 }
 
 void EditKeywordDialogue::onExportSynonymsClicked() {
-	keyword->setOptions() ^= Backend::KeywordRecord::Options::INCLUDE_SYNONYMS_ON_EXPORT;
+	keyword->setOptions() ^= KeywordRecord::Options::INCLUDE_SYNONYMS_ON_EXPORT;
 }
 
 } /* namespace GUI */

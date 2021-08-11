@@ -18,10 +18,19 @@
  */
 
 #include "BackendFactory.h"
+#include "Record/AlbumRecord.h"
+#include "Record/DirectoryRecord.h"
+#include "Record/KeywordRecord.h"
+#include "Record/PhotoRecord.h"
 #include <thread>
 
 namespace PhotoLibrary {
 namespace Backend {
+
+using RecordClasses::AlbumRecord;
+using RecordClasses::DirectoryRecord;
+using RecordClasses::KeywordRecord;
+using RecordClasses::PhotoRecord;
 
 BackendFactory::BackendFactory(const char* filename) : db(nullptr) {
 	/// \todo load values

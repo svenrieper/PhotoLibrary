@@ -2,7 +2,7 @@
  * NewKeywordDialogue.cpp
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -24,7 +24,9 @@
 namespace PhotoLibrary {
 namespace GUI {
 
-NewKeywordDialogue::NewKeywordDialogue(Backend::NewKeywordRecord* keyword, const Glib::ustring& parent_key) :
+using Backend::RecordClasses::NewKeywordRecord;
+
+NewKeywordDialogue::NewKeywordDialogue(NewKeywordRecord* keyword, const Glib::ustring& parent_key) :
 		EditKeywordDialogue(keyword) {
 
 	//Fill the window with widgets
@@ -42,7 +44,7 @@ NewKeywordDialogue::NewKeywordDialogue(Backend::NewKeywordRecord* keyword, const
 }
 
 void NewKeywordDialogue::onAddAsChildClicked() {
-	keyword->setParent() = check_button_add_as_child.get_active()?static_cast<Backend::NewKeywordRecord*>(keyword)->new_parent_id_backup:0;
+	keyword->setParent() = check_button_add_as_child.get_active()?static_cast<NewKeywordRecord*>(keyword)->new_parent_id_backup:0;
 }
 
 } /* namespace GUI */

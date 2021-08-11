@@ -24,7 +24,7 @@
 namespace PhotoLibrary {
 namespace Tests {
 
-using Keyword = Backend::KeywordRecord;
+using Keyword = Backend::RecordClasses::KeywordRecord;
 using namespace Backend;
 
 TEST_CASE( "test operator== and operator!= for class Keyword", "[keyword][record]" ) {
@@ -86,10 +86,10 @@ TEST_CASE("test constructors for class KeywordRecord", "[keywords][record]") {
 	Glib::ustring fullname{"another name"};
 
 	SECTION("Provide all arguments") {
-		Keyword keyword1 {0, KeywordRecord::Options::NONE, name, fullname};
-		Keyword keyword2 {0, KeywordRecord::Options::NONE, Glib::ustring(name), fullname};
-		Keyword keyword3 {0, KeywordRecord::Options::NONE, name, Glib::ustring(fullname)};
-		Keyword keyword4 {0, KeywordRecord::Options::NONE, Glib::ustring(name), Glib::ustring(fullname)};
+		Keyword keyword1 {0, Keyword::Options::NONE, name, fullname};
+		Keyword keyword2 {0, Keyword::Options::NONE, Glib::ustring(name), fullname};
+		Keyword keyword3 {0, Keyword::Options::NONE, name, Glib::ustring(fullname)};
+		Keyword keyword4 {0, Keyword::Options::NONE, Glib::ustring(name), Glib::ustring(fullname)};
 
 		CHECK(keyword1 == keyword2);
 		CHECK(keyword1 == keyword3);
@@ -97,8 +97,8 @@ TEST_CASE("test constructors for class KeywordRecord", "[keywords][record]") {
 	}
 
 	SECTION("Default synonyms") {
-		Keyword keyword_copying_name{0, KeywordRecord::Options::NONE, name};
-		Keyword keyword_moving_name{0, KeywordRecord::Options::NONE, std::move(name)};
+		Keyword keyword_copying_name{0, Keyword::Options::NONE, name};
+		Keyword keyword_moving_name{0, Keyword::Options::NONE, std::move(name)};
 
 		CHECK(keyword_copying_name == keyword_moving_name);
 	}

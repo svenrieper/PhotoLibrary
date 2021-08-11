@@ -25,10 +25,10 @@ namespace PhotoLibrary {
 namespace Backend {
 namespace DatabaseInterface {
 
-using Backend::AlbumRecord;
+using Backend::RecordClasses::AlbumRecord;
 using Backend::BackendFactory;
 using Backend::InterfaceBase;
-using AlbumInterface = InterfaceBase<Backend::AlbumRecord>;
+using AlbumInterface = InterfaceBase<Backend::RecordClasses::AlbumRecord>;
 
 TEMPLATE_TEST_CASE("Test the AlbumInterface of the backend", "[album][interface][backend]", DatabaseFactory, BackendFactory) {
 	TestType db { ":memory:" };

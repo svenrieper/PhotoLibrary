@@ -2,7 +2,7 @@
  * PhotoTile.h
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -73,7 +73,7 @@ public:
 
 private:
 	Backend::BackendFactory* backend;
-	Backend::PhotoRecord photo_record;
+	Backend::RecordClasses::PhotoRecord photo_record;
 	PhotoDrawingArea photo_image;
 
 	///\todo move to backend

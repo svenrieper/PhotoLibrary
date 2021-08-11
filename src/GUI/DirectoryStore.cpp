@@ -2,7 +2,7 @@
  * DirectoryStore.cpp
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -23,8 +23,10 @@
 namespace PhotoLibrary {
 namespace GUI {
 
+using Backend::RecordClasses::DirectoryRecord;
+
 DirectoryStore::DirectoryStore(Backend::BackendFactory* db) :
-		BaseTreeStore(db->getInterface<Backend::DirectoryRecord>()),
+		BaseTreeStore(db->getInterface<DirectoryRecord>()),
 		db(db) {
 }
 
@@ -34,11 +36,11 @@ Glib::RefPtr<DirectoryStore> DirectoryStore::create(Backend::BackendFactory* db)
 
 //Fill the TreeRow
 void DirectoryStore::fillRow(int id, Gtk::TreeModel::Row &row) {
-	Backend::DirectoryRecord directory(getBackend()->getEntry(id));
+	Backend::RecordClasses::DirectoryRecord directory(getBackend()->getEntry(id));
 	row[getColumns().id] = id;
 	row[getColumns().name] = directory.getDirectory();
-	row[getColumns().expanded] = directory.getOptions() & Backend::DirectoryRecord::Options::ROW_EXPANDED;
-	row[getColumns().photo_count] = db->getInterface<Backend::PhotoRecord>()->getNumberChildren(id);
+	row[getColumns().expanded] = directory.getOptions() & DirectoryRecord::Options::ROW_EXPANDED;
+	row[getColumns().photo_count] = db->getInterface<Backend::RecordClasses::PhotoRecord>()->getNumberChildren(id);
 }
 
 } /* namespace GUI */

@@ -2,7 +2,7 @@
  * DirectoryView.h
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -30,7 +30,7 @@ namespace GUI {
  * TreeView for the dierectories.
  * BaseTreeView based TreeView for the directories for the side pane.
  */
-class DirectoryView: public BaseTreeView<DirectoryStore, Backend::DirectoryRecord> {
+class DirectoryView: public BaseTreeView<DirectoryStore, Backend::RecordClasses::DirectoryRecord> {
 public:
 	/**
 	 * @param backend the backend interface factory object

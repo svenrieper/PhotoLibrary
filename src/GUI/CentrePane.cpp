@@ -26,7 +26,6 @@ namespace PhotoLibrary {
 namespace GUI {
 
 using Backend::BackendFactory;
-using Backend::DirectoryRecord;
 
 CentrePane::CentrePane(Backend::BackendFactory* backend) :
 		backend(backend),

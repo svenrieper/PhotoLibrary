@@ -26,6 +26,7 @@
 
 namespace PhotoLibrary {
 namespace Backend {
+namespace RecordClasses {
 
 namespace RecordOptions {
 #define MACRO_PHOTOLIBRARY_TUPLE_SIZE_LIMIT 6 /**< maximum number of elements for Record|s Tuple parameter */
@@ -166,6 +167,7 @@ inline constexpr Options operator|(Options a, Options b) noexcept {
 }
 }
 
+} /* namespace RecordClasses */
 } /* namespace Backend */
 } /* namespace PhotoLibrary */
 

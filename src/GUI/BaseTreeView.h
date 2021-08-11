@@ -2,7 +2,7 @@
  * BaseTreeView.h
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -188,7 +188,7 @@ void BaseTreeView<TStore,RecordType>::onRowExpandedOrCollapsed(const Gtk::TreeMo
 
 	(*iter)[getTreeStore()->getColumns().expanded] = !(*iter)[getTreeStore()->getColumns().expanded];
 	//change the ROW_EXPANDED bit for the entry and save change
-	entry.setOptions() ^= Backend::RecordOptions::Options::ROW_EXPANDED;
+	entry.setOptions() ^= Backend::RecordClasses::RecordOptions::Options::ROW_EXPANDED;
 	getDBInterface()->updateEntry((*iter)[getTreeStore()->getColumns().id], entry);
 }
 

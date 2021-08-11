@@ -2,7 +2,7 @@
  * KeywordInterface_test.cpp
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -26,8 +26,8 @@ using namespace PhotoLibrary;
 using PhotoLibrary::Backend::DatabaseInterface::DatabaseFactory;
 using PhotoLibrary::Backend::BackendFactory;
 using PhotoLibrary::Backend::DatabaseInterface::constraint_error;
-using Keyword = PhotoLibrary::Backend::KeywordRecord;
-using PhotoLibrary::Backend::KeywordRecord;
+using Keyword = PhotoLibrary::Backend::RecordClasses::KeywordRecord;
+using PhotoLibrary::Backend::RecordClasses::KeywordRecord;
 using KeywordInterface = Backend::InterfaceBase<KeywordRecord>;
 
 TEMPLATE_TEST_CASE("Test the Keyword interface of the Adapter and the Backend", "[keywords][adapter][backend]", DatabaseFactory, BackendFactory) {

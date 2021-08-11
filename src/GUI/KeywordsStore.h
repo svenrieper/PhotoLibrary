@@ -2,7 +2,7 @@
  * KeywordsStore.h
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -31,7 +31,7 @@ namespace GUI {
 /**
  * The TreeStore for the keywords TreeView
  */
-class KeywordsStore : public BaseTreeStore<KeywordModelColumns,Backend::KeywordRecord> {
+class KeywordsStore : public BaseTreeStore<KeywordModelColumns,Backend::RecordClasses::KeywordRecord> {
 public:
 	~KeywordsStore() = default;
 
@@ -42,7 +42,7 @@ public:
 	 * @param db keyword interface to the database
 	 * @return Glib::RefPtr to the newly created TreeStore
 	 */
-	static Glib::RefPtr<KeywordsStore> create(Backend::InterfaceBase<Backend::KeywordRecord>* db);
+	static Glib::RefPtr<KeywordsStore> create(Backend::InterfaceBase<Backend::RecordClasses::KeywordRecord>* db);
 
 	//no copying or moving
 	KeywordsStore(const KeywordsStore &other) = delete;
@@ -51,7 +51,7 @@ public:
 	KeywordsStore& operator=(KeywordsStore &&other) = delete;
 
 private:
-	KeywordsStore(Backend::InterfaceBase<Backend::KeywordRecord>* db);
+	KeywordsStore(Backend::InterfaceBase<Backend::RecordClasses::KeywordRecord>* db);
 
 	void fillRow(int id, Gtk::TreeModel::Row &row) override;
 

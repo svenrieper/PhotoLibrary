@@ -32,25 +32,25 @@ namespace Backend {
  * There is no backend for keywords so we just pass the database interface
  * for keywords through.
  */
-using KeywordInterface = InterfaceBase<KeywordRecord>;
+using KeywordInterface = InterfaceBase<RecordClasses::KeywordRecord>;
 
 /**
  * There is no backend for directories so we just pass the database interface
  * for DirectoryInterface through.
  */
-using DirectoryInterface = InterfaceBase<DirectoryRecord>;
+using DirectoryInterface = InterfaceBase<RecordClasses::DirectoryRecord>;
 
 /**
  * There is no backend for albums so we just pass the database interface
  * for DirectoryInterface through.
  */
-using AlbumInterface = InterfaceBase<AlbumRecord>;
+using AlbumInterface = InterfaceBase<RecordClasses::AlbumRecord>;
 
 /**
  * There is no backend for photos so we just pass the database interface
  * for PhotoInterface through.
  */
-using PhotoInterface = InterfaceBase<PhotoRecord>;
+using PhotoInterface = InterfaceBase<RecordClasses::PhotoRecord>;
 
 /**
  * The interface to get, set, and delete relations between photos and albums.

@@ -24,6 +24,7 @@
 
 namespace PhotoLibrary {
 namespace Backend {
+namespace RecordClasses {
 
 using AlbumTuple = std::tuple<int,RecordOptions::Options,Glib::ustring>;
 
@@ -143,6 +144,7 @@ public:
 	int new_parent_id_backup;	/**< Id of the potential parent of the new album. */
 };
 
+} /* namespace RecordClasses */
 } /* namespace Backend */
 } /* namespace PhotoLibrary */
 

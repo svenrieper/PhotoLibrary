@@ -24,7 +24,7 @@
 namespace PhotoLibrary {
 namespace Tests {
 
-using Backend::DirectoryRecord;
+using Backend::RecordClasses::DirectoryRecord;
 
 TEST_CASE( "test operator== and operator!= for class DirectoryRecord", "[directory][record]" ) {
 	DirectoryRecord empty;

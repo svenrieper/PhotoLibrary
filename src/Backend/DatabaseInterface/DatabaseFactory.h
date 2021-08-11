@@ -2,7 +2,7 @@
  * DatabaseFactory.h
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -42,14 +42,14 @@ public:
 	DatabaseFactory(const char* filename, bool initialise=true);
 	~DatabaseFactory() = default;
 
-	DBInterface<Backend::KeywordRecord>* getKeywordInterface() override;
-	const DBInterface<Backend::KeywordRecord>* getKeywordInterface() const override;
-	DBInterface<Backend::DirectoryRecord>* getDirectoriesInterface() override;
-	const DBInterface<Backend::DirectoryRecord>* getDirectoriesInterface() const override;
-	DBInterface<Backend::AlbumRecord>* getAlbumInterface() override;
-	const DBInterface<Backend::AlbumRecord>* getAlbumInterface() const override;
-	DBInterface<Backend::PhotoRecord>* getPhotoInterface() override;
-	const DBInterface<Backend::PhotoRecord>* getPhotoInterface() const override;
+	DBInterface<Backend::RecordClasses::KeywordRecord>* getKeywordInterface() override;
+	const DBInterface<Backend::RecordClasses::KeywordRecord>* getKeywordInterface() const override;
+	DBInterface<Backend::RecordClasses::DirectoryRecord>* getDirectoriesInterface() override;
+	const DBInterface<Backend::RecordClasses::DirectoryRecord>* getDirectoriesInterface() const override;
+	DBInterface<Backend::RecordClasses::AlbumRecord>* getAlbumInterface() override;
+	const DBInterface<Backend::RecordClasses::AlbumRecord>* getAlbumInterface() const override;
+	DBInterface<Backend::RecordClasses::PhotoRecord>* getPhotoInterface() override;
+	const DBInterface<Backend::RecordClasses::PhotoRecord>* getPhotoInterface() const override;
 	RelationsDBInterface* getPhotosAlbumsRelationsInterface() override;
 	const RelationsDBInterface* getPhotosAlbumsRelationsInterface() const override;
 	RelationsDBInterface* getPhotosKeywordsRelationsInterface() override;
@@ -63,10 +63,10 @@ public:
 
 private:
 	SQLiteAdapter::Database db;
-	DBInterface<Backend::KeywordRecord> keyword_interface;
-	DBInterface<Backend::DirectoryRecord> directories_interface;
-	DBInterface<Backend::AlbumRecord> album_interface;
-	DBInterface<Backend::PhotoRecord> photo_interface;
+	DBInterface<Backend::RecordClasses::KeywordRecord> keyword_interface;
+	DBInterface<Backend::RecordClasses::DirectoryRecord> directories_interface;
+	DBInterface<Backend::RecordClasses::AlbumRecord> album_interface;
+	DBInterface<Backend::RecordClasses::PhotoRecord> photo_interface;
 	RelationsDBInterface photos_albums_relations;
 	RelationsDBInterface photos_keywords_relations;
 

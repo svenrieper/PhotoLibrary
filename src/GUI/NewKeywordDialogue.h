@@ -2,7 +2,7 @@
  * NewKeywordDialogue.h
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -35,7 +35,7 @@ public:
 	 * @param[out] keyword Pointer to the Backend::NewKeywordRecord object to save the to
 	 * @param[in] parent_key The parent keyword
 	 */
-	NewKeywordDialogue(Backend::NewKeywordRecord* keyword, const Glib::ustring& parent_key="");
+	NewKeywordDialogue(Backend::RecordClasses::NewKeywordRecord* keyword, const Glib::ustring& parent_key="");
 	virtual ~NewKeywordDialogue() = default;
 
 	//no copying or moving

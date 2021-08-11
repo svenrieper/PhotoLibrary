@@ -2,7 +2,7 @@
  * AlbumView.cpp
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -42,7 +42,7 @@ void AlbumView::createView() {
 }
 
 
-void AlbumView::addNewAlbum(Backend::AlbumRecord::Options options) {
+void AlbumView::addNewAlbum(Backend::RecordClasses::AlbumRecord::Options options) {
 	auto refSelection = get_selection();
 	Gtk::TreeModel::iterator iter(nullptr);
 	if (refSelection)
@@ -50,7 +50,7 @@ void AlbumView::addNewAlbum(Backend::AlbumRecord::Options options) {
 
 	int				parent_id			= iter?(*iter)[getTreeStore()->getColumns().id]:0;
 	Glib::ustring	parent_album_name	= iter?(*iter)[getTreeStore()->getColumns().album_name]:Glib::ustring();
-	Backend::NewAlbumRecord new_album(parent_id, options);
+	Backend::RecordClasses::NewAlbumRecord new_album(parent_id, options);
 
 	NewAlbumDialogue dialogue(&new_album, parent_album_name);
 	while(dialogue.run() == Gtk::RESPONSE_OK) {
@@ -115,7 +115,7 @@ void AlbumView::addPopupMenuEntry(Glib::ustring text, void(PhotoLibrary::GUI::Al
 }
 
 void AlbumView::onMenuAddNewAlbum() {
-	addNewAlbum(Backend::AlbumRecord::Options::NONE);
+	addNewAlbum(Backend::RecordClasses::AlbumRecord::Options::NONE);
 }
 
 void AlbumView::onMenuAddNewSmartAlbum() {
@@ -123,7 +123,7 @@ void AlbumView::onMenuAddNewSmartAlbum() {
 }
 
 void AlbumView::onMenuAddNewSet() {
-	addNewAlbum(Backend::AlbumRecord::Options::ALBUM_IS_SET);
+	addNewAlbum(Backend::RecordClasses::AlbumRecord::Options::ALBUM_IS_SET);
 }
 
 void AlbumView::onMenuRenameAlbum() {
@@ -135,7 +135,7 @@ void AlbumView::onMenuRenameAlbum() {
 		iter = refSelection->get_selected();
 	if(!iter)
 		return;
-	Backend::AlbumRecord album(getDBInterface()->getEntry((*iter)[getTreeStore()->getColumns().id]));
+	Backend::RecordClasses::AlbumRecord album(getDBInterface()->getEntry((*iter)[getTreeStore()->getColumns().id]));
 	RenameAlbumDialogue dialogue(&album);
 	while (dialogue.run() == Gtk::RESPONSE_OK) {
 		try {

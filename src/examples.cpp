@@ -37,7 +37,7 @@ void examples(PhotoLibrary::Backend::BackendFactory* db) {
 }
 
 void exampleKeywords(PhotoLibrary::Backend::BackendFactory* db) {
-	using PhotoLibrary::Backend::KeywordRecord;
+	using PhotoLibrary::Backend::RecordClasses::KeywordRecord;
 
 	PhotoLibrary::Backend::InterfaceBase<KeywordRecord>* keywordDBIF = db->getKeywordInterface();
 	[[maybe_unused]] int animal = addEntry(KeywordRecord(0, KeywordRecord::Options::ROW_EXPANDED, "Animal"), keywordDBIF);
@@ -59,7 +59,7 @@ void exampleKeywords(PhotoLibrary::Backend::BackendFactory* db) {
 }
 
 void exampleDirectories(PhotoLibrary::Backend::BackendFactory* db) {
-	using PhotoLibrary::Backend::DirectoryRecord;
+	using PhotoLibrary::Backend::RecordClasses::DirectoryRecord;
 
 	PhotoLibrary::Backend::InterfaceBase<DirectoryRecord>* directory_interface = db->getDirectoriesInterface();
 	[[maybe_unused]] int d2017 = addEntry(DirectoryRecord(0, DirectoryRecord::Options::NONE, "2017", "/home/user/Photos/2017"), directory_interface);
@@ -84,7 +84,7 @@ void exampleDirectories(PhotoLibrary::Backend::BackendFactory* db) {
 }
 
 void exampleAlbums(PhotoLibrary::Backend::BackendFactory* db) {
-	using PhotoLibrary::Backend::AlbumRecord;
+	using PhotoLibrary::Backend::RecordClasses::AlbumRecord;
 
 	PhotoLibrary::Backend::InterfaceBase<AlbumRecord>* album_interface = db->getAlbumInterface();
 	[[maybe_unused]] int holiday = addEntry(AlbumRecord(0, AlbumRecord::Options::ALBUM_IS_SET, "Holiday"), album_interface);
@@ -101,10 +101,10 @@ void exampleAlbums(PhotoLibrary::Backend::BackendFactory* db) {
 }
 
 void examplePictures(PhotoLibrary::Backend::BackendFactory* db) {
-	using PhotoLibrary::Backend::DirectoryRecord;
-	using PhotoLibrary::Backend::PhotoRecord;
-	using PhotoLibrary::Backend::AlbumRecord;
-	using PhotoLibrary::Backend::KeywordRecord;
+	using PhotoLibrary::Backend::RecordClasses::DirectoryRecord;
+	using PhotoLibrary::Backend::RecordClasses::PhotoRecord;
+	using PhotoLibrary::Backend::RecordClasses::AlbumRecord;
+	using PhotoLibrary::Backend::RecordClasses::KeywordRecord;
 
 	PhotoLibrary::Backend::InterfaceBase<DirectoryRecord>* directory_interface = db->getDirectoriesInterface();
 	PhotoLibrary::Backend::InterfaceBase<PhotoRecord>* photo_interface = db->getPhotoInterface();

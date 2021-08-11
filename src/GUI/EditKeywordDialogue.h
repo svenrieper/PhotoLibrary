@@ -2,7 +2,7 @@
  * EditKeywordDialogue.h
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -39,7 +39,7 @@ public:
 	/**
 	 * @param[in,out] keyword Pointer to the Backend::KeywordRecord object to edit
 	 */
-	EditKeywordDialogue(Backend::KeywordRecord* keyword);
+	EditKeywordDialogue(Backend::RecordClasses::KeywordRecord* keyword);
 	virtual ~EditKeywordDialogue() = default;
 
 	//no copying or moving
@@ -49,7 +49,7 @@ public:
 	EditKeywordDialogue& operator=(EditKeywordDialogue &&other) = delete;
 
 protected:
-	Backend::KeywordRecord* keyword;	/**< Pointer to the Backend::Keyword that is edited */
+	Backend::RecordClasses::KeywordRecord* keyword;	/**< Pointer to the Backend::Keyword that is edited */
 
 private:
 	Gtk::Label keyword_label;

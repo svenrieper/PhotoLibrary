@@ -2,7 +2,7 @@
  * DBInterface.h
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020-2001 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -135,8 +135,8 @@ private:
 	void setValue(SQLiteAdapter::SQLQuerry& querry, int column, int& field) const {
 		field = querry.getColumnInt(column);
 	}
-	void setValue(SQLiteAdapter::SQLQuerry& querry, int column, Backend::RecordOptions::Options& field) const {
-		field = static_cast<Backend::RecordOptions::Options>(querry.getColumnInt(column));
+	void setValue(SQLiteAdapter::SQLQuerry& querry, int column, Backend::RecordClasses::RecordOptions::Options& field) const {
+		field = static_cast<Backend::RecordClasses::RecordOptions::Options>(querry.getColumnInt(column));
 	}
 	void setValue(SQLiteAdapter::SQLQuerry& querry, int column, Glib::ustring& field) const {
 		field = querry.getColumnText(column);

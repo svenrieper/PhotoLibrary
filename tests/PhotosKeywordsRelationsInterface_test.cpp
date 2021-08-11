@@ -26,10 +26,10 @@ namespace PhotoLibrary {
 using PhotoLibrary::Backend::DatabaseInterface::DatabaseFactory;
 using PhotoLibrary::Backend::BackendFactory;
 using Backend::RelationsInterfaceBase;
-using Backend::KeywordRecord;
-using Backend::PhotoRecord;
-using KeywordInterface = Backend::InterfaceBase<Backend::KeywordRecord>;
-using PhotoInterface = Backend::InterfaceBase<Backend::PhotoRecord>;
+using Backend::RecordClasses::KeywordRecord;
+using Backend::RecordClasses::PhotoRecord;
+using KeywordInterface = Backend::InterfaceBase<Backend::RecordClasses::KeywordRecord>;
+using PhotoInterface = Backend::InterfaceBase<Backend::RecordClasses::PhotoRecord>;
 
 TEMPLATE_TEST_CASE("Test the PhotosKeywordsRelations interface of the Adapter and the Backend", "[relations][PhotosKeywordsRelations][adapter][backend]", DatabaseFactory, BackendFactory) {
 	TestType db { ":memory:" };

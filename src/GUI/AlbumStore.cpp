@@ -2,7 +2,7 @@
  * AlbumStore.cpp
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -46,14 +46,16 @@ void AlbumStore::onRowChanged(const TreeModel::Path& path, const TreeModel::iter
 }
 
 void AlbumStore::fillRow(int id, Gtk::TreeModel::Row& row) {
-	Backend::AlbumRecord album(getBackend()->getEntry(id));
+	using Backend::RecordClasses::AlbumRecord;
+
+	AlbumRecord album(getBackend()->getEntry(id));
 	/// \todo implement photo_count
 	int photo_count = relations->getNumberEntries(id);
 	row[getColumns().id] = id;
-	row[getColumns().album_name] = album.getAlbumName();
-	row[getColumns().album_is_set] = album.getOptions() & Backend::KeywordRecord::Options::ALBUM_IS_SET;
-	row[getColumns().expanded] = album.getOptions() & Backend::KeywordRecord::Options::ROW_EXPANDED;
-	row[getColumns().photo_count] = (album.getOptions()&Backend::KeywordRecord::Options::ALBUM_IS_SET)?"":std::to_string(photo_count);
+	row[getColumns().album_name]   = album.getAlbumName();
+	row[getColumns().album_is_set] = album.getOptions() & AlbumRecord::Options::ALBUM_IS_SET;
+	row[getColumns().expanded]     = album.getOptions() & AlbumRecord::Options::ROW_EXPANDED;
+	row[getColumns().photo_count]  = (album.getOptions() & AlbumRecord::Options::ALBUM_IS_SET)?"":std::to_string(photo_count);
 }
 
 bool AlbumStore::row_drop_possible_vfunc(const Gtk::TreeModel::Path& dest_path, const Gtk::SelectionData& selection_data) const {

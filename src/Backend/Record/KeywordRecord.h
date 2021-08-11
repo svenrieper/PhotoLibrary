@@ -1,5 +1,5 @@
 /*
- * Keyword.h
+ * KeywordRecord.h
  *
  * This file is part of PhotoLibrary
  * Copyright (C) 2020-2021 Sven Rieper
@@ -24,6 +24,7 @@
 
 namespace PhotoLibrary {
 namespace Backend {
+namespace RecordClasses {
 
 using KeywordTuple = std::tuple<int,RecordOptions::Options,Glib::ustring,Glib::ustring>;
 
@@ -194,6 +195,7 @@ public:
 	int new_parent_id_backup;	/**< Id of the potential parent of the new keyword */
 };
 
+} /* namespace RecordClasses */
 } /* namespace Backend */
 } /* namespace PhotoLibrary */
 

@@ -2,7 +2,7 @@
  * DirectoryStore.h
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -29,7 +29,7 @@ namespace GUI {
 /**
  * The TreeStore for the directory TreeView
  */
-class DirectoryStore: public BaseTreeStore<DirectoryModelColumns,Backend::DirectoryRecord> {
+class DirectoryStore: public BaseTreeStore<DirectoryModelColumns,Backend::RecordClasses::DirectoryRecord> {
 public:
 	virtual ~DirectoryStore() = default;
 

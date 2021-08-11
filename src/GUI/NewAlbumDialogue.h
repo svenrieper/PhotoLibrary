@@ -2,7 +2,7 @@
  * NewAlbumDialogue.h
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -35,7 +35,7 @@ public:
 	 * @param[out] album Pointer to the Backend::NewAlbumRecord object to save the to
 	 * @param[in] parent_album_name The parent album set
 	 */
-	NewAlbumDialogue(Backend::NewAlbumRecord* album, const Glib::ustring& parent_album_name="");
+	NewAlbumDialogue(Backend::RecordClasses::NewAlbumRecord* album, const Glib::ustring& parent_album_name="");
 	~NewAlbumDialogue() = default;
 
 private:

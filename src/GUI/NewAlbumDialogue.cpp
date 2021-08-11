@@ -2,7 +2,7 @@
  * NewAlbumDialogue.cpp
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -22,13 +22,16 @@
 namespace PhotoLibrary {
 namespace GUI {
 
-NewAlbumDialogue::NewAlbumDialogue(Backend::NewAlbumRecord* album, const Glib::ustring& parent_album_name) :
+using Backend::RecordClasses::NewAlbumRecord;
+using Backend::RecordClasses::AlbumRecord;
+
+NewAlbumDialogue::NewAlbumDialogue(NewAlbumRecord* album, const Glib::ustring& parent_album_name) :
 		RenameAlbumDialogue(album),
 		check_button_is_set("New album set") {
 	//Fill the window with widgets
 	Gtk::Box* content_box = get_content_area();
 
-	check_button_is_set.set_active(album->getOptions()&Backend::AlbumRecord::Options::ALBUM_IS_SET);
+	check_button_is_set.set_active(album->getOptions()&AlbumRecord::Options::ALBUM_IS_SET);
 	content_box->add(check_button_is_set);
 	if(album->new_parent_id_backup) {
 		check_button_add_as_child.set_label("Add in '" + parent_album_name + "'");
@@ -42,11 +45,11 @@ NewAlbumDialogue::NewAlbumDialogue(Backend::NewAlbumRecord* album, const Glib::u
 }
 
 void NewAlbumDialogue::onIsSetClicked() {
-	album->setOptions() ^= Backend::AlbumRecord::Options::ALBUM_IS_SET;
+	album->setOptions() ^= AlbumRecord::Options::ALBUM_IS_SET;
 }
 
 void NewAlbumDialogue::onAddAsChildClicked() {
-	album->setParent() = check_button_add_as_child.get_active()?static_cast<Backend::NewAlbumRecord*>(album)->new_parent_id_backup:0;
+	album->setParent() = check_button_add_as_child.get_active()?static_cast<NewAlbumRecord*>(album)->new_parent_id_backup:0;
 }
 
 } /* namespace GUI */

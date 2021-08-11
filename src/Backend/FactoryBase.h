@@ -42,45 +42,45 @@ public:
 	 * Get a pointer to the keyword interface.
 	 * @return Pointer to the Keywords interface.
 	 */
-	virtual InterfaceBase<KeywordRecord>* getKeywordInterface() = 0;
+	virtual InterfaceBase<RecordClasses::KeywordRecord>* getKeywordInterface() = 0;
 
 	/**
 	 * \copydoc getKeywordInterface()
 	 */
-	virtual const InterfaceBase<KeywordRecord>* getKeywordInterface() const = 0;
+	virtual const InterfaceBase<RecordClasses::KeywordRecord>* getKeywordInterface() const = 0;
 
 	/**
 	 * Get a pointer to the directories interface.
 	 * @return Pointer to the Directory interface.
 	 */
-	virtual InterfaceBase<DirectoryRecord>* getDirectoriesInterface() = 0;
+	virtual InterfaceBase<RecordClasses::DirectoryRecord>* getDirectoriesInterface() = 0;
 
 	/**
 	 * \copydoc getDirectoriesInterface()
 	 */
-	virtual const InterfaceBase<DirectoryRecord>* getDirectoriesInterface() const = 0;
+	virtual const InterfaceBase<RecordClasses::DirectoryRecord>* getDirectoriesInterface() const = 0;
 
 	/**
 	 * Get a pointer to the albums interface.
 	 * @return Pointer to the Album interface.
 	 */
-	virtual InterfaceBase<AlbumRecord>* getAlbumInterface() = 0;
+	virtual InterfaceBase<RecordClasses::AlbumRecord>* getAlbumInterface() = 0;
 
 	/**
 	 * \copydoc getAlbumInterface()
 	 */
-	virtual const InterfaceBase<AlbumRecord>* getAlbumInterface() const = 0;
+	virtual const InterfaceBase<RecordClasses::AlbumRecord>* getAlbumInterface() const = 0;
 
 	/**
 	 * Get a pointer to the photo interface.
 	 * @return Pointer to the Photo interface.
 	 */
-	virtual InterfaceBase<PhotoRecord>* getPhotoInterface() = 0;
+	virtual InterfaceBase<RecordClasses::PhotoRecord>* getPhotoInterface() = 0;
 
 	/**
 	 * \copydoc getPhotoInterface()
 	 */
-	virtual const InterfaceBase<PhotoRecord>* getPhotoInterface() const = 0;
+	virtual const InterfaceBase<RecordClasses::PhotoRecord>* getPhotoInterface() const = 0;
 
 	/**
 	 * Get a pointer to the photos-albums-relations interface.

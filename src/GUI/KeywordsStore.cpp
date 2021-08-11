@@ -2,7 +2,7 @@
  * KeywordsStore.cpp
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -24,9 +24,11 @@
 namespace PhotoLibrary {
 namespace GUI {
 
-KeywordsStore::KeywordsStore(Backend::InterfaceBase<Backend::KeywordRecord>* db) : BaseTreeStore(db) {}
+using Backend::RecordClasses::KeywordRecord;
 
-Glib::RefPtr<KeywordsStore> KeywordsStore::create(Backend::InterfaceBase<Backend::KeywordRecord>* db) {
+KeywordsStore::KeywordsStore(Backend::InterfaceBase<KeywordRecord>* db) : BaseTreeStore(db) {}
+
+Glib::RefPtr<KeywordsStore> KeywordsStore::create(Backend::InterfaceBase<KeywordRecord>* db) {
 	return Glib::RefPtr<KeywordsStore>(new KeywordsStore(db));
 }
 
@@ -45,12 +47,12 @@ void KeywordsStore::onRowChanged(const TreeModel::Path& path, const TreeModel::i
 }
 
 void KeywordsStore::fillRow(int id, Gtk::TreeModel::Row &row) {
-	Backend::KeywordRecord keyword(getBackend()->getEntry(id));
+	KeywordRecord keyword(getBackend()->getEntry(id));
 	row[getColumns().id] = id;
 	row[getColumns().keyword] = keyword.getKeyword();
 	row[getColumns().assigned] = false; /// \todo connect to selected photos
 	row[getColumns().inconsistent] = false;
-	row[getColumns().expanded] = keyword.getOptions() & Backend::KeywordRecord::Options::ROW_EXPANDED;
+	row[getColumns().expanded] = keyword.getOptions() & KeywordRecord::Options::ROW_EXPANDED;
 }
 
 } /* namespace Backend */

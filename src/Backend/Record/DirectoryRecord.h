@@ -24,6 +24,7 @@
 
 namespace PhotoLibrary {
 namespace Backend {
+namespace RecordClasses {
 
 using DirectoryTuple = std::tuple<int,RecordOptions::Options,Glib::ustring,Glib::ustring>;
 
@@ -145,9 +146,8 @@ private:
 	static_assert(fields.size() == size());
 };
 
+} /*namespace RecordClasses */
 } /* namespace Backend */
 } /* namespace PhotoLibrary */
-
-
 
 #endif /* SRC_ADAPTER_RECORD_DIRECTORYRECORD_H_ */

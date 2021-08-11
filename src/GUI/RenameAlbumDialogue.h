@@ -2,7 +2,7 @@
  * RenameAlbumDialogue.h
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -37,11 +37,11 @@ public:
 	/**
 	 * @param[in,out] album Pointer to the Backend::AlbumRecord object to edit
 	 */
-	RenameAlbumDialogue(Backend::AlbumRecord* album);
+	RenameAlbumDialogue(Backend::RecordClasses::AlbumRecord* album);
 	~RenameAlbumDialogue() = default;
 
 protected:
-	Backend::AlbumRecord* album;	/**< Pointer to the AlbumRecord edited in the dialogue */
+	Backend::RecordClasses::AlbumRecord* album;	/**< Pointer to the AlbumRecord edited in the dialogue */
 
 private:
 	Gtk::Label album_name_label;

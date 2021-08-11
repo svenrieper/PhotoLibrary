@@ -38,35 +38,35 @@ DatabaseFactory::DatabaseFactory(const char* filename, bool initialise) :
 		createTables();
 }
 
-DBInterface<Backend::KeywordRecord>* DatabaseFactory::getKeywordInterface() {
+DBInterface<Backend::RecordClasses::KeywordRecord>* DatabaseFactory::getKeywordInterface() {
 	return &keyword_interface;
 }
 
-const DBInterface<Backend::KeywordRecord>* DatabaseFactory::getKeywordInterface() const {
+const DBInterface<Backend::RecordClasses::KeywordRecord>* DatabaseFactory::getKeywordInterface() const {
 	return &keyword_interface;
 }
 
-DBInterface<Backend::DirectoryRecord>* DatabaseFactory::getDirectoriesInterface() {
+DBInterface<Backend::RecordClasses::DirectoryRecord>* DatabaseFactory::getDirectoriesInterface() {
 	return &directories_interface;
 }
 
-const DBInterface<Backend::DirectoryRecord>* DatabaseFactory::getDirectoriesInterface() const {
+const DBInterface<Backend::RecordClasses::DirectoryRecord>* DatabaseFactory::getDirectoriesInterface() const {
 	return &directories_interface;
 }
 
-DBInterface<Backend::AlbumRecord>* DatabaseFactory::getAlbumInterface() {
+DBInterface<Backend::RecordClasses::AlbumRecord>* DatabaseFactory::getAlbumInterface() {
 	return &album_interface;
 }
 
-const DBInterface<Backend::AlbumRecord>* DatabaseFactory::getAlbumInterface() const {
+const DBInterface<Backend::RecordClasses::AlbumRecord>* DatabaseFactory::getAlbumInterface() const {
 	return &album_interface;
 }
 
-DBInterface<Backend::PhotoRecord>* DatabaseFactory::getPhotoInterface() {
+DBInterface<Backend::RecordClasses::PhotoRecord>* DatabaseFactory::getPhotoInterface() {
 	return &photo_interface;
 }
 
-const DBInterface<Backend::PhotoRecord>* DatabaseFactory::getPhotoInterface() const {
+const DBInterface<Backend::RecordClasses::PhotoRecord>* DatabaseFactory::getPhotoInterface() const {
 	return &photo_interface;
 }
 

@@ -25,7 +25,7 @@
 namespace PhotoLibrary {
 namespace Tests {
 
-using Photo = Backend::PhotoRecord;
+using Photo = Backend::RecordClasses::PhotoRecord;
 using namespace Backend;
 
 TEST_CASE( "test operator== and operator!= for class PhotoRecord", "[photos][record]" ) {

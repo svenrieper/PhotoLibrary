@@ -2,7 +2,7 @@
  * DirectoryInterface_test.cpp
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -25,10 +25,10 @@ namespace PhotoLibrary {
 namespace Backend {
 namespace DatabaseInterface {
 
-using Backend::DirectoryRecord;
+using Backend::RecordClasses::DirectoryRecord;
 using Backend::BackendFactory;
 using Backend::InterfaceBase;
-using DirectoryInterface = InterfaceBase<Backend::DirectoryRecord>;
+using DirectoryInterface = InterfaceBase<Backend::RecordClasses::DirectoryRecord>;
 
 
 TEMPLATE_TEST_CASE("Test the DirectoryInterface of the Adapter and the Backend", "[directory][adapter][backend]", DatabaseFactory, BackendFactory) {
