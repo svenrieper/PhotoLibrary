@@ -22,8 +22,10 @@
 #include <catch2/catch.hpp>
 
 namespace PhotoLibrary {
+namespace Tests {
 
 using Album = Backend::AlbumRecord;
+using NewAlbum = Backend::NewAlbumRecord;
 using namespace Backend;
 
 TEST_CASE( "test operator== and operator!= for class AlbumRecord", "[albums][record]" ) {
@@ -35,12 +37,49 @@ TEST_CASE( "test operator== and operator!= for class AlbumRecord", "[albums][rec
 	/// \todo add more tests
 }
 
-TEST_CASE("test constructors using Glib::ustring&& and const Glib::ustring& for class AlbumRecord", "[albums][record]") {
-	Glib::ustring name{"some_name"};
-	Album album_copying_name{0, AlbumRecord::Options::NONE, name};
-	Album album_moving_name{0, AlbumRecord::Options::NONE, std::move(name)};
-
-	CHECK(album_copying_name == album_moving_name);
+TEST_CASE( "test operator== and operator!= for class NewAlbumRecord", "[albums][record]" ) {
+	NewAlbum default_album;
+	NewAlbum default_album2;
+	CHECK(default_album == default_album);
+	CHECK(default_album == default_album2);
 }
 
+TEST_CASE("test constructors for class AlbumRecord", "[albums][record]") {
+	Glib::ustring name{"some_name"};
+	SECTION("DirectoryRecord constructors") {
+		Album album_copying_name{0, AlbumRecord::Options::NONE, name};
+		Album album_moving_name{0, AlbumRecord::Options::NONE, std::move(name)};
+
+		CHECK(album_copying_name == album_moving_name);
+	}
+
+	SECTION("NewDirectoryRecord constructors") {
+		NewAlbum album_copying_name{0, AlbumRecord::Options::NONE, name};
+		NewAlbum album_moving_name{0, AlbumRecord::Options::NONE, std::move(name)};
+
+		CHECK(album_copying_name == album_moving_name);
+	}
+
+	name = "";
+
+	SECTION("DirectoryRecord default constructors") {
+		Album album_copying_name{0, AlbumRecord::Options::NONE, name};
+		Album album_moving_name{0, AlbumRecord::Options::NONE, std::move(name)};
+		Album album_default_constucted{};
+
+		CHECK(album_copying_name == album_default_constucted);
+		CHECK(album_moving_name == album_default_constucted);
+	}
+
+	SECTION("NewDirectoryRecord default constructors") {
+		NewAlbum album_copying_name{0, AlbumRecord::Options::NONE, name};
+		NewAlbum album_moving_name{0, AlbumRecord::Options::NONE, std::move(name)};
+		NewAlbum album_default_constucted{};
+
+		CHECK(album_copying_name == album_default_constucted);
+		CHECK(album_moving_name == album_default_constucted);
+	}
+}
+
+} /* namespace Tests */
 } /* namespace PhotoLibrary */

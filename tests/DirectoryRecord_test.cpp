@@ -1,8 +1,8 @@
 /*
- * Keyword_test.cpp
+ * DirectoryRecord_test.cpp
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -17,11 +17,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <catch2/catch.hpp>
 #include "../src/Backend/Record/DirectoryRecord.h"
+#include <catch2/catch.hpp>
+#include <vector>
 
 namespace PhotoLibrary {
-namespace Adapter {
+namespace Tests {
 
 using Backend::DirectoryRecord;
 
@@ -51,13 +52,50 @@ TEST_CASE( "test operator== and operator!= for class DirectoryRecord", "[directo
 	CHECK(name_name != name_fullname);
 }
 
-TEST_CASE("test constructors using Glib::ustring&& and const Glib::ustring& for class DirectoryRecord", "[directories][record]") {
+TEST_CASE("test constructors for class DirectoryRecord", "[directories][record]") {
     Glib::ustring name{"some_name"};
-    DirectoryRecord directory_copying_name{0, DirectoryRecord::Options::NONE, name};
-    DirectoryRecord directory_moving_name{0, DirectoryRecord::Options::NONE, std::move(name)};
+	Glib::ustring fullname{"another name"};
 
-    CHECK(directory_copying_name == directory_moving_name);
+	SECTION("Provide all arguments") {
+		DirectoryRecord directory1 {0, DirectoryRecord::Options::NONE, name, fullname};
+		DirectoryRecord directory2 {0, DirectoryRecord::Options::NONE, Glib::ustring(name), fullname};
+		DirectoryRecord directory3 {0, DirectoryRecord::Options::NONE, name, Glib::ustring(fullname)};
+		DirectoryRecord directory4 {0, DirectoryRecord::Options::NONE, Glib::ustring(name), Glib::ustring(fullname)};
+
+		CHECK(directory1 == directory2);
+		CHECK(directory1 == directory3);
+		CHECK(directory1 == directory4);
+	}
+
+	SECTION("Default fullname") {
+		DirectoryRecord directory1 {0, DirectoryRecord::Options::NONE, name};
+		DirectoryRecord directory2 {0, DirectoryRecord::Options::NONE, Glib::ustring(name)};
+
+		CHECK(directory1 == directory2);
+	}
+
+	name = "";
+	fullname = "";
+
+	SECTION("Default constructor") {
+		std::vector<DirectoryRecord> dir_vec;
+
+		dir_vec.push_back({});
+		dir_vec.push_back({0});
+		dir_vec.push_back({0, DirectoryRecord::Options::NONE});
+		dir_vec.push_back({0, DirectoryRecord::Options::NONE, name});
+		dir_vec.push_back({0, DirectoryRecord::Options::NONE, Glib::ustring(name)});
+		dir_vec.push_back({0, DirectoryRecord::Options::NONE, name, fullname});
+		dir_vec.push_back({0, DirectoryRecord::Options::NONE, Glib::ustring(name), fullname});
+		dir_vec.push_back({0, DirectoryRecord::Options::NONE, name, Glib::ustring(fullname)});
+		dir_vec.push_back({0, DirectoryRecord::Options::NONE, Glib::ustring(name), Glib::ustring(fullname)});
+
+		for(auto& dir : dir_vec) {
+			CHECK(dir == dir_vec[0]);
+		}
+	}
+
 }
 
-} /* namespace Adapter */
+} /* namespcae Tests */
 } /* namespace PhotoLibrary */

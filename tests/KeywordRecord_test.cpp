@@ -17,10 +17,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <catch2/catch.hpp>
 #include "../src/Backend/Record/KeywordRecord.h"
+#include <catch2/catch.hpp>
+#include <vector>
 
 namespace PhotoLibrary {
+namespace Tests {
 
 using Keyword = Backend::KeywordRecord;
 using namespace Backend;
@@ -79,12 +81,49 @@ TEST_CASE( "test operator== and operator!= for class Keyword", "[keyword][record
 	CHECK(default_key != asian_elephant);
 }
 
-TEST_CASE("test constructors using Glib::ustring&& and const Glib::ustring& for class KeywordRecord", "[keywords][record]") {
+TEST_CASE("test constructors for class KeywordRecord", "[keywords][record]") {
     Glib::ustring name{"some_name"};
-    Keyword keyword_copying_name{0, KeywordRecord::Options::NONE, name};
-    Keyword keyword_moving_name{0, KeywordRecord::Options::NONE, std::move(name)};
+	Glib::ustring fullname{"another name"};
 
-    CHECK(keyword_copying_name == keyword_moving_name);
+	SECTION("Provide all arguments") {
+		Keyword keyword1 {0, KeywordRecord::Options::NONE, name, fullname};
+		Keyword keyword2 {0, KeywordRecord::Options::NONE, Glib::ustring(name), fullname};
+		Keyword keyword3 {0, KeywordRecord::Options::NONE, name, Glib::ustring(fullname)};
+		Keyword keyword4 {0, KeywordRecord::Options::NONE, Glib::ustring(name), Glib::ustring(fullname)};
+
+		CHECK(keyword1 == keyword2);
+		CHECK(keyword1 == keyword3);
+		CHECK(keyword1 == keyword4);
+	}
+
+	SECTION("Default synonyms") {
+		Keyword keyword_copying_name{0, KeywordRecord::Options::NONE, name};
+		Keyword keyword_moving_name{0, KeywordRecord::Options::NONE, std::move(name)};
+
+		CHECK(keyword_copying_name == keyword_moving_name);
+	}
+
+	name = "";
+	fullname = "";
+
+	SECTION("Default constructor") {
+		std::vector<Keyword> key_vec;
+
+		key_vec.push_back({});
+		key_vec.push_back({0});
+		key_vec.push_back({0, Keyword::Options::NONE});
+		key_vec.push_back({0, Keyword::Options::NONE, name});
+		key_vec.push_back({0, Keyword::Options::NONE, Glib::ustring(name)});
+		key_vec.push_back({0, Keyword::Options::NONE, name, fullname});
+		key_vec.push_back({0, Keyword::Options::NONE, Glib::ustring(name), fullname});
+		key_vec.push_back({0, Keyword::Options::NONE, name, Glib::ustring(fullname)});
+		key_vec.push_back({0, Keyword::Options::NONE, Glib::ustring(name), Glib::ustring(fullname)});
+
+		for(auto& key : key_vec) {
+			CHECK(key == key_vec[0]);
+		}
+	}
 }
 
+} /* namespace Tests */
 } /* namespace PhotoLibrary */

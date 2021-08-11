@@ -1,5 +1,5 @@
 /*
- * Keyword_test.cpp
+ * PhotoRecord_test.cpp
  *
  * This file is part of PhotoLibrary
  * Copyright (C) 2020-2021 Sven Rieper
@@ -20,8 +20,10 @@
 #include "../src/Backend/Record/PhotoRecord.h"
 #include <glibmm/ustring.h>
 #include <catch2/catch.hpp>
+#include <vector>
 
 namespace PhotoLibrary {
+namespace Tests {
 
 using Photo = Backend::PhotoRecord;
 using namespace Backend;
@@ -35,12 +37,39 @@ TEST_CASE( "test operator== and operator!= for class PhotoRecord", "[photos][rec
 	/// \todo add more tests
 }
 
-TEST_CASE("test constructors using Glib::ustring&& and const Glib::ustring& for class PhotoRecord", "[photos][record]") {
+TEST_CASE("test constructors for class PhotoRecord", "[photos][record]") {
 	Glib::ustring filename{"some_name"};
-	Photo photo_copying_filename{0, filename};
-	Photo photo_moving_fileanem{0, std::move(filename)};
 
-	CHECK(photo_copying_filename == photo_moving_fileanem);
+	SECTION("Provide all arguments") {
+		Photo photo_copying_filename{0, filename, 0, 2255656663, 2563, 1560};
+		Photo photo_moving_fileanem{0, std::move(filename), 0, 2255656663, 2563, 1560};
+
+		CHECK(photo_copying_filename == photo_moving_fileanem);
+	}
+
+	filename = "";
+
+	SECTION("Default constructor") {
+		std::vector<Photo> photo_vec;
+
+		photo_vec.push_back({});
+		photo_vec.push_back({0});
+		photo_vec.push_back({0, filename});
+		photo_vec.push_back({0, Glib::ustring(filename)});
+		photo_vec.push_back({0, filename, 0});
+		photo_vec.push_back({0, Glib::ustring(filename), 0});
+		photo_vec.push_back({0, filename, 0, 0});
+		photo_vec.push_back({0, Glib::ustring(filename), 0, 0});
+		photo_vec.push_back({0, filename, 0, 0, 0});
+		photo_vec.push_back({0, Glib::ustring(filename), 0, 0,0 });
+		photo_vec.push_back({0, filename, 0, 0, 0, 0});
+		photo_vec.push_back({0, Glib::ustring(filename), 0, 0, 0, 0});
+
+		for(auto& photo : photo_vec) {
+			CHECK(photo == photo_vec[0]);
+		}
+	}
 }
 
+} /* namespace Tests */
 } /* namespace PhotoLibrary */
