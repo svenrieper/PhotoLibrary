@@ -119,6 +119,8 @@ private:
  * It has another varable to hold a backup of parent id so that
  * the parent id in the underlying AlbumRecord can be switched between
  * the backup parent id and the root id.
+ *
+ * \todo Refactor GUI::NewKeywordDialogue and remove
  */
 class NewAlbumRecord : public AlbumRecord {
 public:

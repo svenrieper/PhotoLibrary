@@ -152,6 +152,8 @@ private:
  * It has another varable to hold a backup of parent id so that
  * the parent id in the underlying KeywordRecord can be switched between
  * the backup parent id and the root id.
+ *
+ * \todo refactor GUI::NewKeywordDialogue and remove
  */
 struct NewKeywordRecord : public KeywordRecord {
 public:
