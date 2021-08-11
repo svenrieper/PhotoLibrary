@@ -20,13 +20,13 @@
 #ifndef SRC_DBINTERFACE_H_
 #define SRC_DBINTERFACE_H_
 
-#include <glibmm/ustring.h>
 #include "../Record/Record.h"
 #include "../InterfaceBase.h"
-#include <iostream>
 #include "suppport.h"
-#include "../../SQLiteAdapter/Database.h"
+#include <Database.h>
+#include <glibmm/ustring.h>
 #include <boost/preprocessor/iteration/local.hpp>
+#include <iostream>
 
 namespace PhotoLibrary {
 namespace Backend {

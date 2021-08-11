@@ -1,22 +1,6 @@
-cmake_minimum_required(VERSION 3.10)
-
-# set the project name and version
-project(PhotoLibrary)
-
-# specify the C++ standard
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
-
-# add the executable
 add_executable(PhotoLibrary 
 			main.cpp 
 			examples.cpp
-			SQLiteAdapter/Database.cpp
-			SQLiteAdapter/SQLQuerry.cpp
-			Backend/DatabaseInterface/RelationsDBInterface.cpp
-			Backend/DatabaseInterface/DatabaseFactory.cpp
-			Backend/DatabaseInterface/suppport.cpp
-			Backend/BackendFactory.cpp
 			GUI/AlbumStore.cpp
 			GUI/AlbumView.cpp
 			GUI/DirectoryStore.cpp
@@ -32,42 +16,37 @@ add_executable(PhotoLibrary
 			GUI/CentrePane.cpp
 			GUI/PhotoDrawingArea.cpp
 			GUI/PhotoTile.cpp
-			resources/grey_pixel.cc
+			GUI/resources/grey_pixel.cc
 			)
 
-#configure_file(CmakeConfig.h.in CmakeConfig.h)
-
-target_include_directories(PhotoLibrary PUBLIC
-                           "${PROJECT_BINARY_DIR}"
-                           )
+#target_include_directories(PhotoLibrary PUBLIC
+	#"${PROJECT_BINARY_DIR}"
+	#)
 
 add_custom_command(TARGET PhotoLibrary POST_BUILD
 		COMMAND ${CMAKE_COMMAND} -E copy_directory
-		"${CMAKE_SOURCE_DIR}/example pictures/"
+		"${CMAKE_SOURCE_DIR}/src/example pictures/"
 		"$<TARGET_FILE_DIR:PhotoLibrary>/example pictures/")
 
 # Check for libraries:
 find_package(PkgConfig REQUIRED)
 find_package(Threads REQUIRED)
-find_package(Boost REQUIRED)
 
-pkg_check_modules (SQLITE3 REQUIRED sqlite3)
 pkg_check_modules (GTKMM  REQUIRED gtkmm-3.0>=3.16)
 
 
 include_directories(${EXTRA_INCDIR}
         ${GTKMM_INCLUDE_DIRS}
-        ${SQLITE3_INCLUDE_DIRS}
         )
 link_directories(${EXTRA_LIBDIR}
         ${GTKMM_LIBRARY_DIRS}
-        ${SQLITE3_LIBRARY_DIRS}
         )
 
 # Add linked libraries dependencies to executables targets
 target_link_libraries(PhotoLibrary
-    ${GTKMM_LIBRARIES}
-    ${SQLITE3_LIBRARIES}
-    Threads::Threads
-    )
+	${EXTRA_LIBS}
+	PhotoLibraryBackend
+	${GTKMM_LIBRARIES}
+	Threads::Threads
+	)
 

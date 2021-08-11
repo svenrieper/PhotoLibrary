@@ -20,7 +20,7 @@
 #ifndef SRC_SQLQUERRY_H_
 #define SRC_SQLQUERRY_H_
 
-#include "../src/Support/Concepts.h"
+#include "../Support/Concepts.h"
 #include <sqlite3.h>
 #include <string>
 #include <cstdint>

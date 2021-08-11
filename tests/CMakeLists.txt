@@ -1,14 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
-
-# set the project name and version
-project(PhotoLibrary LANGUAGES CXX)
-
-# specify the C++ standard
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
-
-# add the executable
-add_executable(PhotoLibraryTests 
+add_executable(PLTests EXCLUDE_FROM_ALL
 			test.cpp
 			AlbumInterface_test.cpp
 			DirectoryInterface_test.cpp
@@ -22,43 +12,33 @@ add_executable(PhotoLibraryTests
 			PhotosKeywordsRelationsInterface_test.cpp
 			suppport_test.cpp
 			ThreadSafeQueue_tests.cpp
-			../src/SQLiteAdapter/Database.cpp
-			../src/SQLiteAdapter/SQLQuerry.cpp
-			../src/Backend/DatabaseInterface/DatabaseFactory.cpp
-			../src/Backend/DatabaseInterface/RelationsDBInterface.cpp
-			../src/Backend/DatabaseInterface/suppport.cpp
-			../src/Backend/BackendFactory.cpp
 			)
 
-target_include_directories(PhotoLibraryTests PUBLIC
-                           "${PROJECT_BINARY_DIR}"
-                           )
+#target_include_directories(PLTests PUBLIC
+	#"${PROJECT_BINARY_DIR}"
+	#)
 
 # Check for libraries:
-find_package(Catch2 REQUIRED)
+find_package(Catch2)
 find_package(PkgConfig REQUIRED)
-find_package(Boost REQUIRED)
 find_package(Threads REQUIRED)
 
-pkg_check_modules (SQLITE3 REQUIRED sqlite3)
-pkg_check_modules (GTKMM REQUIRED  gtkmm-3.0>=3.16)
-pkg_check_modules (CATCH2  REQUIRED catch2)
+pkg_check_modules(GLIBMM REQUIRED glibmm-2.4>=2.64)
+pkg_check_modules (CATCH2  catch2)
 
 
 include_directories(${EXTRA_INCDIR}
-        ${GTKMM_INCLUDE_DIRS}
-        ${SQLITE3_INCLUDE_DIRS}
+	${GLIBMM_INCLUDE_DIRS}
         )
 link_directories(${EXTRA_LIBDIR}
-        ${GTKMM_LIBRARY_DIRS}
-        ${SQLITE3_LIBRARY_DIRS}
+	${GLIBMM_LIBRARY_DIRS}
         )
 
 # Add linked libraries dependencies to executables targets
-target_link_libraries(PhotoLibraryTests
+target_link_libraries(PLTests
+	PhotoLibraryBackend
 	Catch2::Catch2
-	${GTKMM_LIBRARIES}
-	${SQLITE3_LIBRARIES}
+	${GLIBMM_LIBRARIES}
 	Threads::Threads
 	)
 

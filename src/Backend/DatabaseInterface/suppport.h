@@ -21,7 +21,6 @@
 #define SRC_SUPPPORT_H_
 
 #include <glibmm/ustring.h>
-#include "../../SQLiteAdapter/SQLQuerry.h"
 
 namespace PhotoLibrary {
 namespace Backend {
