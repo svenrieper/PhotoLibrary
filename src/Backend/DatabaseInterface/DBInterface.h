@@ -73,9 +73,11 @@ public:
 	 * fiddle-faddle with it.
 	 * \todo check for consistency? (refering to self or child* as parent)
 	 *
-	 * @throws constraint_error Thrown if parent 'id' does not exist.
 	 * @param id Id of the record to update
 	 * @param entry Data used to update record with id 'id' with
+	 * @throws DatabaseInterface::constraint_error If the update failed due to
+	 * 		constraint violation
+	 * @throws DatabaseInterface::database_error If any other error occurs during update
 	 */
 	void updateEntry(int id, const RecordType &entry) override;
 
@@ -86,9 +88,11 @@ public:
 	 * fiddle-faddle with it.
 	 * \todo check for consistency? (refering to self or child* as parent)
 	 *
-	 * @throws constraint_error Thrown if parent 'id' does not exist.
 	 * @param child_id Id of the record to update
 	 * @param new_parent_id New parent id of record 'id'
+	 * @throws DatabaseInterface::constraint_error Thrown if parent 'id' does not exist.
+	 * @throws DatabaseInterface::database_error If any other error occurs during updating
+	 * 		the database
 	 */
 	void setParent(int child_id, int new_parent_id) override;
 
@@ -205,7 +209,7 @@ void DBInterface<RType>::newEntry(const RecordType& entry) {
 	if(int i = querry.nextRow(); i == SQLITE_CONSTRAINT)
 		throw(constraint_error(std::string("Constraint Error adding entry to table ") + table));
 	else if(i != SQLITE_DONE)
-		throw(std::runtime_error("Error inserting into " + table + " (error code: " + std::to_string(i) + ")"));
+		throw(database_error("Error inserting into " + table + " (error code: " + std::to_string(i) + ")"));
 }
 
 //comiltetime loop for updateEntry
@@ -233,7 +237,7 @@ void DBInterface<RType>::updateEntry(int id, const RecordType &entry) {
 	if(int i = querry.nextRow(); i == SQLITE_CONSTRAINT)
 		throw(constraint_error("Error updating " + table));
 	else if(i != SQLITE_DONE)
-		throw(std::runtime_error("Error updating " + table + " (error code: " + std::to_string(i) + ")"));
+		throw(database_error("Error updating " + table + " (error code: " + std::to_string(i) + ")"));
 }
 
 template<class RType>
@@ -245,7 +249,7 @@ void DBInterface<RType>::setParent(int child_id, int new_parent_id) {
 	if (int i = querry.nextRow(); i == SQLITE_CONSTRAINT)
 		throw(constraint_error("Error moving entry."));
 	else if (i != SQLITE_DONE)
-		throw(std::runtime_error("Error moving entry."));
+		throw(database_error("Error moving entry."));
 }
 
 //compiletime loop for getID
@@ -270,9 +274,9 @@ int DBInterface<RType>::getID(const RType& entry) const {
 
 	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
 	if(int i=querry.nextRow() != SQLITE_ROW)
-		throw(std::runtime_error("Error getting id (error code: " + std::to_string(i)));
+		throw(missing_entry("Error getting id (error code: " + std::to_string(i)));
 
-	return querry.getColumnInt(0);
+	return querry.getColumn<int>(0);
 }
 
 template<class RType>
@@ -284,7 +288,7 @@ void DBInterface<RType>::deleteEntry(int id) {
 	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
 
 	if (querry.nextRow() != SQLITE_DONE)
-		throw(std::runtime_error("Error deleting keyword."));
+		throw(missing_entry("Error deleting keyword."));
 }
 
 } /* namespace DatabaseInterface */

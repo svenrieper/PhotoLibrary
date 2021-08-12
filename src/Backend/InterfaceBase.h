@@ -70,33 +70,41 @@ public:
 	 *
 	 * @param entry data to be inserted for new record
 	 * @return id of the new entry
+	 * @throws DatabaseInterface::constraint_error If insertion into the database fails
+	 * 		due to constraint violation
+	 * @throws DatabaseInterface::database_error If any other error occurs during insertion
 	 */
 	virtual void newEntry(const RecordType& entry) = 0;
 
 	/**
 	 * Updates a record.
 	 *
-	 * @throws DatabaseInterface::constraint_error Thrown if parent 'id' does not exist.
 	 * @param id Id of the record to update
 	 * @param entry Data used to update record with id 'id' with
+	 * @throws DatabaseInterface::constraint_error If the update failed due to
+	 * 		constraint violation
+	 * @throws DatabaseInterface::database_error If any other error occurs during update
 	 */
 	virtual void updateEntry(int id, const RecordType &entry) = 0;
 
 	/**
 	 * Moves a record to a new parent.
 	 *
-	 * @throws constraint_error Thrown if parent 'id' does not exist.
 	 * @param child_id Id of the record to update
 	 * @param new_parent_id New parent id of record 'id'
+	 * @throws DatabaseInterface::constraint_error Thrown if parent 'id' does not exist.
+	 * @throws DatabaseInterface::database_error If any other error occurs during updating
+	 * 		the database
 	 */
 	virtual void setParent(int child_id, int new_parent_id) = 0;
 
 	/**
 	 * Get the id to an entry.
-	 * @throws throws std::runtime_error if the entry wasn't found
 	 *
 	 * @param entry the record for which to return the id
 	 * @return the id of the record 'entry'
+	 * @throws DatabaseInterface::missing_entry If the entry wasn't found
+	 * 		(or any other error occurs in the database)
 	 */
 	virtual int getID(const RType& entry) const = 0;
 
@@ -106,6 +114,9 @@ public:
 	 * that depends on it.
 	 *
 	 * @param id Id of the record to delete
+	 * @throws std::runtime_error If id == 0
+	 * @throws DatabaseInterface::missing_entry If the entry wasn't found
+	 * 		(or any other error occurs in the database)
 	 */
 	virtual void deleteEntry(int id) = 0;
 };
