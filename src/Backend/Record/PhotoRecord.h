@@ -159,22 +159,8 @@ public:
 	 */
 	int getHeight() const noexcept { return access<5>(); }
 
-	/**
-	 * Get the name of a data field.
-	 * Returns the name of the column in the database.
-	 *
-	 * @param i number of the data field
-	 * @return name of the data field
-	 *
-	 * @throws std::out_of_range if std::array<T>::operator[] is range checked and i is not in [0;size())
-	 */
-	static const Glib::ustring& getField(int i) { return fields[i]; }
-
-//private:
 	static inline const std::array<const Glib::ustring,7>
 		fields {"directory", "filename", "rating", "datetime", "width", "height", "Photos"};
-
-	//static_assert(fields.size() == size());
 };
 
 } /* namespace RecordClasses */

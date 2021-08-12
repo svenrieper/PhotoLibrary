@@ -119,26 +119,6 @@ private:
 			appendSQL(sql, RecordType::fields[i], false);
 		}
 	}
-
-	//update 'field' with the retrieved data
-	//use overloaded functions to get the right type
-	/// \todo delete
-	static void setValue(SQLiteAdapter::SQLQuerry& querry, int column, int_least64_t& field) noexcept {
-		field = querry.getColumnInt<int_least64_t>(column);
-	}
-	static void setValue(SQLiteAdapter::SQLQuerry& querry, int column, int& field) noexcept {
-		field = querry.getColumnInt(column);
-	}
-	static void setValue(
-			SQLiteAdapter::SQLQuerry& querry,
-			int column,
-			Backend::RecordClasses::RecordOptions::Options& field
-			) noexcept {
-		field = static_cast<Backend::RecordClasses::RecordOptions::Options>(querry.getColumnInt(column));
-	}
-	static void setValue(SQLiteAdapter::SQLQuerry& querry, int column, Glib::ustring& field) {
-		field = querry.getColumnText<Glib::ustring>(column);
-	}
 };
 
 
@@ -176,7 +156,7 @@ RType DBInterface<RType>::getEntry(int id) const {
 
 template<class RType>
 std::vector<int> DBInterface<RType>::getChildren(int parent) const {
-	Glib::ustring sql = "SELECT id FROM " + table + " WHERE " + RecordType::getField(0) + " IS '" + std::to_string(parent) + "'";
+	Glib::ustring sql = "SELECT id FROM " + table + " WHERE " + RecordType::fields[0] + " IS '" + std::to_string(parent) + "'";
 	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
 
 	std::vector<int> ids;
@@ -189,7 +169,7 @@ std::vector<int> DBInterface<RType>::getChildren(int parent) const {
 
 template<class RType>
 int DBInterface<RType>::getNumberChildren(int parent) const {
-	Glib::ustring sql = "SELECT id FROM " + table + " WHERE " + RecordType::getField(0) + " IS '" + std::to_string(parent) + "'";
+	Glib::ustring sql = "SELECT id FROM " + table + " WHERE " + RecordType::fields[0] + " IS '" + std::to_string(parent) + "'";
 	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
 
 	int ids_number = 0;
@@ -231,7 +211,7 @@ void DBInterface<RType>::newEntry(const RecordType& entry) {
 //comiltetime loop for updateEntry
 template<int I, typename RecordType>
 void updateEntryLoop(const RecordType &entry, Glib::ustring& sql) {
-	appendSQL(sql, RecordType::getField(I), false);
+	appendSQL(sql, RecordType::fields[I], false);
 	sql += " = ";
 	appendSQL(sql, entry.template access<I>());
 	if constexpr(I) {
@@ -258,7 +238,7 @@ void DBInterface<RType>::updateEntry(int id, const RecordType &entry) {
 
 template<class RType>
 void DBInterface<RType>::setParent(int child_id, int new_parent_id) {
-	Glib::ustring sql = "UPDATE " + table + " SET " + RecordType::getField(0) + " = '" + std::to_string(new_parent_id) +
+	Glib::ustring sql = "UPDATE " + table + " SET " + RecordType::fields[0] + " = '" + std::to_string(new_parent_id) +
 			"' WHERE id IS '" + std::to_string(child_id) + "'";
 	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
 
@@ -271,7 +251,7 @@ void DBInterface<RType>::setParent(int child_id, int new_parent_id) {
 //compiletime loop for getID
 template<int I, typename RecordType>
 void getIDLoop(const RecordType& entry, Glib::ustring& sql) {
-	appendSQL(sql, RecordType::getField(I), false);
+	appendSQL(sql, RecordType::fields[I], false);
 	sql += " = ";
 	appendSQL(sql, entry.template access<I>());
 	if constexpr(I) {
