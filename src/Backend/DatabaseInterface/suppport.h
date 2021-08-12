@@ -50,6 +50,22 @@ public:
 	constraint_error(const std::string& error_message) : std::runtime_error(error_message) {}
 };
 
+/**
+ * Thrown if an entry couldn't be retrieved from the database
+ */
+class missing_entry : public std::runtime_error {
+public:
+	/**
+	 * @param error_message the value to be returned by missing_entry::what()
+	 */
+	missing_entry(const char* error_message) : std::runtime_error(error_message) {}
+
+	/**
+	 * \copydoc missing_entry
+	 */
+	missing_entry(const std::string& error_message) : std::runtime_error(error_message) {}
+};
+
 } /* namespace DatabaseInterface */
 } /* namespace Backend */
 } /* namespace PhotoLibrary */

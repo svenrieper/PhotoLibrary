@@ -34,9 +34,6 @@ namespace Backend {
  */
 class RelationsInterfaceBase {
 public:
-	RelationsInterfaceBase() = default;
-	virtual ~RelationsInterfaceBase() = default;
-
 	/**
 	 * Get a vector of 'entries' based on a 'collection' id.
 	 * @param collection Id of the 'collection' for which the 'entries'

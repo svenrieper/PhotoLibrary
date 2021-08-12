@@ -170,11 +170,11 @@ public:
 	 */
 	static const Glib::ustring& getField(int i) { return fields[i]; }
 
-private:
-	static inline const std::array<const Glib::ustring,6>
-		fields {"directory", "filename", "rating", "datetime", "width", "height"};
+//private:
+	static inline const std::array<const Glib::ustring,7>
+		fields {"directory", "filename", "rating", "datetime", "width", "height", "Photos"};
 
-	static_assert(fields.size() == size());
+	//static_assert(fields.size() == size());
 };
 
 } /* namespace RecordClasses */

@@ -35,29 +35,33 @@ namespace DatabaseInterface {
 /**
  * Backend interface to the database.
  *
- * The RType method Backend::Record::getField(int) should return
- * the name of the database column for the data returned with
- * Backend::Record::access<int>().
- * Backend::Record::getField(0) should hold the name of the column
- * containing the parent id or whatever come closest to the parent id.
- * Currently supported data types: int, int_least64_t, Glib::ustring, and
- * Backend::RecordOptions::KeywordOptions.
+ * static RType::fields[i] should hold the name of the database column
+ * for the data returned with RType::access<i>().
  *
- * @tparam RType Backend::Record based class used to retrieve,
+ * RType::fields[RType::size()] should hold the name of the name of the
+ * database associated to RType.
+ *
+ * RType::fields[0] should hold the name of the column containing the
+ * parent id or whatever come closest to the parent id.
+ *
+ * Currently supported data types: int, int_least64_t, Glib::ustring, and
+ * Backend::RecordClasses::RecordOptions::KeywordOptions.
+ *
+ * @tparam RType Backend::RecordClasses::Record based class used to retrieve,
  * 		save, and update records in the database
  */
 template<class RType>
 class DBInterface : public Backend::InterfaceBase<RType> {
 public:
 	using RecordType = RType;
+	static_assert(RType::size() == RType::fields.size()-1);
 
 #define MACRO_SIZE_LIMIT MACRO_PHOTOLIBRARY_TUPLE_SIZE_LIMIT /**< maximum size of RType */
 
 	/**
 	 * @param db Handle for the database to use
-	 * @param table name of the associated table
 	 */
-	DBInterface(SQLiteAdapter::Database& db, const Glib::ustring& table);
+	DBInterface(SQLiteAdapter::Database& db, const Glib::ustring& ={}) noexcept;
 	virtual ~DBInterface() = default;
 
 	RecordType getEntry(int id) const override;
@@ -96,50 +100,58 @@ public:
 
 protected:
 	SQLiteAdapter::Database& db;	/**< Database hande used */
-	const Glib::ustring table; /**< name of the table associated with the derived interface class */
+	const Glib::ustring& table; /**< name of the table associated with the derived interface class */
 
 private:
-	void appendSQL(Glib::ustring* sql, Glib::ustring append, bool escape=true) const {
+	void appendSQL(Glib::ustring& sql, Glib::ustring&& append, bool escape=true) const {
 		escapeSingleQuotes(append);
-		*sql += (escape?"'":"") + append + (escape?"'":"");
+		sql += (escape?"'":"") + append + (escape?"'":"");
 	}
 
-	void appendSQL(Glib::ustring* sql, int append, bool /*escape*/=true) const {
-		*sql += std::to_string(append);
+	inline void appendSQL(Glib::ustring& sql, const Glib::ustring& append, bool escape=true) const {
+		appendSQL(sql, Glib::ustring(append), escape);
+	}
+
+	void appendSQL(Glib::ustring& sql, int append, bool /*escape*/=true) const {
+		sql += std::to_string(append);
 	}
 
 	//append the names of all data fields (table columns)
 	void appendFieldNames(Glib::ustring &sql) const {
 		int i = RecordType::size()-1;
-		appendSQL(&sql, RecordType::getField(i), false);
+		appendSQL(sql, RecordType::fields[i], false);
 		while(i--) {
 			sql += ", ";
-			appendSQL(&sql, RecordType::getField(i), false);
+			appendSQL(sql, RecordType::fields[i], false);
 		}
 	}
 
 	//append the names of all data fields (table columns) for GET
 	void appendFieldNamesReverse(Glib::ustring &sql) const {
-		appendSQL(&sql, RecordType::getField(0), false);
+		appendSQL(sql, RecordType::fields[0], false);
 		for(int i=1; i<RecordType::size(); ++i) {
 			sql += ", ";
-			appendSQL(&sql, RecordType::getField(i), false);
+			appendSQL(sql, RecordType::fields[i], false);
 		}
 	}
 
 	//update 'field' with the retrieved data
 	//use overloaded functions to get the right type
-	void setValue(SQLiteAdapter::SQLQuerry& querry, int column, int_least64_t& field) const {
+	void setValue(SQLiteAdapter::SQLQuerry& querry, int column, int_least64_t& field) const noexcept {
 		field = querry.getColumnInt<int_least64_t>(column);
 	}
-	void setValue(SQLiteAdapter::SQLQuerry& querry, int column, int& field) const {
+	void setValue(SQLiteAdapter::SQLQuerry& querry, int column, int& field) const noexcept {
 		field = querry.getColumnInt(column);
 	}
-	void setValue(SQLiteAdapter::SQLQuerry& querry, int column, Backend::RecordClasses::RecordOptions::Options& field) const {
+	void setValue(
+			SQLiteAdapter::SQLQuerry& querry,
+			int column,
+			Backend::RecordClasses::RecordOptions::Options& field
+			) const noexcept {
 		field = static_cast<Backend::RecordClasses::RecordOptions::Options>(querry.getColumnInt(column));
 	}
 	void setValue(SQLiteAdapter::SQLQuerry& querry, int column, Glib::ustring& field) const {
-		field = querry.getColumnText(column);
+		field = querry.getColumnText<Glib::ustring>(column);
 	}
 };
 
@@ -147,8 +159,8 @@ private:
 
 //implementation
 template<class RType>
-DBInterface<RType>::DBInterface(SQLiteAdapter::Database& db, const Glib::ustring& table) :
-		db(db), table(table) {
+DBInterface<RType>::DBInterface(SQLiteAdapter::Database& db, const Glib::ustring&) noexcept :
+		db(db), table(RType::fields[RType::size()]) {
 }
 
 template<class RType>
@@ -157,21 +169,21 @@ RType DBInterface<RType>::getEntry(int id) const {
 
 	Glib::ustring sql = "SELECT ";
 	appendFieldNamesReverse(sql);
-	sql += " FROM " + table + " WHERE id IS " + std::to_string(id) + "";
+	sql += " FROM " + table + " WHERE id IS " + std::to_string(id);
 	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
 
 	if(querry.nextRow() != SQLITE_ROW)
-			throw(std::runtime_error(std::string("Error retrieving entry with id ") + std::to_string(id) + " from " + table));
+			throw(missing_entry(std::string("Error retrieving entry with id ") + std::to_string(id) + " from " + table));
 
 	switch (entry.size()) {
-#define BOOST_PP_LOCAL_LIMITS (0, MACRO_SIZE_LIMIT-1)
+#define BOOST_PP_LOCAL_LIMITS (0, MACRO_PHOTOLIBRARY_TUPLE_SIZE_LIMIT-1)
 
-#define BOOST_PP_LOCAL_MACRO(n)									\
-	case (MACRO_SIZE_LIMIT - (n)):								\
-		{														\
-			constexpr int i = MACRO_SIZE_LIMIT - (n) -1;		\
-			setValue(querry, i, entry.template access<i>());	\
-		}														\
+#define BOOST_PP_LOCAL_MACRO(n)													\
+	case (MACRO_PHOTOLIBRARY_TUPLE_SIZE_LIMIT - (n)):							\
+		{																		\
+			constexpr int i = MACRO_PHOTOLIBRARY_TUPLE_SIZE_LIMIT - (n) -1;		\
+			setValue(querry, i, entry.template access<i>());					\
+		}																		\
 		[[fallthrough]];
 
 #include BOOST_PP_LOCAL_ITERATE()
@@ -219,7 +231,7 @@ void DBInterface<RType>::newEntry(const RecordType& entry) {
 	case (MACRO_SIZE_LIMIT - (n)):							\
 		{													\
 			constexpr int i = MACRO_SIZE_LIMIT-(n)-1;		\
-			appendSQL(&sql, entry.template access<i>());	\
+			appendSQL(sql, entry.template access<i>());	\
 			if(i)											\
 				sql += ", ";								\
 		}													\
@@ -249,9 +261,9 @@ void DBInterface<RType>::updateEntry(int id, const RecordType &entry) {
 	case (MACRO_SIZE_LIMIT - (n)):								\
 		{														\
 			constexpr int i = MACRO_SIZE_LIMIT-(n)-1;			\
-			appendSQL(&sql, RecordType::getField(i), false);	\
+			appendSQL(sql, RecordType::getField(i), false);	\
 			sql += " = ";										\
-			appendSQL(&sql, entry.template access<i>());		\
+			appendSQL(sql, entry.template access<i>());		\
 			if(i)												\
 				sql += ", ";									\
 		}														\
@@ -293,9 +305,9 @@ int DBInterface<RType>::getID(const RType& entry) const {
 	case (MACRO_SIZE_LIMIT - (n)):								\
 		{														\
 			constexpr int i = MACRO_SIZE_LIMIT-(n)-1;			\
-			appendSQL(&sql, RecordType::getField(i), false);	\
+			appendSQL(sql, RecordType::getField(i), false);	\
 			sql += " = ";										\
-			appendSQL(&sql, entry.template access<i>());		\
+			appendSQL(sql, entry.template access<i>());		\
 			if(i)												\
 				sql += " AND ";									\
 		}														\

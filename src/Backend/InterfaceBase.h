@@ -2,7 +2,7 @@
  * InterfaceBase.h
  *
  * This file is part of PhotoLibrary
- * Copyright (C) 2020 Sven Rieper
+ * Copyright (C) 2020-2021 Sven Rieper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -36,14 +36,10 @@ class InterfaceBase {
 public:
 	using RecordType = RType;
 
-	InterfaceBase() = default;
-
-	virtual ~InterfaceBase() = default;
-
 	/**
 	 * Retrieve a record.
 	 *
-	 * @throws std::runtime_error if no entry with id 'id' was found.
+	 * @throws DatabaseInterface::missing_entry if no entry with id 'id' was found.
 	 * @param id Id of the record to return
 	 * @return complete information for record with id 'id'
 	 */
@@ -80,7 +76,7 @@ public:
 	/**
 	 * Updates a record.
 	 *
-	 * @throws constraint_error Thrown if parent 'id' does not exist.
+	 * @throws DatabaseInterface::constraint_error Thrown if parent 'id' does not exist.
 	 * @param id Id of the record to update
 	 * @param entry Data used to update record with id 'id' with
 	 */

@@ -109,10 +109,10 @@ public:
 	 */
 	static const Glib::ustring& getField(int i) { return fields[i]; }
 
-private:
-	static inline const std::array<const Glib::ustring,3> fields {"parent", "attributes", "name"};
+//private:
+	static inline const std::array<const Glib::ustring,4> fields {"parent", "attributes", "name", "Albums"};
 
-	static_assert(fields.size() == size());
+	//static_assert(fields.size() == size());
 };
 
 /**

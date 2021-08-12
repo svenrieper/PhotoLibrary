@@ -140,10 +140,10 @@ public:
 	 */
 	static const Glib::ustring& getField(int i) { return fields[i]; }
 
-private:
-	static inline const std::array<const Glib::ustring,4> fields {"parent", "attributes", "name", "fullname"};
+//private:
+	static inline const std::array<const Glib::ustring,5> fields {"parent", "attributes", "name", "fullname", "Directories"};
 
-	static_assert(fields.size() == size());
+//	static_assert(fields.size() == size());
 };
 
 } /*namespace RecordClasses */
