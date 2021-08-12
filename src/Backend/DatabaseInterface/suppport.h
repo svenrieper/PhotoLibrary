@@ -33,6 +33,31 @@ namespace DatabaseInterface {
 void escapeSingleQuotes(Glib::ustring& string);
 
 /**
+ * Appends string to SQL command
+ * Appends a string (append) to another string for generate an SQL command.
+ * escapeSingleQuotes will be applied to append.
+ *
+ * The version using an rvalue reference will leave append in a valid but
+ * changed state.
+ *
+ * @param sql The (partial) SQL command
+ * @param append The string or value to append
+ * @param escape Whether append should be enclosed by singel quotes
+ * 		(for string values)
+ */
+void appendSQL(Glib::ustring& sql, Glib::ustring&& append, bool escape=true);
+
+/**
+ * \copydoc appendSQL
+ */
+void appendSQL(Glib::ustring& sql, const Glib::ustring& append, bool escape=true);
+
+/**
+ * \copydoc appendSQL
+ */
+void appendSQL(Glib::ustring& sql, int append, bool /*escape*/=false);
+
+/**
  * Thrown to indicate constraint violations.
  * Thrown when INSERT|s and UPDATE|s in the databaes fail due to constraint violations
  * so that they can be discriminated from other runtime_error|s and handled appropriately.

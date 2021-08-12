@@ -31,6 +31,19 @@ void escapeSingleQuotes(Glib::ustring& string) {
 		iter = string.insert(iter, '\'');
 }
 
+void appendSQL(Glib::ustring& sql, Glib::ustring&& append, bool escape) {
+	escapeSingleQuotes(append);
+	sql += (escape?"'":"") + append + (escape?"'":"");
+}
+
+void appendSQL(Glib::ustring& sql, const Glib::ustring& append, bool escape) {
+	appendSQL(sql, Glib::ustring(append), escape);
+}
+
+void appendSQL(Glib::ustring& sql, int append, bool) {
+	sql += std::to_string(append);
+}
+
 } /* namespace DatabaseInterface */
 } /* namespace Backend */
 } /* namespace PhotoLibrary */
