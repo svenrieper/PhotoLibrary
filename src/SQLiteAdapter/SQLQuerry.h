@@ -81,7 +81,7 @@ public:
 	 * nextRow() wasn't called since construction ot the last call of nextStatement().
 	 * @see https://sqlite.org/c3ref/column_blob.html
 	 *
-	 * @tparam S Support::String_type that should be returned (default: std::string)
+	 * @tparam S Support::String_type that should be returned
 	 * @param colNum number of the column from the result to return
 	 * @return Text representation of 'colNum', empty string if content is NULL
 	 *
@@ -91,18 +91,28 @@ public:
 	S getColumnText(int colNum);
 
 	/**
+	 * \copydoc getColumnText
+	 */
+	template<Support::String_type S>
+	S getColumn(int colNum, const S& ={});
+
+	/**
 	 * Get the content of a column as an int.
 	 * @see https://sqlite.org/c3ref/column_blob.html
 	 * @see getColumnText(int)
 	 *
-	 * @tparam I Integral type to be returned (default: int)
+	 * @tparam I Integral type to be returned
 	 * @param colNum number of the column from the result to return
 	 * @return value of 'colNum'
-	 *
-	 * \todo allow enum|s?
 	 */
 	template<std::integral I=int>
 	I getColumnInt(int colNum) noexcept;
+
+	/**
+	 * \copydoc getColumnInt
+	 */
+	template<Support::Integral_or_enum I>
+	I getColumn(int colNum, I ={}) noexcept;
 
 	/**
 	 * Prepare the next SQL querry.
@@ -121,6 +131,17 @@ private:
 };
 
 //implementation
+template<Support::Integral_or_enum I>
+I SQLQuerry::getColumn(int colNum, I) noexcept {
+	return static_cast<I>(sqlite3_column_int64(sqlStmt, colNum));
+}
+
+template<Support::String_type S>
+S SQLQuerry::getColumn(int colNum, const S&) {
+	const unsigned char* value = sqlite3_column_text(sqlStmt, colNum);
+	return value?S{reinterpret_cast<const char*>(value)}:S{};
+}
+
 template<Support::String_type S>
 S SQLQuerry::getColumnText(int colNum) {
 	const unsigned char* value = sqlite3_column_text(sqlStmt, colNum);

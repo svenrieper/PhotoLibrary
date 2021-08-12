@@ -22,6 +22,7 @@
 
 #include <concepts>
 #include <string>
+#include <type_traits>
 
 namespace PhotoLibrary {
 namespace Support {
@@ -30,6 +31,10 @@ template<typename T>
 concept String_type = std::default_initializable<T> 
 		&& std::constructible_from<T,const char*>
 		&& std::constructible_from<T,std::string>;
+
+template<typename T>
+concept Integral_or_enum = std::integral<T>
+		|| std::is_enum<T>::value;
 
 } /* namespace Support */
 } /* namespace PhotoLibrary */
