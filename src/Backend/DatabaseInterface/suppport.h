@@ -62,15 +62,7 @@ void appendSQL(Glib::ustring& sql, int append, bool /*escape*/=false);
  */
 class database_error : public std::runtime_error {
 public:
-	/**
-	 * @param error_message the value to be returned by database_error::what()
-	 */
-	database_error(const char* error_message) : std::runtime_error(error_message) {}
-
-	/**
-	 * \copydoc database_error
-	 */
-	database_error(const std::string& error_message) : std::runtime_error(error_message) {}
+	using std::runtime_error::runtime_error;
 };
 
 /**
@@ -80,15 +72,7 @@ public:
  */
 class constraint_error : public database_error {
 public:
-	/**
-	 * @param error_message the value to be returned by constraint_error::what()
-	 */
-	constraint_error(const char* error_message) : database_error(error_message) {}
-
-	/**
-	 * \copydoc constraint_error(const char* error_message)
-	 */
-	constraint_error(const std::string& error_message) : database_error(error_message) {}
+	using database_error::database_error;
 };
 
 /**
@@ -96,20 +80,11 @@ public:
  */
 class missing_entry : public database_error {
 public:
-	/**
-	 * @param error_message the value to be returned by missing_entry::what()
-	 */
-	missing_entry(const char* error_message) : database_error(error_message) {}
-
-	/**
-	 * \copydoc missing_entry
-	 */
-	missing_entry(const std::string& error_message) : database_error(error_message) {}
+	using database_error::database_error;
 };
 
 } /* namespace DatabaseInterface */
 } /* namespace Backend */
 } /* namespace PhotoLibrary */
-
 
 #endif /* SRC_SUPPPORT_H_ */
