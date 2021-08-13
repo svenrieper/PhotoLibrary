@@ -29,7 +29,6 @@ namespace Backend {
 namespace RecordClasses {
 
 namespace RecordOptions {
-#define MACRO_PHOTOLIBRARY_TUPLE_SIZE_LIMIT 6 /**< maximum number of elements for Record|s Tuple parameter */
 
 /**
  * Possible options of a record.
@@ -51,13 +50,10 @@ enum Options {
  * @tparam Tuple class to hold the data. Should have the interface
  * of an std::tuple inlcuding std::get and std::tuple_size
  * (e.g. std::tuple, std::pair, or std::array; only tested for std::tuple|s).
- * It works with a tuple size up to six (defined in the
- * MACRO_PHOTOLIBRARY_TUPLE_SIZE_LIMIT macro).
  */
 template<typename Tuple>
 class Record {
 public:
-	static_assert(std::tuple_size<Tuple>::value <= MACRO_PHOTOLIBRARY_TUPLE_SIZE_LIMIT);
 	using Options = RecordOptions::Options;
 
 	/**
@@ -76,7 +72,7 @@ public:
 	 */
 	template<int N>
 	auto& access() noexcept {
-		return std::get<N%size()>(values);
+		return std::get<N>(values);
 	}
 
 	/**
@@ -88,7 +84,7 @@ public:
 	 */
 	template<int N>
 	const auto& access() const noexcept {
-		return std::get<N%size()>(values);
+		return std::get<N>(values);
 	}
 
 protected:

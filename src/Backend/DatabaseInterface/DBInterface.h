@@ -43,8 +43,7 @@ namespace DatabaseInterface {
  * RType::fields[0] should hold the name of the column containing the
  * parent id or whatever come closest to the parent id.
  *
- * Currently supported data types: int, int_least64_t, Glib::ustring, and
- * Backend::RecordClasses::RecordOptions::KeywordOptions.
+ * Currently supported data types: integral types, strings, and enum|s.
  *
  * @tparam RType Backend::RecordClasses::Record based class used to retrieve,
  * 		save, and update records in the database
@@ -99,11 +98,9 @@ public:
 	int getID(const RType& entry) const override;
 	void deleteEntry(int id) override;
 
-protected:
+private:
 	SQLiteAdapter::Database& db;	/**< Database hande used */
 	const Glib::ustring& table; /**< name of the table associated with the derived interface class */
-
-private:
 
 	//append the names of all data fields (table columns)
 	void appendFieldNames(Glib::ustring &sql) const {
