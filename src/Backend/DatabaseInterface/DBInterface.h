@@ -138,7 +138,7 @@ DBInterface<RType>::DBInterface(SQLiteAdapter::Database& db, const Glib::ustring
 template<int I, typename RecordType>
 void getEntryLoop(SQLiteAdapter::SQLQuerry& querry, RecordType& entry) {
 	entry.template access<I>() = querry.getColumn(I, entry.template access<I>());
-	if constexpr(I)
+	if constexpr(I!=0)
 		getEntryLoop<I-1>(querry, entry);
 }
 
@@ -189,7 +189,7 @@ int DBInterface<RType>::getNumberChildren(int parent) const {
 template<int I, typename RecordType>
 void newEntryLoop(const RecordType& entry, Glib::ustring& sql) {
 	appendSQL(sql, entry.template access<I>());
-	if constexpr(I) {
+	if constexpr(I!=0) {
 		sql += ", ";
 		newEntryLoop<I-1>(entry, sql);
 	}
@@ -219,7 +219,7 @@ void updateEntryLoop(const RecordType &entry, Glib::ustring& sql) {
 	appendSQL(sql, RecordType::fields[I], false);
 	sql += " = ";
 	appendSQL(sql, entry.template access<I>());
-	if constexpr(I) {
+	if constexpr(I!=0) {
 		sql += ", ";
 		updateEntryLoop<I-1>(entry, sql);
 	}
@@ -259,7 +259,7 @@ void getIDLoop(const RecordType& entry, Glib::ustring& sql) {
 	appendSQL(sql, RecordType::fields[I], false);
 	sql += " = ";
 	appendSQL(sql, entry.template access<I>());
-	if constexpr(I) {
+	if constexpr(I!=0) {
 		sql += " AND ";
 		getIDLoop<I-1>(entry, sql);
 	}
