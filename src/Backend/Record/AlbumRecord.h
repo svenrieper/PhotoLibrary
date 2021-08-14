@@ -20,7 +20,10 @@
 #ifndef SRC_BACKEND_RECORD_ALBUMRECORD_H_
 #define SRC_BACKEND_RECORD_ALBUMRECORD_H_
 
-#include "Record.h"
+#include "Options.h"
+#include <Record.h>
+#include <glibmm/ustring.h>
+
 
 namespace PhotoLibrary {
 namespace Backend {
@@ -35,8 +38,9 @@ using AlbumTuple = std::tuple<int,RecordOptions::Options,Glib::ustring>;
  * album entries, or update existing one. A AlbumRecord doesn't
  * know its own id.
  */
-class AlbumRecord: public Record<AlbumTuple> {
+class AlbumRecord: public PhotoLibrary::DatabaseInterface::Record<AlbumTuple> {
 public:
+	using Options = RecordOptions::Options;
 	/**
 	 * @param parent_id id of the parent album set
 	 * @param options options of the album (can be any combination of RecordOptions::Options)
@@ -99,6 +103,7 @@ public:
 	const Glib::ustring& getAlbumName() const noexcept { return access<2>(); }
 
 	static inline const std::array<const Glib::ustring,4> fields {"parent", "attributes", "name", "Albums"};
+	static inline const Glib::ustring table { "Albums" };
 };
 
 /**

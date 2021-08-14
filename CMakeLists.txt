@@ -13,6 +13,11 @@ set(SQLiteAdapter_INCLUDE_DIRS
 	"${CMAKE_SOURCE_DIR}/src/SQLiteAdapter"
 	)
 
+add_subdirectory(src/DatabaseInterface)
+set(DatabaseInterface_INCLUDE_DIRS
+	"${CMAKE_SOURCE_DIR}/src/DatabaseInterface"
+	)
+
 add_subdirectory(src/Backend)
 set(PhotoLibraryBackend_INCLUDE_DIRS
 	"${CMAKE_SOURCE_DIR}/src/Backend"

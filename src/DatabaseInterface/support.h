@@ -20,17 +20,23 @@
 #ifndef SRC_SUPPPORT_H_
 #define SRC_SUPPPORT_H_
 
-#include <glibmm/ustring.h>
+#include <Concepts.h>
+#include <stdexcept>
 
 namespace PhotoLibrary {
-namespace Backend {
 namespace DatabaseInterface {
 
 /**
  * Escapes single quotes (') with single quotes for SQLite querries.
  * @param[in, out] string the string to be escaped
  */
-void escapeSingleQuotes(Glib::ustring& string);
+template<SQLiteAdapter::String_type String =std::string>
+void escapeSingleQuotes(String& string) {
+	for(auto iter = string.begin();
+			(iter = std::find(iter, string.end(), '\'')) != string.end();
+			++(++iter))
+		iter = string.insert(iter, '\'');
+}
 
 /**
  * Appends string to SQL command
@@ -45,17 +51,48 @@ void escapeSingleQuotes(Glib::ustring& string);
  * @param escape Whether append should be enclosed by singel quotes
  * 		(for string values)
  */
-void appendSQL(Glib::ustring& sql, Glib::ustring&& append, bool escape=true);
+template<SQLiteAdapter::String_type String =std::string>
+void appendSQL(String& sql, String&& append, bool escape=true) {
+	escapeSingleQuotes(append);
+	sql += (escape?"'":"") + append + (escape?"'":"");
+}
 
 /**
  * \copydoc appendSQL
  */
-void appendSQL(Glib::ustring& sql, const Glib::ustring& append, bool escape=true);
+template<SQLiteAdapter::String_type String =std::string>
+void appendSQL(String& sql, const String& append, bool escape=true) {
+	appendSQL(sql, String(append), escape);
+}
 
 /**
  * \copydoc appendSQL
  */
-void appendSQL(Glib::ustring& sql, int append, bool /*escape*/=false);
+template<SQLiteAdapter::String_type String =std::string>
+void appendSQL(String& sql, int append, bool /*escape*/=false) {
+	sql += std::to_string(append);
+}
+
+//append the names of all data fields (table columns)
+template<typename RecordType, SQLiteAdapter::String_type String>
+void appendFieldNames(String &sql) {
+	int i = RecordType::size()-1;
+	appendSQL(sql, RecordType::fields[i], false);
+	while(i--) {
+		sql += ", ";
+		appendSQL(sql, RecordType::fields[i], false);
+	}
+}
+
+//append the names of all data fields (table columns) for GET
+template<typename RecordType, SQLiteAdapter::String_type String>
+void appendFieldNamesReverse(String &sql) {
+	appendSQL(sql, RecordType::fields[0], false);
+	for(int i=1; i<RecordType::size(); ++i) {
+		sql += ", ";
+		appendSQL(sql, RecordType::fields[i], false);
+	}
+}
 
 /**
  * Thrown to indicate errors executing SQL commands
@@ -84,7 +121,6 @@ public:
 };
 
 } /* namespace DatabaseInterface */
-} /* namespace Backend */
 } /* namespace PhotoLibrary */
 
 #endif /* SRC_SUPPPORT_H_ */

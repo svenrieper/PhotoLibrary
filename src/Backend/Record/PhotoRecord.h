@@ -20,7 +20,8 @@
 #ifndef SRC_BACKEND_RECORD_PHOTORECORD_H_
 #define SRC_BACKEND_RECORD_PHOTORECORD_H_
 
-#include "Record.h"
+#include <Record.h>
+#include <glibmm/ustring.h>
 #include <cstdint>
 
 namespace PhotoLibrary {
@@ -36,7 +37,7 @@ using PhotoTuple = std::tuple<int,Glib::ustring,int,int_least64_t,int,int>;
  * base photo entries, or update existing ones.
  * A PhotoRecord doesn't know its own id.
  */
-class PhotoRecord: public Record<PhotoTuple> {
+class PhotoRecord: public PhotoLibrary::DatabaseInterface::Record<PhotoTuple> {
 public:
 	/**
 	 * @param directory id of the parent directory of the file
@@ -161,6 +162,7 @@ public:
 
 	static inline const std::array<const Glib::ustring,7>
 		fields {"directory", "filename", "rating", "datetime", "width", "height", "Photos"};
+	static inline const Glib::ustring table { "Photos" };
 };
 
 } /* namespace RecordClasses */

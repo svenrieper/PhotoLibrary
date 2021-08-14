@@ -20,7 +20,9 @@
 #ifndef SRC_ADAPTER_RECORD_KEYWORDRECORD_H_
 #define SRC_ADAPTER_RECORD_KEYWORDRECORD_H_
 
-#include "Record.h"
+#include "Options.h"
+#include <Record.h>
+#include <glibmm/ustring.h>
 
 namespace PhotoLibrary {
 namespace Backend {
@@ -35,8 +37,10 @@ using KeywordTuple = std::tuple<int,RecordOptions::Options,Glib::ustring,Glib::u
  * keyword, or update existing ones. A Keyword doesn't know
  * its own id.
  */
-class KeywordRecord : public Record<KeywordTuple> {
+class KeywordRecord : public PhotoLibrary::DatabaseInterface::Record<KeywordTuple> {
 public:
+	using Options = RecordOptions::Options;
+
 	/**
 	 * @param parent_id id of the parent of the keyword
 	 * @param options options of the keyword (can be any combination of RecordOptions::Options)
@@ -132,6 +136,7 @@ public:
 	const Glib::ustring& getSynonyms() const noexcept { return access<3>(); }
 
 	static inline const std::array<const Glib::ustring,5> fields {"parent", "attributes", "keyword", "synonyms", "Keywords"};
+	static inline const Glib::ustring table { "Keywords" };
 };
 
 /**

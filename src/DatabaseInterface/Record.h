@@ -17,32 +17,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <glibmm/ustring.h>
-#include <array>
 #include <tuple>
 
 #ifndef SRC_ADAPTER_RECORD_RECORD_H_
 #define SRC_ADAPTER_RECORD_RECORD_H_
 
 namespace PhotoLibrary {
-namespace Backend {
-namespace RecordClasses {
-
-namespace RecordOptions {
-
-/**
- * Possible options of a record.
- */
-//can't be part of Record since that is a template and Options is needed as part ot the template argument
-enum Options {
-	NONE = 0, /**< No options are set */
-	ROW_EXPANDED = 1, /**< The row is expanded in the GUI::BaseTreeView */
-	PRIVATE = 2, /**< For keywords: whether the keyword is private. */
-	INCLUDE_ON_EXPORT = 4, /**< For keywords: if not set a keyword can't be included on exported */
-	INCLUDE_SYNONYMS_ON_EXPORT = 8, /**< For keywords: if not set the synonyms of a keyword are not exportet */
-	ALBUM_IS_SET = 16 /**< For albums: the album is a set */
-};
-}
+namespace DatabaseInterface {
 
 /**
  * Base class for database records.
@@ -54,8 +35,6 @@ enum Options {
 template<typename Tuple>
 class Record {
 public:
-	using Options = RecordOptions::Options;
-
 	/**
 	 * Get the number of data fields in the record.
 	 *
@@ -147,24 +126,7 @@ constexpr auto operator<=>(const Record<Tuple>& a, const Record<Tuple>& b) {
 	return a.values <=> b.values;
 }
 
-namespace RecordOptions {
-/**
- * Default bitwise and, or, and xor on two Options returns an Options
- */
-inline Options& operator^=(Options& a, const Options& b) noexcept {
-	return (a = static_cast<Options>(a ^ b));
-}
-
-/**
- * Default bitwise and, or, and xor on two Options returns an Options
- */
-inline constexpr Options operator|(Options a, Options b) noexcept {
-	return static_cast<Options>(static_cast<int>(a)|b);
-}
-}
-
-} /* namespace RecordClasses */
-} /* namespace Backend */
+} /* namespace DatabaseInterface */
 } /* namespace PhotoLibrary */
 
 #endif /* SRC_ADAPTER_RECORD_RECORD_H_ */

@@ -18,7 +18,7 @@
  */
 
 #include "RelationsDBInterface.h"
-#include "suppport.h"
+#include <support.h>
 
 namespace PhotoLibrary {
 namespace Backend {
@@ -57,7 +57,7 @@ void RelationsDBInterface::newRelation(int entry, int collection) {
 	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
 
 	if(int i = querry.nextRow(); i == SQLITE_CONSTRAINT)
-		throw(constraint_error(std::string("Constraint Error adding entry to table ") + table));
+		throw(PhotoLibrary::DatabaseInterface::constraint_error(std::string("Constraint Error adding entry to table ") + table));
 	else if(i != SQLITE_DONE)
 		throw(std::runtime_error("Error inserting into " + table + " (error code: " + std::to_string(i) + ")"));
 }

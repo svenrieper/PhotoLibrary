@@ -21,8 +21,8 @@
 #define SRC_BACKEND_DATABASEINTERFACE_RELATIONSDBINTERFACE_H_
 
 #include "../RelationsInterfaceBase.h"
+#include <Database.h>
 #include <glibmm/ustring.h>
-#include "../../SQLiteAdapter/Database.h"
 
 namespace PhotoLibrary {
 namespace Backend {

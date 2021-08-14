@@ -19,7 +19,7 @@
 
 #include "../src/Backend/DatabaseInterface/DatabaseFactory.h"
 #include "../src/Backend/BackendFactory.h"
-#include "../src/Backend/DatabaseInterface/suppport.h"
+#include <support.h>
 #include <catch2/catch.hpp>
 
 using namespace PhotoLibrary;

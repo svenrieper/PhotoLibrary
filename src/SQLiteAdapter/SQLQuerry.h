@@ -20,7 +20,7 @@
 #ifndef SRC_SQLQUERRY_H_
 #define SRC_SQLQUERRY_H_
 
-#include "../Support/Concepts.h"
+#include "Concepts.h"
 #include <sqlite3.h>
 #include <string>
 #include <cstdint>
@@ -87,13 +87,13 @@ public:
 	 *
 	 * @throws Anything thrown by the constructor of S (S() or S(const char*))
 	 */
-	template<Support::String_type S=std::string>
+	template<String_type S=std::string>
 	S getColumnText(int colNum);
 
 	/**
 	 * \copydoc getColumnText
 	 */
-	template<Support::String_type S>
+	template<String_type S>
 	S getColumn(int colNum, const S& ={});
 
 	/**
@@ -111,7 +111,7 @@ public:
 	/**
 	 * \copydoc getColumnInt
 	 */
-	template<Support::Integral_or_enum I>
+	template<Integral_or_enum I>
 	I getColumn(int colNum, I ={}) noexcept;
 
 	/**
@@ -131,18 +131,18 @@ private:
 };
 
 //implementation
-template<Support::Integral_or_enum I>
+template<Integral_or_enum I>
 I SQLQuerry::getColumn(int colNum, I) noexcept {
 	return static_cast<I>(sqlite3_column_int64(sqlStmt, colNum));
 }
 
-template<Support::String_type S>
+template<String_type S>
 S SQLQuerry::getColumn(int colNum, const S&) {
 	const unsigned char* value = sqlite3_column_text(sqlStmt, colNum);
 	return value?S{reinterpret_cast<const char*>(value)}:S{};
 }
 
-template<Support::String_type S>
+template<String_type S>
 S SQLQuerry::getColumnText(int colNum) {
 	const unsigned char* value = sqlite3_column_text(sqlStmt, colNum);
 	return value?S{reinterpret_cast<const char*>(value)}:S{};

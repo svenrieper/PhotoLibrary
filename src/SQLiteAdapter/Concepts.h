@@ -25,7 +25,7 @@
 #include <type_traits>
 
 namespace PhotoLibrary {
-namespace Support {
+namespace SQLiteAdapter {
 
 template<typename T>
 concept String_type = std::default_initializable<T> 
@@ -36,7 +36,7 @@ template<typename T>
 concept Integral_or_enum = std::integral<T>
 		|| std::is_enum<T>::value;
 
-} /* namespace Support */
+} /* namespace SQLiteAdapter */
 } /* namespace PhotoLibrary */
 
 #endif /* SUPPORT_CONCEPTS_H_ */

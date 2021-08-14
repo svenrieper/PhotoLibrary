@@ -20,7 +20,9 @@
 #ifndef SRC_ADAPTER_RECORD_DIRECTORYRECORD_H_
 #define SRC_ADAPTER_RECORD_DIRECTORYRECORD_H_
 
-#include "Record.h"
+#include "Options.h"
+#include <Record.h>
+#include <glibmm/ustring.h>
 
 namespace PhotoLibrary {
 namespace Backend {
@@ -35,8 +37,9 @@ using DirectoryTuple = std::tuple<int,RecordOptions::Options,Glib::ustring,Glib:
  * directory entries, or update existing one. A DirectoryRecord doesn't
  * know its own id.
  */
-class DirectoryRecord : public Record<DirectoryTuple> {
+class DirectoryRecord : public PhotoLibrary::DatabaseInterface::Record<DirectoryTuple> {
 public:
+	using Options = RecordOptions::Options;
 	/**
 	 * @param parent_id id of the parent directory
 	 * @param options options of the directory (can be any combination of RecordOptions::Options)
@@ -130,6 +133,7 @@ public:
 	const Glib::ustring& getFullDirectory() const noexcept { return access<3>(); }
 
 	static inline const std::array<const Glib::ustring,5> fields {"parent", "attributes", "name", "fullname", "Directories"};
+	static inline const Glib::ustring table { "Directories" };
 };
 
 } /*namespace RecordClasses */

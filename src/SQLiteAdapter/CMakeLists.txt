@@ -6,10 +6,6 @@ target_include_directories(SQLiteAdapter
 	INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
 	)
 
-set(SQLiteAdapter_INCLUDE_DIRS
-	"${CMAKE_CURRENT_SOURCE_DIR}"
-	)
-
 find_package(PkgConfig REQUIRED)
 pkg_check_modules (SQLITE3 REQUIRED sqlite3)
 

@@ -19,13 +19,11 @@
 
 #include "KeywordsView.h"
 #include "../Backend/Record/KeywordRecord.h"
-#include "../Backend/DatabaseInterface/suppport.h"
+#include "NewKeywordDialogue.h"
+#include <gtkmm/messagedialog.h>
 #include <map>
 #include <vector>
 #include <iostream>
-#include <gtkmm/messagedialog.h>
-
-#include "NewKeywordDialogue.h"
 
 namespace PhotoLibrary {
 namespace GUI {
