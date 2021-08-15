@@ -112,11 +112,12 @@ public:
 	 * Delete record from table.
 	 * Deletes a record, all its children, and all information
 	 * that depends on it.
+	 * Deleting an invalid ID has no effect.
 	 *
 	 * @param id Id of the record to delete
 	 * @throws std::runtime_error If id == 0
-	 * @throws DatabaseInterface::missing_entry If the entry wasn't found
-	 * 		(or any other error occurs in the database)
+	 * @throws DatabaseInterface::database_error If the database returns an error.
+	 * \todo Is it correct to forbid deleting the entry with id == 0?
 	 */
 	virtual void deleteEntry(int id) = 0;
 };

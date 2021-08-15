@@ -291,7 +291,7 @@ void AccessTables<String>::deleteEntry(int id) {
 	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
 
 	if (querry.nextRow() != SQLITE_DONE)
-		throw(missing_entry("Error deleting keyword."));
+		throw(database_error("Error deleting keyword."));
 }
 
 } /* namespace DatabaseInterface */
