@@ -74,6 +74,7 @@ public:
 	 * Doesn't check that the entry itself or one of its children
 	 * isn't set as parent; it's up to the user not to
 	 * fiddle-faddle with it.
+	 * If no entry with an ID 'id' exists this function doesn't do anything.
 	 * \todo check for consistency? (refering to self or child* as parent)
 	 *
 	 * @param id Id of the record to update
@@ -116,18 +117,18 @@ private:
 template<int I, typename RecordType>
 void getEntryLoop(SQLiteAdapter::SQLQuerry& querry, RecordType& entry) {
 	entry.template access<I>() = querry.getColumn(I, entry.template access<I>());
-	if constexpr(I)
+	if constexpr(I!=0)
 		getEntryLoop<I-1>(querry, entry);
 }
 
 template<String_type String>
 template<typename RecordType>
 RecordType AccessTables<String>::getEntry(int id) const {
-	using RecordType::table;
+	const String& table = RecordType::table;
 	RecordType entry;
 
 	String sql = "SELECT ";
-	appendFieldNamesReverse(sql);
+	appendFieldNamesReverse<RecordType>(sql);
 	sql += " FROM " + table + " WHERE id IS " + std::to_string(id);
 	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
 
@@ -142,7 +143,7 @@ RecordType AccessTables<String>::getEntry(int id) const {
 template<String_type String>
 template<typename RecordType>
 std::vector<int> AccessTables<String>::getChildren(int parent) const {
-	using RecordType::table;
+	const String& table = RecordType::table;
 
 	String sql = "SELECT id FROM " + table + " WHERE " + RecordType::fields[0] + " IS '" + std::to_string(parent) + "'";
 	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
@@ -158,7 +159,7 @@ std::vector<int> AccessTables<String>::getChildren(int parent) const {
 template<String_type String>
 template<typename RecordType>
 int AccessTables<String>::getNumberChildren(int parent) const {
-	using RecordType::table;
+	const String& table = RecordType::table;
 
 	String sql = "SELECT id FROM " + table + " WHERE " + RecordType::fields[0] + " IS '" + std::to_string(parent) + "'";
 	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
@@ -175,7 +176,7 @@ int AccessTables<String>::getNumberChildren(int parent) const {
 template<int I, typename RecordType, String_type String>
 void newEntryLoop(const RecordType& entry, String& sql) {
 	appendSQL(sql, entry.template access<I>());
-	if constexpr(I) {
+	if constexpr(I!=0) {
 		sql += ", ";
 		newEntryLoop<I-1>(entry, sql);
 	}
@@ -184,10 +185,10 @@ void newEntryLoop(const RecordType& entry, String& sql) {
 template<String_type String>
 template<typename RecordType>
 void AccessTables<String>::newEntry(const RecordType& entry) {
-	using RecordType::table;
+	const String& table = RecordType::table;
 
 	String sql = "INSERT INTO " + table + " (";
-	appendFieldNames(sql);
+	appendFieldNames<RecordType>(sql);
 	sql += ") VALUES (";
 
 	newEntryLoop<RecordType::size()-1>(entry, sql);
@@ -208,7 +209,7 @@ void updateEntryLoop(const RecordType &entry, String& sql) {
 	appendSQL(sql, RecordType::fields[I], false);
 	sql += " = ";
 	appendSQL(sql, entry.template access<I>());
-	if constexpr(I) {
+	if constexpr(I!=0) {
 		sql += ", ";
 		updateEntryLoop<I-1>(entry, sql);
 	}
@@ -217,7 +218,7 @@ void updateEntryLoop(const RecordType &entry, String& sql) {
 template<String_type String>
 template<typename RecordType>
 void AccessTables<String>::updateEntry(int id, const RecordType &entry) {
-	using RecordType::table;
+	const String& table = RecordType::table;
 
 	String sql = "UPDATE " + table + " SET ";
 
@@ -236,7 +237,7 @@ void AccessTables<String>::updateEntry(int id, const RecordType &entry) {
 template<String_type String>
 template<typename RecordType>
 void AccessTables<String>::setParent(int child_id, int new_parent_id) {
-	using RecordType::table;
+	const String& table = RecordType::table;
 
 	String sql = "UPDATE " + table + " SET " + RecordType::fields[0] + " = '" + std::to_string(new_parent_id) +
 			"' WHERE id IS '" + std::to_string(child_id) + "'";
@@ -254,7 +255,7 @@ void getIDLoop(const RecordType& entry, String& sql) {
 	appendSQL(sql, RecordType::fields[I], false);
 	sql += " = ";
 	appendSQL(sql, entry.template access<I>());
-	if constexpr(I) {
+	if constexpr(I!=0) {
 		sql += " AND ";
 		getIDLoop<I-1>(entry, sql);
 	}
@@ -263,7 +264,7 @@ void getIDLoop(const RecordType& entry, String& sql) {
 template<String_type String>
 template<typename RecordType>
 int AccessTables<String>::getID(const RecordType& entry) const {
-	using RecordType::table;
+	const String& table = RecordType::table;
 
 	String sql = "SELECT id FROM " + table + " WHERE (";
 
@@ -281,7 +282,7 @@ int AccessTables<String>::getID(const RecordType& entry) const {
 template<String_type String>
 template<typename RecordType>
 void AccessTables<String>::deleteEntry(int id) {
-	using RecordType::table;
+	const String& table = RecordType::table;
 
 	if (!id)
 		throw(std::runtime_error("Deleting the root is forbidden."));
