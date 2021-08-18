@@ -30,7 +30,13 @@ namespace SQLiteAdapter {
 template<typename T>
 concept String_type = std::default_initializable<T> 
 		&& std::constructible_from<T,const char*>
-		&& std::constructible_from<T,std::string>;
+		&& std::constructible_from<T,std::string>
+		&& requires (T x, std::string y, const char* z) {
+			{ x+y } -> std::convertible_to<T>;
+			{ y+x } -> std::convertible_to<T>;
+			{ x+y } -> std::convertible_to<T>;
+			{ z+x } -> std::convertible_to<T>;
+		};
 
 template<typename T>
 concept Integral_or_enum = std::integral<T>
