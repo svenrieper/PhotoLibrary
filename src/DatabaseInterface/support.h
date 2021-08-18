@@ -70,7 +70,7 @@ void appendSQL(String& sql, const String& append, bool escape=true) {
  * \todo Add version for other integral types and enum (classe)s
  */
 template<SQLiteAdapter::String_type String =std::string>
-void appendSQL(String& sql, int append, bool /*escape*/=false) {
+void appendSQL(String& sql, int64_t append, bool /*escape*/=false) {
 	sql += std::to_string(append);
 }
 
