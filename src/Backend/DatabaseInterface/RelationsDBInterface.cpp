@@ -18,6 +18,7 @@
  */
 
 #include "RelationsDBInterface.h"
+#include <exceptions.h>
 #include <support.h>
 
 namespace PhotoLibrary {

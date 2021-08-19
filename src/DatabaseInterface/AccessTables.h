@@ -20,6 +20,7 @@
 #ifndef SRC_ACCESSTABLES_H_
 #define SRC_ACCESSTABLES_H_
 
+#include "exceptions.h"
 #include "support.h"
 #include <Database.h>
 #include <Concepts.h>

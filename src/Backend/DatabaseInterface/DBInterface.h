@@ -21,6 +21,7 @@
 #define SRC_DBINTERFACE_H_
 
 #include "../InterfaceBase.h"
+#include <exceptions.h>
 #include <support.h>
 #include <Database.h>
 #include <glibmm/ustring.h>

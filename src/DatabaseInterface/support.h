@@ -28,6 +28,7 @@ namespace DatabaseInterface {
 
 /**
  * Escapes single quotes (') with single quotes for SQLite querries.
+ * @tparam String type of argument string
  * @param[in, out] string the string to be escaped
  */
 template<SQLiteAdapter::String_type String =std::string>
@@ -46,6 +47,7 @@ void escapeSingleQuotes(String& string) {
  * The version using an rvalue reference will leave append in a valid but
  * changed state.
  *
+ * @tparam String type of argument sql and string argument append
  * @param sql The (partial) SQL command
  * @param append The string or value to append
  * @param escape Whether append should be enclosed by singel quotes
@@ -67,14 +69,25 @@ void appendSQL(String& sql, const String& append, bool escape=true) {
 
 /**
  * \copydoc appendSQL
- * \todo Add version for other integral types and enum (classe)s
+ * \todo Add version for enum (classe)s
  */
 template<SQLiteAdapter::String_type String =std::string>
 void appendSQL(String& sql, int64_t append, bool /*escape*/=false) {
 	sql += std::to_string(append);
 }
 
-//append the names of all data fields (table columns)
+/**
+ * Appends the names of all columns to string starting whit the last.
+ *
+ * Appends the names of all columns (seperated by commas) for the
+ * given table to the given string starting with the last columns
+ * form RecordType::fields.
+ *
+ * @tparam RecordType Record based class for the table for which the column
+ * 		names should be appended
+ * @tparam String Type of argument sql
+ * @param[in,out] sql String to which the column names are appended
+ */
 template<typename RecordType, SQLiteAdapter::String_type String>
 void appendFieldNames(String &sql) {
 	int i = RecordType::size()-1;
@@ -85,6 +98,18 @@ void appendFieldNames(String &sql) {
 	}
 }
 
+/**
+ * Appends the names of all columns to string starting with the first.
+ *
+ * Appends the names of all columns (seperated by commas) for the
+ * given table to the given string starting with the first columns
+ * form RecordType::fields.
+ *
+ * @tparam RecordType Record based class for the table for which the column
+ * 		names should be appended
+ * @tparam String Type of argument sql
+ * @param[in,out] sql String to which the column names are appended
+ */
 //append the names of all data fields (table columns) for GET
 template<typename RecordType, SQLiteAdapter::String_type String>
 void appendFieldNamesReverse(String &sql) {
@@ -94,32 +119,6 @@ void appendFieldNamesReverse(String &sql) {
 		appendSQL(sql, RecordType::fields[i], false);
 	}
 }
-
-/**
- * Thrown to indicate errors executing SQL commands
- */
-class database_error : public std::runtime_error {
-public:
-	using std::runtime_error::runtime_error;
-};
-
-/**
- * Thrown to indicate constraint violations.
- * Thrown when INSERT|s and UPDATE|s in the databaes fail due to constraint violations
- * so that they can be discriminated from other runtime_error|s and handled appropriately.
- */
-class constraint_error : public database_error {
-public:
-	using database_error::database_error;
-};
-
-/**
- * Thrown if an entry couldn't be retrieved from the database
- */
-class missing_entry : public database_error {
-public:
-	using database_error::database_error;
-};
 
 } /* namespace DatabaseInterface */
 } /* namespace PhotoLibrary */

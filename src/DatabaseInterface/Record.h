@@ -30,7 +30,7 @@ namespace DatabaseInterface {
  *
  * @tparam Tuple class to hold the data. Should have the interface
  * of an std::tuple inlcuding std::get and std::tuple_size
- * (e.g. std::tuple, std::pair, or std::array; only tested for std::tuple|s).
+ * (e.g. std::tuple, std::pair, or std::array).
  */
 template<typename Tuple>
 class Record {
@@ -91,15 +91,6 @@ protected:
 	 */
 	template<typename... Ts>
 	Record(Ts&&... args) : values{std::forward<Ts>(args)...} {}
-
-	/**
-	 * @tparam Ts types of the elements of Tuple
-	 * @param args initial values to be saved in the Record
-	 *
-	 * @throws Anything Ts' copy constructors may throw
-	 */
-	template<typename... Ts>
-	Record(const Ts&... args) : values{args...} {}
 
 private:
 	Tuple values;
