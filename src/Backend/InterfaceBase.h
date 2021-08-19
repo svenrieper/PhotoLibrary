@@ -47,7 +47,7 @@ public:
 
 	/**
 	 * Get the children of a entry.
-	 * Returns the ids of all entries where the column RType::getField(0)
+	 * Returns the ids of all entries where the column RType::field[0]
 	 * equals the value handed to the method.
 	 *
 	 * @param parent id of the entry of which the children should be returned
@@ -57,10 +57,10 @@ public:
 
 	/**
 	 * Get the number children of a entry.
-	 * Returns the number of entries where the column RType::getField(0)
+	 * Returns the number of entries where the column RType::field[0]
 	 * equals the value handed to the method.
 	 *
-	 * @param Parent id of the entry of which the number children should be returned
+	 * @param parent id of the entry of which the number children should be returned
 	 * @return Number of children of 'parent'
 	 */
 	virtual int getNumberChildren(int parent) const = 0;
@@ -69,7 +69,6 @@ public:
 	 * Add new record.
 	 *
 	 * @param entry data to be inserted for new record
-	 * @return id of the new entry
 	 * @throws DatabaseInterface::constraint_error If insertion into the database fails
 	 * 		due to constraint violation
 	 * @throws DatabaseInterface::database_error If any other error occurs during insertion

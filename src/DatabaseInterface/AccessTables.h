@@ -24,7 +24,6 @@
 #include <Database.h>
 #include <Concepts.h>
 #include <vector>
-#include <iostream>
 
 namespace PhotoLibrary {
 namespace DatabaseInterface {
@@ -32,21 +31,39 @@ namespace DatabaseInterface {
 using SQLiteAdapter::String_type;
 
 /**
- * Backend interface to the database.
+ * Class to access tables in a database.
  *
- * static RType::fields[i] should hold the name of the database column
- * for the data returned with RType::access<i>().
+ * This class only works on tables containing a UNIQUE integral
+ * column named 'id'.
  *
- * RType::fields[RType::size()] should hold the name of the name of the
- * database associated to RType.
+ * The template parameter RecordType of the methods to access
+ * tables needs to be a class derived from Record.
+ * The derived class needs a static string field named 'table'
+ * containig the table name and a static array of strings named
+ * 'fields' containing the names of the of the columns.
+ * Both need to be accessible by AccessTables.
+ * Record's template parameter 'Tuple' needs to hold the types
+ * of the columns in the same order as 'fields'.
  *
- * RType::fields[0] should hold the name of the column containing the
- * parent id or whatever come closest to the parent id.
+ * Supported data types: integral types, enum|s, and String_type|s.
+ * The String_type|s used by RecordType (in the Tuple parameter as
+ * well as for 'table' and 'fields') should be the same as the one
+ * used as a template parameter 'String' for AccessTables.
  *
- * Currently supported data types: integral types, strings, and enum|s.
+ * The methods refering to children or parents (i.e. getChildern,
+ * getNumberChildren, and setParent) assume the the column
+ * RecordType::fields[0] refers to an integral parent of an entry.
  *
- * @tparam RType Backend::RecordClasses::Record based class used to retrieve,
- * 		save, and update records in the database
+ * Currently only ids of type 'int' are supported by this class
+ * (for the id of an entry as well as the id of its parent).
+ *
+ * \todo add support for enum class|es
+ * \todo add support for 64 bit integer ids
+ * \todo more consistent behaviour regarding id == 0
+ * \todo make non-modifying methods const
+ *
+ * @tparam String String_type to use internally (see above for
+ * 		significance)
  */
 template<String_type String=std::string>
 class AccessTables {
@@ -55,56 +72,121 @@ public:
 	 * @param db Handle for the database to use
 	 */
 	AccessTables(SQLiteAdapter::Database& db) noexcept : db(db) {}
-	virtual ~AccessTables() = default;
 
+	/**
+	 * Retrieve a record.
+	 *
+	 * @param id Id of the record to return
+	 * @tparam RecordType Record based class for the table (see AccessTables'
+	 * 		class documentation for more information)
+	 * @return RecordType containing the values of the row with row id 'id'
+	 * @throws missing_entry if no entry with id 'id' was found.
+	 */
 	template<typename RecordType>
 	RecordType getEntry(int id) const;
 
+	/**
+	 * Get the children of a entry.
+	 * Returns the ids of all entries where the column RecordType::fileds[0]
+	 * equals the value handed to the method.
+	 *
+	 * @param parent id of the entry of which the children should be returned
+	 * @tparam RecordType Record based class for the table (see AccessTables'
+	 * 		class documentation for more information)
+	 * @return vector of id's of the children of 'parent'
+	 */
 	template<typename RecordType>
 	std::vector<int> getChildren(int parent) const;
 
+	/**
+	 * Get the number children of a entry.
+	 * Returns the number of entries where the column RecordType::fileds[0]
+	 * equals the value handed to the method.
+	 *
+	 * @param parent id of the entry of which the number children should be
+	 * 		returned
+	 * @tparam RecordType Record based class for the table (see AccessTables'
+	 * 		class documentation for more information)
+	 * @return Number of children of 'parent'
+	 */
 	template<typename RecordType>
 	int getNumberChildren(int parent) const;
 
+	/**
+	 * Add new record.
+	 *
+	 * @param entry data to be inserted for new record
+	 * @tparam RecordType Record based class for the table (see AccessTables'
+	 * 		class documentation for more information)
+	 * @throws constraint_error If insertion into the database fails due to
+	 * 		constraint violation
+	 * @throws database_error If any other error occurs during insertion
+	 */
 	template<typename RecordType>
 	void newEntry(const RecordType& entry);
 
 	/**
 	 * Updates a record.
-	 * Doesn't check that the entry itself or one of its children
-	 * isn't set as parent; it's up to the user not to
-	 * fiddle-faddle with it.
+	 *
 	 * If no entry with an ID 'id' exists this function doesn't do anything.
-	 * \todo check for consistency? (refering to self or child* as parent)
+	 *
+	 * Doesn't check that the entry itself or one of its children
+	 * isn't set as parent; it's up to the user not to fiddle-faddle with it.
 	 *
 	 * @param id Id of the record to update
 	 * @param entry Data used to update record with id 'id' with
-	 * @throws DatabaseInterface::constraint_error If the update failed due to
-	 * 		constraint violation
-	 * @throws DatabaseInterface::database_error If any other error occurs during update
+	 * @tparam RecordType Record based class for the table (see AccessTables'
+	 * 		class documentation for more information)
+	 * @throws constraint_error If the update failed due to constraint violation
+	 * @throws database_error If any other error occurs during update
 	 */
 	template<typename RecordType>
 	void updateEntry(int id, const RecordType &entry);
 
 	/**
 	 * Moves a record to a new parent.
+	 *
 	 * Doesn't check that the record itself or one of its children
-	 * isn't set as parent; it's up to the user not to
-	 * fiddle-faddle with it.
-	 * \todo check for consistency? (refering to self or child* as parent)
+	 * isn't set as parent; it's up to the user not to fiddle-faddle with it.
 	 *
 	 * @param child_id Id of the record to update
 	 * @param new_parent_id New parent id of record 'id'
-	 * @throws DatabaseInterface::constraint_error Thrown if parent 'id' does not exist.
-	 * @throws DatabaseInterface::database_error If any other error occurs during updating
+	 * @tparam RecordType Record based class for the table (see AccessTables'
+	 * 		class documentation for more information)
+	 * @throws constraint_error Thrown if parent 'id' does not exist.
+	 * @throws database_error If any other error occurs during updating
 	 * 		the database
 	 */
 	template<typename RecordType>
 	void setParent(int child_id, int new_parent_id);
 
+	/**
+	 * Get the id to an entry.
+	 *
+	 * @param entry the record for which to return the id
+	 * @tparam RecordType Record based class for the table (see AccessTables'
+	 * 		class documentation for more information)
+	 * @throws missing_entry If the entry wasn't found (or any other error
+	 * 		occurs in the database)
+	 */
 	template<typename RecordType>
 	int getID(const RecordType& entry) const;
 
+	/**
+	 * Delete record from table.
+	 *
+	 * If according constraints are defined all children and other entries relying
+	 * on the deleted entry are deleted recursively as well.
+	 *
+	 * Deleting an invalid ID has no effect.
+	 *
+	 * @param id Id of the record to delete
+	 * @tparam RecordType Record based class for the table (see AccessTables'
+	 * 		class documentation for more information)
+	 * @throws database_error If the database returns an error.
+	 * @throws std::runtime_error If id == 0
+	 * \todo Is it correct to forbid deleting the entry with id == 0?
+	 */
 	template<typename RecordType>
 	void deleteEntry(int id);
 
@@ -113,7 +195,9 @@ private:
 };
 
 
-//compiletime loop for getEntry
+/**
+ * Template loop used by AccessTables::getEntry
+ */
 template<int I, typename RecordType>
 void getEntryLoop(SQLiteAdapter::SQLQuerry& querry, RecordType& entry) {
 	entry.template access<I>() = querry.getColumn(I, entry.template access<I>());
@@ -172,7 +256,9 @@ int AccessTables<String>::getNumberChildren(int parent) const {
 	return ids_number;
 }
 
-//compiletime loop for newEntry
+/**
+ * Template loop used by AccessTables::newEntry
+ */
 template<int I, typename RecordType, String_type String>
 void newEntryLoop(const RecordType& entry, String& sql) {
 	appendSQL(sql, entry.template access<I>());
@@ -203,7 +289,9 @@ void AccessTables<String>::newEntry(const RecordType& entry) {
 		throw(database_error("Error inserting into " + table + " (error code: " + std::to_string(i) + ")"));
 }
 
-//comiltetime loop for updateEntry
+/**
+ * Template loop used by AccessTables::updateEntry
+ */
 template<int I, typename RecordType, String_type String>
 void updateEntryLoop(const RecordType &entry, String& sql) {
 	appendSQL(sql, RecordType::fields[I], false);
@@ -249,7 +337,9 @@ void AccessTables<String>::setParent(int child_id, int new_parent_id) {
 		throw(database_error("Error moving entry."));
 }
 
-//compiletime loop for getID
+/**
+ * Template loop used by AccessTables::getID
+ */
 template<int I, typename RecordType, String_type String>
 void getIDLoop(const RecordType& entry, String& sql) {
 	appendSQL(sql, RecordType::fields[I], false);
