@@ -12,7 +12,7 @@ add_executable(PLTests EXCLUDE_FROM_ALL
 			PhotosKeywordsRelationsInterface_test.cpp
 			suppport_test.cpp
 			ThreadSafeQueue_tests.cpp
-			DatabaseInterface_tests.cpp
+			AccessTables_tests.cpp
 			)
 
 #target_include_directories(PLTests PUBLIC

@@ -1,5 +1,5 @@
 /*
- * suppport.h
+ * support.h
  *
  * This file is part of PhotoLibrary
  * Copyright (C) 2020-2021 Sven Rieper
