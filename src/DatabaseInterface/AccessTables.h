@@ -246,6 +246,7 @@ template<typename RecordType>
 int AccessTables<String>::getNumberChildren(int parent) const {
 	const String& table = RecordType::table;
 
+	/// \todo use COUNT( )
 	String sql = "SELECT id FROM " + table + " WHERE " + RecordType::fields[0] + " IS '" + std::to_string(parent) + "'";
 	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
 

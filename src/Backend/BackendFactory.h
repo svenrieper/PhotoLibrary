@@ -35,8 +35,7 @@ namespace Backend {
 using PhotosAlbumsRelationsInterface = RelationsInterfaceBase;
 
 /**
- * Factory class to construct the backend.
- * Constructs the backend classes and hands them to the GUI on demand.
+ * Interface to the backend.
  */
 class BackendFactory : public FactoryBase {
 public:
@@ -60,27 +59,119 @@ public:
 	 */
 	BackendFactory(const char* filename = nullptr);
 
+	/**
+	 * Retrieve a record.
+	 *
+	 * @tparam RecordType Record based class for the table (see
+	 * 		AccessTables' class documentation for more information)
+	 * @param id Id of the record to return
+	 * @return RecordType containing the values of the row with row id 'id'
+	 *
+	 * @throws missing_entry if no entry with id 'id' was found.
+	 */
 	template<typename RecordType>
 	RecordType getEntry(int id);
 
+	/**
+	 * Get the children of a entry.
+	 * Returns the ids of all children of parent id 'parent'.
+	 *
+	 * @tparam RecordType Record based class for the table (see
+	 * 		AccessTables' class documentation for more information)
+	 * @param parent id of the entry of which the children should be returned
+	 * @return vector of id's of the children of 'parent'
+	 */
 	template<typename RecordType>
 	std::vector<int> getChildren(int parent);
 
+	/**
+	 * Get the number children of a entry.
+	 * Returns the number of children of parent id 'parent'.
+	 *
+	 * @tparam RecordType Record based class for the table (see
+	 * 		AccessTables' class documentation for more information)
+	 * @param parent id of the entry of which the number children should be
+	 * 		returned
+	 * @return Number of children of 'parent'
+	 */
 	template<typename RecordType>
 	int getNumberChildren(int parent);
 
+	/**
+	 * Add new record.
+	 *
+	 * @tparam RecordType Record based class for the table (see
+	 * 		AccessTables' class documentation for more information)
+	 * @param entry data to be inserted for new record
+	 *
+	 * @throws constraint_error If insertion into the database fails due to
+	 * 		constraint violation
+	 * @throws database_error If any other error occurs during insertion
+	 */
 	template<typename RecordType>
 	void newEntry(const RecordType& entry);
 
+	/**
+	 * Updates a record.
+	 *
+	 * If no entry with an ID 'id' exists this function doesn't do anything.
+	 *
+	 * Doesn't check for loops; it's up to the user not to fiddle-faddle with it.
+	 *
+	 * @tparam RecordType Record based class for the table (see
+	 * 		AccessTables' class documentation for more information)
+	 * @param id Id of the record to update
+	 * @param entry Data used to update record with id 'id' with
+	 *
+	 * @throws constraint_error If the update failed due to constraint violation
+	 * @throws database_error If any other error occurs during update
+	 */
 	template<typename RecordType>
 	void updateEntry(int id, const RecordType& entry);
 
+	/**
+	 * Moves a record to a new parent.
+	 *
+	 * Doesn't check for loops; it's up to the user not to fiddle-faddle with it.
+	 *
+	 * @tparam RecordType Record based class for the table (see
+	 * 		AccessTables' class documentation for more information)
+	 * @param child_id Id of the record to update
+	 * @param new_parent_id New parent id of record 'id'
+	 *
+	 * @throws constraint_error Thrown if parent 'id' does not exist.
+	 * @throws database_error If any other error occurs during updating
+	 * 		the database
+	 */
 	template<typename RecordType>
 	void setParent(int child_id, int new_parent_id);
 
+	/**
+	 * Get the id to an entry.
+	 *
+	 * @tparam RecordType Record based class for the table (see
+	 * 		AccessTables' class documentation for more information)
+	 * @param entry the record for which to return the id
+	 *
+	 * @throws missing_entry If the entry wasn't found (or any other error
+	 * 		occurs in the database)
+	 */
 	template<typename RecordType>
 	int getID(const RecordType& entry);
 
+	/**
+	 * Delete record from table.
+	 *
+	 * Deleting an invalid ID has no effect.
+	 *
+	 *
+	 * @tparam RecordType Record based class for the table (see
+	 * 		AccessTables' class documentation for more information)
+	 * @param id Id of the record to delete
+	 *
+	 * @throws database_error If the database returns an error.
+	 * @throws std::runtime_error If id == 0
+	 */
 	template<typename RecordType>
 	void deleteEntry(int id);
 
