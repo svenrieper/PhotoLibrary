@@ -24,7 +24,7 @@
 namespace PhotoLibrary {
 namespace DatabaseInterface {
 
-RelationsTable::RelationsTable(SQLiteAdapter::Database& db) : db(db) {
+RelationsTable::RelationsTable(SQLiteAdapter::Database& db) noexcept : db(db) {
 }
 
 std::vector<int> RelationsTable::getEntries(int collection, const std::array<const std::string,3>& table) const {
@@ -86,6 +86,7 @@ int RelationsTable::getNumber(
 		const std::string& return_id,
 		const std::string& table
 		) const {
+	/// \todo use COUNT( )
 	std::string sql = "SELECT " + return_id + " FROM " + table
 			+ " WHERE " + reference_id + " IS '" + std::to_string(id) + "'";
 	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());

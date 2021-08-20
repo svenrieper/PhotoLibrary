@@ -48,7 +48,7 @@ public:
 	/**
 	 * @param db Handle for the database to use
 	 */
-	RelationsTable(SQLiteAdapter::Database& db);
+	RelationsTable(SQLiteAdapter::Database& db) noexcept;
 
 	/**
 	 * Get a vector of 'entries' associated with 'collection' id.
@@ -58,6 +58,9 @@ public:
 	 * @param table Name of the relations table and the columns (see
 	 * 		RelationsTable class' description)
 	 * @return Vector of ids of the 'entries' associated to collection
+	 *
+	 * @throws std::runtime_error if doesn't hold the correct strings
+	 * 		for a table
 	 */
 	std::vector<int> getEntries(int collection, const std::array<const std::string,3>& table) const;
 
@@ -69,6 +72,9 @@ public:
 	 * @param table Name of the relations table and the columns (see
 	 * 		RelationsTable class' description)
 	 * @return Number of the 'entries' associated with collection
+	 *
+	 * @throws std::runtime_error if doesn't hold the correct strings
+	 * 		for a table
 	 */
 	int getNumberEntries(int collection, const std::array<const std::string,3>& table) const;
 
@@ -80,6 +86,9 @@ public:
 	 * @param table Name of the relations table and the columns (see
 	 * 		RelationsTable class' description)
 	 * @return Vector of ids of the 'collections' associated with entry
+	 *
+	 * @throws std::runtime_error if doesn't hold the correct strings
+	 * 		for a table
 	 */
 	std::vector<int> getCollections(int entry, const std::array<const std::string,3>& table) const;
 
@@ -91,26 +100,41 @@ public:
 	 * @param table Name of the relations table and the columns (see
 	 * 		RelationsTable class' description)
 	 * @return Number of the 'collections' associated with entry
+	 *
+	 * @throws std::runtime_error if doesn't hold the correct strings
+	 * 		for a table
 	 */
 	int getNumberCollections(int entry, const std::array<const std::string,3>& table) const;
 
 	/**
 	 * Add a new relation.
 	 *
+	 * Adding an existing relation has no effenct.
+	 *
 	 * @param entry Id of the 'entry'
 	 * @param collection Id of the 'collection'
 	 * @param table Name of the relations table and the columns (see
 	 * 		RelationsTable class' description)
+	 *
+	 * @throws std::runtime_error if doesn't hold the correct strings
+	 * 		for a table
+	 * @throws database_error if any error occurs in the database
 	 */
 	void newRelation(int entry, int collection, const std::array<const std::string,3>& table);
 
 	/**
 	 * Remove a relation.
 	 *
+	 * Deleting a non-existing relation has no effect.
+	 *
 	 * @param entry Id of the 'entry'
 	 * @param collection Id of the 'collection'
 	 * @param table Name of the relations table and the columns (see
 	 * 		RelationsTable class' description)
+	 *
+	 * @throws std::runtime_error if doesn't hold the correct strings
+	 * 		for a table
+	 * @throws database_error if any error occurs in the database
 	 */
 	void deleteRelation(int entry, int collection, const std::array<const std::string,3>& table);
 

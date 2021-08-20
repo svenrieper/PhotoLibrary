@@ -59,17 +59,25 @@ TEST_CASE("Tests for RelationsTable", "[DatabaseInterface][RelationsTable]") {
 
 	CHECK_THAT(relations.getEntries(16, relation_table), Catch::Contains(std::vector<int>{9, 25}));
 	CHECK_THAT(relations.getCollections(25, relation_table), Catch::Contains(std::vector<int>{16}));
+	CHECK(relations.getNumberEntries(16, relation_table) == 2);
+	CHECK(relations.getNumberCollections(25, relation_table) == 2);
 	REQUIRE_NOTHROW(relations.deleteRelation(26, 16, relation_table));
 	REQUIRE_NOTHROW(relations.deleteRelation(25, 16, relation_table));
 	CHECK_THAT(relations.getEntries(16, relation_table), Catch::Contains(std::vector<int>{9}));
 	CHECK_THAT(relations.getEntries(16, relation_table), !Catch::Contains(std::vector<int>{25}));
 	CHECK_THAT(relations.getCollections(25, relation_table), !Catch::Contains(std::vector<int>{16}));
 	CHECK_THAT(relations.getCollections(9, relation_table), Catch::Contains(std::vector<int>{16}));
+	CHECK(relations.getNumberEntries(16, relation_table) == 1);
+	CHECK(relations.getNumberCollections(25, relation_table) == 1);
+	CHECK(relations.getNumberCollections(9, relation_table) == 2);
 	REQUIRE_NOTHROW(relations.deleteRelation(25, 16, relation_table));
 	REQUIRE_NOTHROW(relations.deleteRelation(9, 16, relation_table));
 	CHECK_THAT(relations.getEntries(16, relation_table), !Catch::Contains(std::vector<int>{25}));
 	CHECK_THAT(relations.getEntries(16, relation_table), !Catch::Contains(std::vector<int>{9}));
 	CHECK_THAT(relations.getCollections(9, relation_table), !Catch::Contains(std::vector<int>{16}));
+	CHECK(relations.getNumberEntries(16, relation_table) == 0);
+	CHECK(relations.getNumberCollections(25, relation_table) == 1);
+	CHECK(relations.getNumberCollections(9, relation_table) == 1);
 }
 
 } /* namespace DatabaseInterface_tests */
