@@ -40,6 +40,8 @@ namespace DatabaseInterface {
  * std::array<const std::string,3> containing the name of the relations
  * table, and the names of the columns holding the collection id and the
  * entry id (in that order).
+ *
+ * \todo Allow 64 bis integer ids
  */
 class RelationsTable {
 public:

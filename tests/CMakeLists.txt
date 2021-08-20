@@ -13,6 +13,7 @@ add_executable(PLTests EXCLUDE_FROM_ALL
 			suppport_test.cpp
 			ThreadSafeQueue_tests.cpp
 			AccessTables_tests.cpp
+			RelationsTable_test.cpp
 			)
 
 #target_include_directories(PLTests PUBLIC
