@@ -39,50 +39,6 @@ public:
 	virtual ~FactoryBase() = default;
 
 	/**
-	 * Get a pointer to the keyword interface.
-	 * @return Pointer to the Keywords interface.
-	 */
-	virtual InterfaceBase<RecordClasses::KeywordRecord>* getKeywordInterface() = 0;
-
-	/**
-	 * \copydoc getKeywordInterface()
-	 */
-	virtual const InterfaceBase<RecordClasses::KeywordRecord>* getKeywordInterface() const = 0;
-
-	/**
-	 * Get a pointer to the directories interface.
-	 * @return Pointer to the Directory interface.
-	 */
-	virtual InterfaceBase<RecordClasses::DirectoryRecord>* getDirectoriesInterface() = 0;
-
-	/**
-	 * \copydoc getDirectoriesInterface()
-	 */
-	virtual const InterfaceBase<RecordClasses::DirectoryRecord>* getDirectoriesInterface() const = 0;
-
-	/**
-	 * Get a pointer to the albums interface.
-	 * @return Pointer to the Album interface.
-	 */
-	virtual InterfaceBase<RecordClasses::AlbumRecord>* getAlbumInterface() = 0;
-
-	/**
-	 * \copydoc getAlbumInterface()
-	 */
-	virtual const InterfaceBase<RecordClasses::AlbumRecord>* getAlbumInterface() const = 0;
-
-	/**
-	 * Get a pointer to the photo interface.
-	 * @return Pointer to the Photo interface.
-	 */
-	virtual InterfaceBase<RecordClasses::PhotoRecord>* getPhotoInterface() = 0;
-
-	/**
-	 * \copydoc getPhotoInterface()
-	 */
-	virtual const InterfaceBase<RecordClasses::PhotoRecord>* getPhotoInterface() const = 0;
-
-	/**
 	 * Get a pointer to the photos-albums-relations interface.
 	 * Photos are considered to be the entry-type, albums are considered
 	 * to be the collection-type.

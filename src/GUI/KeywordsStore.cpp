@@ -18,6 +18,8 @@
  */
 
 #include "KeywordsStore.h"
+#include "BackendFactory.h"
+#include "Record/KeywordRecord.h"
 #include <iostream>
 #include <gtkmm/messagedialog.h>
 
@@ -26,17 +28,17 @@ namespace GUI {
 
 using Backend::RecordClasses::KeywordRecord;
 
-KeywordsStore::KeywordsStore(Backend::InterfaceBase<KeywordRecord>* db) : BaseTreeStore(db) {}
+KeywordsStore::KeywordsStore(Backend::BackendFactory& backend) : BaseTreeStore(backend) {}
 
-Glib::RefPtr<KeywordsStore> KeywordsStore::create(Backend::InterfaceBase<KeywordRecord>* db) {
-	return Glib::RefPtr<KeywordsStore>(new KeywordsStore(db));
+Glib::RefPtr<KeywordsStore> KeywordsStore::create(Backend::BackendFactory* db) {
+	return Glib::RefPtr<KeywordsStore>(new KeywordsStore(*db));
 }
 
 void KeywordsStore::onRowChanged(const TreeModel::Path& path, const TreeModel::iterator& iter) {
 	int parent = iter->parent() ? (*(iter->parent()))[getColumns().id] : 0;
 	try {
-		getBackend()->setParent((*iter)[getColumns().id], parent);
-	} catch (const Backend::DatabaseInterface::constraint_error& e) {
+		getBackend().setParent<KeywordRecord>((*iter)[getColumns().id], parent);
+	} catch (const DatabaseInterface::constraint_error& e) {
 		/// \todo prepare for internationalisation
 		/// \todo improve text
 		Gtk::MessageDialog message_dialogue("Keyword '" + (*iter)[getColumns().keyword] + "' could not be moved");
@@ -47,7 +49,7 @@ void KeywordsStore::onRowChanged(const TreeModel::Path& path, const TreeModel::i
 }
 
 void KeywordsStore::fillRow(int id, Gtk::TreeModel::Row &row) {
-	KeywordRecord keyword(getBackend()->getEntry(id));
+	KeywordRecord keyword(getBackend().getEntry<KeywordRecord>(id));
 	row[getColumns().id] = id;
 	row[getColumns().keyword] = keyword.getKeyword();
 	row[getColumns().assigned] = false; /// \todo connect to selected photos

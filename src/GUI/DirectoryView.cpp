@@ -23,7 +23,7 @@ namespace PhotoLibrary {
 namespace GUI {
 
 DirectoryView::DirectoryView(Backend::BackendFactory* backend) :
-		BaseTreeView(backend) {
+		BaseTreeView(*backend) {
 	unset_rows_drag_source();
 	unset_rows_drag_dest();
 

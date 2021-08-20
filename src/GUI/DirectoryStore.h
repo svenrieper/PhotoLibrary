@@ -43,8 +43,6 @@ public:
 	static Glib::RefPtr<DirectoryStore> create(Backend::BackendFactory* db);
 
 private:
-	Backend::BackendFactory* db;
-
 	DirectoryStore(Backend::BackendFactory* db);
 	void fillRow(int id, Gtk::TreeModel::Row &row) override;
 };

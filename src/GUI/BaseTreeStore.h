@@ -97,16 +97,16 @@ public:
 
 protected:
 	/**
-	 * @param backend the backend interface used by the TreeStore
+	 * @param backend The BackendFactory object used to connect to the database
 	 */
-	inline BaseTreeStore(Backend::InterfaceBase<RecordType>* backend);
+	inline BaseTreeStore(Backend::BackendFactory& backend);
 
 	/**
 	 * Returns the backend interface.
 	 *
-	 * @return a pointer to the backend interface used by the TreeStore
+	 * @return The BackendFactory object used by the TreeStore
 	 */
-	inline Backend::InterfaceBase<RecordType>* getBackend();
+	inline Backend::BackendFactory& getBackend();
 
 	/**
 	 * Fills a Row of the TreeStore.
@@ -131,7 +131,7 @@ protected:
 	virtual void onRowChanged(const TreeModel::Path& path, const TreeModel::iterator& iter) {};
 
 private:
-	Backend::InterfaceBase<RecordType>* backend;
+	Backend::BackendFactory& backend;
 	ModelColumns columns;
 	sigc::connection row_changed_connection;
 	sigc::signal<bool, const Gtk::TreeModel::Path&,bool> signal_expand_row;
@@ -145,7 +145,8 @@ private:
 
 //implementation
 template<class TModelColumns, class RecordType>
-BaseTreeStore<TModelColumns,RecordType>::BaseTreeStore(Backend::InterfaceBase<RecordType>* backend) : backend(backend) {
+BaseTreeStore<TModelColumns,RecordType>::BaseTreeStore(Backend::BackendFactory& backend) : 
+		backend(backend) {
 	set_column_types(columns);
 }
 
@@ -155,7 +156,7 @@ TModelColumns& BaseTreeStore<TModelColumns,RecordType>::getColumns() {
 }
 
 template<class TModelColumns, class RecordType>
-Backend::InterfaceBase<RecordType>* BaseTreeStore<TModelColumns,RecordType>::getBackend() {
+Backend::BackendFactory& BaseTreeStore<TModelColumns,RecordType>::getBackend() {
 	return backend;
 }
 
@@ -190,8 +191,8 @@ void BaseTreeStore<TModelColumns,RecordType>::disconnectRowSignalChanged() {
 
 template<class TModelColumns, class RecordType>
 void BaseTreeStore<TModelColumns,RecordType>::fillStore(int parent, Gtk::TreeModel::Row* parentRow) {
-	for(int child_id : backend->getChildren(parent)){
-		RecordType record(backend->getEntry(child_id));
+	for(int child_id : backend.getChildren<RecordType>(parent)){
+		RecordType record(backend.getEntry<RecordType>(child_id));
 		Gtk::TreeModel::Row row = parentRow?*(append(parentRow->children())):*(append());
 		fillRow(child_id, row);
 

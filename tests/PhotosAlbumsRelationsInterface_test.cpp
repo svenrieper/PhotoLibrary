@@ -19,23 +19,24 @@
 
 #include "../src/Backend/DatabaseInterface/DatabaseFactory.h"
 #include "../src/Backend/BackendFactory.h"
+#include "Record/AlbumRecord.h"
+#include "Record/PhotoRecord.h"
 #include <catch2/catch.hpp>
 
 namespace PhotoLibrary {
+namespace Backend {
+namespace Tests {
 
-using PhotoLibrary::Backend::DatabaseInterface::DatabaseFactory;
-using PhotoLibrary::Backend::BackendFactory;
-using Backend::RelationsInterfaceBase;
-using Backend::RecordClasses::AlbumRecord;
-using Backend::RecordClasses::PhotoRecord;
-using AlbumInterface = Backend::InterfaceBase<Backend::RecordClasses::AlbumRecord>;
-using PhotoInterface = Backend::InterfaceBase<Backend::RecordClasses::PhotoRecord>;
+using RecordClasses::AlbumRecord;
+using RecordClasses::PhotoRecord;
+using PhotoLibrary::DatabaseInterface::constraint_error;
 
-TEMPLATE_TEST_CASE("Test the PhotosAlbumsRelations interface of the Adapter and the Backend", "[relations][PhotosAlbumsRelations][adapter][backend]", DatabaseFactory, BackendFactory) {
-	TestType db { ":memory:" };
+TEST_CASE(
+		"Test the PhotosAlbumsRelations interface of the Adapter and the Backend"
+		, "[relations][PhotosAlbumsRelations][adapter][backend]"
+		) {
+	BackendFactory db { ":memory:" };
 	RelationsInterfaceBase* photos_albums_realtions_if = db.getPhotosAlbumsRelationsInterface();
-	AlbumInterface* album_if = db.getAlbumInterface();
-	PhotoInterface* photo_if = db.getPhotoInterface();
 
 	SECTION("getEntries should return an empty vector for an empty database", "[getEntries][getNumberEntries]") {
 		CHECK(photos_albums_realtions_if->getEntries(0).size() == 0);
@@ -48,20 +49,20 @@ TEMPLATE_TEST_CASE("Test the PhotosAlbumsRelations interface of the Adapter and 
 	}
 
 	AlbumRecord album_record(0, AlbumRecord::Options::ALBUM_IS_SET, "Holiday");
-	album_if->newEntry(album_record);
-	int a_holiday = album_if->getID(album_record);
+	db.newEntry(album_record);
+	int a_holiday = db.getID(album_record);
 
 	album_record = AlbumRecord(0, AlbumRecord::Options::NONE, "Zoo");
-	album_if->newEntry(album_record);
-	int a_zoo = album_if->getID(album_record);
+	db.newEntry(album_record);
+	int a_zoo = db.getID(album_record);
 
 	album_record = AlbumRecord(a_holiday, AlbumRecord::Options::ALBUM_IS_SET, "City Trips");
-	album_if->newEntry(album_record);
-	int a_city_trips = album_if->getID(album_record);
+	db.newEntry(album_record);
+	int a_city_trips = db.getID(album_record);
 
 	album_record = AlbumRecord(a_city_trips, AlbumRecord::Options::NONE, "Venice");
-	album_if->newEntry(album_record);
-	int a_venice = album_if->getID(album_record);
+	db.newEntry(album_record);
+	int a_venice = db.getID(album_record);
 
 	SECTION("An empty album should not contain any photos.", "[getEntries][getNumberEntries]") {
 		CHECK(photos_albums_realtions_if->getEntries(a_holiday).size() == 0);
@@ -76,24 +77,24 @@ TEMPLATE_TEST_CASE("Test the PhotosAlbumsRelations interface of the Adapter and 
 	}
 
 	PhotoRecord photo_record(0, "1.jpg", 1, 1604149700, 1920, 1080);
-	photo_if->newEntry(photo_record);
-	int photo_1 = photo_if->getID(photo_record);
+	db.newEntry(photo_record);
+	int photo_1 = db.getID(photo_record);
 
 	photo_record = PhotoRecord(0, "2.jpg", 1, 1604149700, 1920, 1080);
-	photo_if->newEntry(photo_record);
-	int photo_2 = photo_if->getID(photo_record);
+	db.newEntry(photo_record);
+	int photo_2 = db.getID(photo_record);
 
 	photo_record = PhotoRecord(0, "3.jpg", 3, 1604149700, 1920, 1080);
-	photo_if->newEntry(photo_record);
-	int photo_3 = photo_if->getID(photo_record);
+	db.newEntry(photo_record);
+	int photo_3 = db.getID(photo_record);
 
 	photo_record = PhotoRecord(0, "4.jpg", 1, 1604150500, 1920, 1080);
-	photo_if->newEntry(photo_record);
-	int photo_4 = photo_if->getID(photo_record);
+	db.newEntry(photo_record);
+	int photo_4 = db.getID(photo_record);
 
 	photo_record = PhotoRecord(0, "5.jpg", 5, 1604150650, 1920, 1080);
-	photo_if->newEntry(photo_record);
-	int photo_5 = photo_if->getID(photo_record);
+	db.newEntry(photo_record);
+	int photo_5 = db.getID(photo_record);
 
 	SECTION("A photo should not be in any albums if it's not asigned to any.", "[getCollections][getNumberCollections]") {
 		CHECK(photos_albums_realtions_if->getCollections(photo_1).size() == 0);
@@ -202,7 +203,7 @@ TEMPLATE_TEST_CASE("Test the PhotosAlbumsRelations interface of the Adapter and 
 		while(i == a_holiday || i == a_zoo || i == a_city_trips || i == a_venice)
 			++i;
 
-		CHECK_THROWS_AS(photos_albums_realtions_if->newRelation(photo_1, i), Backend::DatabaseInterface::constraint_error);
+		CHECK_THROWS_AS(photos_albums_realtions_if->newRelation(photo_1, i), constraint_error);
 	}
 
 	SECTION("Adding a non-photo to an album should return a constraint_error", "[newRelation]") {
@@ -210,28 +211,30 @@ TEMPLATE_TEST_CASE("Test the PhotosAlbumsRelations interface of the Adapter and 
 		while(i == photo_1 || i == photo_2 || i == photo_3 || i == photo_4 || i == photo_5)
 			++i;
 
-		CHECK_THROWS_AS(photos_albums_realtions_if->newRelation(i, a_city_trips), Backend::DatabaseInterface::constraint_error);
+		CHECK_THROWS_AS(photos_albums_realtions_if->newRelation(i, a_city_trips), constraint_error);
 	}
 
 	SECTION("After deleting a photo all its relations should be removed as well.", "[deleteEntry]") {
 		CHECK_NOFAIL(photos_albums_realtions_if->getCollections(photo_1).size() != 0);
-		photo_if->deleteEntry(photo_1);
+		db.template deleteEntry<PhotoRecord>(photo_1);
 		CHECK(photos_albums_realtions_if->getCollections(photo_1).size() == 0);
 
 		CHECK_NOFAIL(photos_albums_realtions_if->getCollections(photo_4).size() != 0);
-		photo_if->deleteEntry(photo_4);
+		db.template deleteEntry<PhotoRecord>(photo_4);
 		CHECK(photos_albums_realtions_if->getCollections(photo_4).size() == 0);
 	}
 
 	SECTION("After deleting an album all its relations should be removed as well.", "[deleteEntry]") {
 		CHECK_NOFAIL(photos_albums_realtions_if->getEntries(a_holiday).size() != 0);
-		album_if->deleteEntry(a_holiday);
+		db.template deleteEntry<AlbumRecord>(a_holiday);
 		CHECK(photos_albums_realtions_if->getEntries(a_holiday).size() == 0);
 
 		CHECK_NOFAIL(photos_albums_realtions_if->getEntries(a_city_trips).size() != 0);
-		album_if->deleteEntry(a_city_trips);
+		db.template deleteEntry<AlbumRecord>(a_city_trips);
 		CHECK(photos_albums_realtions_if->getEntries(a_city_trips).size() == 0);
 	}
 }
 
+} /* namespace Test */
+} /* namespace Backend */
 } /* namespace PhotoLibrary */

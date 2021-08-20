@@ -18,6 +18,7 @@
  */
 
 #include "DirectoryStore.h"
+#include "Record/DirectoryRecord.h"
 #include <gtkmm/messagedialog.h>
 
 namespace PhotoLibrary {
@@ -26,8 +27,7 @@ namespace GUI {
 using Backend::RecordClasses::DirectoryRecord;
 
 DirectoryStore::DirectoryStore(Backend::BackendFactory* db) :
-		BaseTreeStore(db->getInterface<DirectoryRecord>()),
-		db(db) {
+		BaseTreeStore(*db) {
 }
 
 Glib::RefPtr<DirectoryStore> DirectoryStore::create(Backend::BackendFactory* db) {
@@ -36,11 +36,12 @@ Glib::RefPtr<DirectoryStore> DirectoryStore::create(Backend::BackendFactory* db)
 
 //Fill the TreeRow
 void DirectoryStore::fillRow(int id, Gtk::TreeModel::Row &row) {
-	Backend::RecordClasses::DirectoryRecord directory(getBackend()->getEntry(id));
+	using Backend::RecordClasses::DirectoryRecord;
+	DirectoryRecord directory(getBackend().getEntry<DirectoryRecord>(id));
 	row[getColumns().id] = id;
 	row[getColumns().name] = directory.getDirectory();
 	row[getColumns().expanded] = directory.getOptions() & DirectoryRecord::Options::ROW_EXPANDED;
-	row[getColumns().photo_count] = db->getInterface<Backend::RecordClasses::PhotoRecord>()->getNumberChildren(id);
+	row[getColumns().photo_count] = getBackend().getNumberChildren<Backend::RecordClasses::PhotoRecord>(id);
 }
 
 } /* namespace GUI */

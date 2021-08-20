@@ -39,10 +39,10 @@ public:
 	 * Create an object.
 	 * Creates an objetct of KeywordStore and returns a RefPtr to it.
 	 *
-	 * @param db keyword interface to the database
+	 * @param db Pointer to the BackendFactory
 	 * @return Glib::RefPtr to the newly created TreeStore
 	 */
-	static Glib::RefPtr<KeywordsStore> create(Backend::InterfaceBase<Backend::RecordClasses::KeywordRecord>* db);
+	static Glib::RefPtr<KeywordsStore> create(Backend::BackendFactory* db);
 
 	//no copying or moving
 	KeywordsStore(const KeywordsStore &other) = delete;
@@ -51,7 +51,7 @@ public:
 	KeywordsStore& operator=(KeywordsStore &&other) = delete;
 
 private:
-	KeywordsStore(Backend::InterfaceBase<Backend::RecordClasses::KeywordRecord>* db);
+	KeywordsStore(Backend::BackendFactory& backend);
 
 	void fillRow(int id, Gtk::TreeModel::Row &row) override;
 

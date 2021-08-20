@@ -19,43 +19,46 @@
 
 #include "../src/Backend/DatabaseInterface/DatabaseFactory.h"
 #include "../src/Backend/BackendFactory.h"
+#include "Record/DirectoryRecord.h"
+#include "Record/PhotoRecord.h"
+#include "exceptions.h"
 #include <catch2/catch.hpp>
 
 namespace PhotoLibrary {
 namespace Backend {
-namespace DatabaseInterface {
+namespace Tests {
 
-using Backend::RecordClasses::PhotoRecord;
-using Backend::RecordClasses::DirectoryRecord;
-using Backend::BackendFactory;
-using Backend::InterfaceBase;
-using PhotoInterface = InterfaceBase<Backend::RecordClasses::PhotoRecord>;
-using DirectoryInterface = InterfaceBase<Backend::RecordClasses::DirectoryRecord>;
+using RecordClasses::PhotoRecord;
+using RecordClasses::DirectoryRecord;
+using PhotoLibrary::DatabaseInterface::constraint_error;
 
-TEMPLATE_TEST_CASE("Test the PhotoInterface of the backend", "[photos][interface][backend]", DatabaseFactory, BackendFactory) {
-	TestType db { ":memory:" };
-	PhotoInterface* photoIF = db.getPhotoInterface();
-	DirectoryInterface* dirIF = db.getDirectoriesInterface();
+TEST_CASE(
+		"Test the PhotoInterface of the backend"
+		, "[photos][interface][backend]"
+		) {
+	BackendFactory db { ":memory:" };
+	//PhotoInterface* db.getPhotoInterface() = db.getPhotoInterface();
 
 	SECTION( "A photo needs to have an existing parent", "[photos][database][getEntry][newEntry]" ) {
-		REQUIRE_THROWS_AS(dirIF->getEntry(5), std::runtime_error);
+		REQUIRE_THROWS_AS(db.template getEntry<DirectoryRecord>(5), std::runtime_error);
 		PhotoRecord invalid(5);
-		CHECK_THROWS_AS(photoIF->newEntry(invalid), constraint_error);
+		CHECK_THROWS_AS(db.newEntry(invalid), constraint_error);
 	}
 
-	SECTION("A photo should be in the database after being added (newEntry(PhotoRecord), getID(PhotoRecord))", "[photos][database][newEntry][getID]") {
+	SECTION("A photo should be in the database after being added (newEntry(PhotoRecord), getID(PhotoRecord))", 
+			"[photos][database][newEntry][getID]") {
 		DirectoryRecord dir_here(0, DirectoryRecord::Options::ROW_EXPANDED, "here", ".");
-		dirIF->newEntry(dir_here);
-		int here = dirIF->getID(dir_here);
+		db.newEntry(dir_here);
+		int here = db.getID(dir_here);
 		DirectoryRecord dir_numbers(here, DirectoryRecord::Options::NONE, "numbers", "numbers");
-		dirIF->newEntry(dir_numbers);
-		int numbers = dirIF->getID(dir_numbers);
+		db.newEntry(dir_numbers);
+		int numbers = db.getID(dir_numbers);
 		DirectoryRecord dir_letters(here, DirectoryRecord::Options::NONE, "letters", "letters");
-		dirIF->newEntry(dir_letters);
-		int letters = dirIF->getID(dir_letters);
+		db.newEntry(dir_letters);
+		int letters = db.getID(dir_letters);
 		DirectoryRecord dir_examples(here, DirectoryRecord::Options::NONE, "example pictures", "example pictures");
-		dirIF->newEntry(dir_examples);
-		int examples = dirIF->getID(dir_examples);
+		db.newEntry(dir_examples);
+		int examples = db.getID(dir_examples);
 
 		std::vector<PhotoRecord> numbers_vec;
 		std::vector<int> numbers_ids;
@@ -78,9 +81,9 @@ TEMPLATE_TEST_CASE("Test the PhotoInterface of the backend", "[photos][interface
 		numbers_vec.push_back(PhotoRecord(numbers, "16.jpg", 0, 1604150001, 1920, 1080));
 
 		for(auto photo : numbers_vec)
-			photoIF->newEntry(photo);
+			db.newEntry(photo);
 		for(auto photo : numbers_vec)
-			REQUIRE_NOTHROW(numbers_ids.push_back(photoIF->getID(photo)));
+			REQUIRE_NOTHROW(numbers_ids.push_back(db.getID(photo)));
 
 		std::vector<PhotoRecord> letters_vec;
 		std::vector<int> letters_ids;
@@ -93,77 +96,74 @@ TEMPLATE_TEST_CASE("Test the PhotoInterface of the backend", "[photos][interface
 		letters_vec.push_back(PhotoRecord(letters, "g.jpg", 0, 1604150001, 1080, 1920));
 
 		for(auto photo : letters_vec)
-			photoIF->newEntry(photo);
+			db.newEntry(photo);
 		for(auto photo : letters_vec)
-			REQUIRE_NOTHROW(letters_ids.push_back(photoIF->getID(photo)));
+			REQUIRE_NOTHROW(letters_ids.push_back(db.getID(photo)));
 
 		SECTION("getChildren(int) returns vector of children", "[getChildren][getNumberChildren]") {
-			CHECK_THAT(photoIF->getChildren(numbers), Catch::Matchers::UnorderedEquals(numbers_ids));
-			CHECK_THAT(photoIF->getChildren(letters), Catch::Matchers::UnorderedEquals(letters_ids));
+			CHECK_THAT(db.template getChildren<PhotoRecord>(numbers), Catch::Matchers::UnorderedEquals(numbers_ids));
+			CHECK_THAT(db.template getChildren<PhotoRecord>(letters), Catch::Matchers::UnorderedEquals(letters_ids));
 
-			CHECK(photoIF->getChildren(numbers).size() == photoIF->getNumberChildren(numbers));
-			CHECK(photoIF->getChildren(letters).size() == photoIF->getNumberChildren(letters));
+			CHECK(db.template getChildren<PhotoRecord>(
+						numbers).size() == db.template getNumberChildren<PhotoRecord>(numbers));
+			CHECK(db.template getChildren<PhotoRecord>(
+						letters).size() == db.template getNumberChildren<PhotoRecord>(letters));
 		}
 
 		SECTION("getEntry(int) == entry entered", "[getEntry]") {
 			for(unsigned long i=0; i<numbers_ids.size(); ++i)
-				CHECK(numbers_vec[i] == photoIF->getEntry(numbers_ids[i]));
+				CHECK(numbers_vec[i] == db.getEntry<PhotoRecord>(numbers_ids[i]));
 			for(unsigned long i=0; i<letters_ids.size(); ++i)
-				CHECK(letters_vec[i] == photoIF->getEntry(letters_ids[i]));
+				CHECK(letters_vec[i] == db.getEntry<PhotoRecord>(letters_ids[i]));
 		}
 
 		SECTION("A photo isn't in the database anymore after it was deleted (deleteEntry(int))", "[deleteEntry]") {
-			photoIF->deleteEntry(numbers_ids[2]);
-			CHECK_THROWS_AS(photoIF->getEntry(numbers_ids[2]), std::runtime_error);
+			db.template deleteEntry<PhotoRecord>(numbers_ids[2]);
+			CHECK_THROWS_AS(db.getEntry<PhotoRecord>(numbers_ids[2]), std::runtime_error);
 
-			photoIF->deleteEntry(numbers_ids[4]);
-			CHECK_THROWS_AS(photoIF->getEntry(numbers_ids[4]), std::runtime_error);
+			db.template deleteEntry<PhotoRecord>(numbers_ids[4]);
+			CHECK_THROWS_AS(db.getEntry<PhotoRecord>(numbers_ids[4]), std::runtime_error);
 
-			photoIF->deleteEntry(letters_ids[0]);
-			CHECK_THROWS_AS(photoIF->getEntry(letters_ids[0]), std::runtime_error);
+			db.template deleteEntry<PhotoRecord>(letters_ids[0]);
+			CHECK_THROWS_AS(db.getEntry<PhotoRecord>(letters_ids[0]), std::runtime_error);
 		}
 
 		SECTION("All photos are deleted along their directory", "[deleteEntry]") {
-			dirIF->deleteEntry(numbers);
-			CHECK_THROWS_AS(dirIF->getEntry(numbers), std::runtime_error);
+			db.template deleteEntry<DirectoryRecord>(numbers);
+			CHECK_THROWS_AS(db.template getEntry<DirectoryRecord>(numbers), std::runtime_error);
 
 			for(int photo_id : numbers_ids)
-				CHECK_THROWS_AS(photoIF->getEntry(photo_id), std::runtime_error);
+				CHECK_THROWS_AS(db.getEntry<PhotoRecord>(photo_id), std::runtime_error);
 
-			dirIF->deleteEntry(letters);
-			CHECK_THROWS_AS(dirIF->getEntry(letters), std::runtime_error);
+			db.template deleteEntry<DirectoryRecord>(letters);
+			CHECK_THROWS_AS(db.template getEntry<DirectoryRecord>(letters), std::runtime_error);
 
 			for(int photo_id : letters_ids)
-				CHECK_THROWS_AS(photoIF->getEntry(photo_id), std::runtime_error);
+				CHECK_THROWS_AS(db.getEntry<PhotoRecord>(photo_id), std::runtime_error);
 		}
 
 		SECTION("After updating an entry the updated entry should be in the database", "[updateEntry]") {
 			numbers_vec[5] = PhotoRecord(numbers, "05.jpg", 2, 1604170001, 1080, 1920);
 			letters_vec[2] = PhotoRecord(letters, "1c.jpg", 5, 1604165001, 20, 150);
 
-			REQUIRE_NOTHROW(photoIF->updateEntry(numbers_ids[5], numbers_vec[5]));
-			REQUIRE_NOTHROW(photoIF->updateEntry(letters_ids[2], letters_vec[2]));
+			REQUIRE_NOTHROW(db.template updateEntry<PhotoRecord>(numbers_ids[5], numbers_vec[5]));
+			REQUIRE_NOTHROW(db.template updateEntry<PhotoRecord>(letters_ids[2], letters_vec[2]));
 
 			for(unsigned long i=0; i<numbers_ids.size(); ++i)
-				CHECK(numbers_vec[i] == photoIF->getEntry(numbers_ids[i]));
+				CHECK(numbers_vec[i] == db.getEntry<PhotoRecord>(numbers_ids[i]));
 			for(unsigned long i=0; i<letters_ids.size(); ++i)
-				CHECK(letters_vec[i] == photoIF->getEntry(letters_ids[i]));
+				CHECK(letters_vec[i] == db.getEntry<PhotoRecord>(letters_ids[i]));
 		}
 
 		SECTION("After moving a photo, it should be in the new directory", "[setParent]") {
 			for(int photo_id : numbers_ids)
-				photoIF->setParent(photo_id, examples);
+				db.template setParent<PhotoRecord>(photo_id, examples);
 
-			CHECK_THAT(photoIF->getChildren(examples), Catch::Matchers::UnorderedEquals(numbers_ids));
+			CHECK_THAT(db.template getChildren<PhotoRecord>(examples), Catch::Matchers::UnorderedEquals(numbers_ids));
 		}
 	}
 }
 
-TEST_CASE("BackendFactory::getInterface<AlbumRecord>() returns the photo interface", "[photo][backend]") {
-	BackendFactory db {":memory:"};
-	CHECK(db.getPhotoInterface() == db.getInterface<PhotoRecord>());
-}
-
-} /* namespace DatabaseInterface */
+} /* namespace Tests */
 } /* namespace Backend */
 } /* namespace PhotoLibrary */

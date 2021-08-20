@@ -21,36 +21,13 @@
 #define SRC_BACKEND_BACKENDFACTORY_H_
 
 #include "FactoryBase.h"
+#include "DatabaseInterface/DatabaseFactory.h"
+#include <AccessTables.h>
 #include <unordered_map>
 #include <memory>
-#include "DatabaseInterface/DatabaseFactory.h"
 
 namespace PhotoLibrary {
 namespace Backend {
-
-/**
- * There is no backend for keywords so we just pass the database interface
- * for keywords through.
- */
-using KeywordInterface = InterfaceBase<RecordClasses::KeywordRecord>;
-
-/**
- * There is no backend for directories so we just pass the database interface
- * for DirectoryInterface through.
- */
-using DirectoryInterface = InterfaceBase<RecordClasses::DirectoryRecord>;
-
-/**
- * There is no backend for albums so we just pass the database interface
- * for DirectoryInterface through.
- */
-using AlbumInterface = InterfaceBase<RecordClasses::AlbumRecord>;
-
-/**
- * There is no backend for photos so we just pass the database interface
- * for PhotoInterface through.
- */
-using PhotoInterface = InterfaceBase<RecordClasses::PhotoRecord>;
 
 /**
  * The interface to get, set, and delete relations between photos and albums.
@@ -82,35 +59,35 @@ public:
 	 * @param filename Filename and path of the database to use
 	 */
 	BackendFactory(const char* filename = nullptr);
-	~BackendFactory() = default;
 
-	KeywordInterface* getKeywordInterface() override;
-	const KeywordInterface* getKeywordInterface() const override;
-	DirectoryInterface* getDirectoriesInterface() override;
-	const DirectoryInterface* getDirectoriesInterface() const override;
-	AlbumInterface* getAlbumInterface() override;
-	const AlbumInterface* getAlbumInterface() const override;
-	PhotoInterface* getPhotoInterface() override;
-	const PhotoInterface* getPhotoInterface() const override;
+	template<typename RecordType>
+	RecordType getEntry(int id);
+
+	template<typename RecordType>
+	std::vector<int> getChildren(int parent);
+
+	template<typename RecordType>
+	int getNumberChildren(int parent);
+
+	template<typename RecordType>
+	void newEntry(const RecordType& entry);
+
+	template<typename RecordType>
+	void updateEntry(int id, const RecordType& entry);
+
+	template<typename RecordType>
+	void setParent(int child_id, int new_parent_id);
+
+	template<typename RecordType>
+	int getID(const RecordType& entry);
+
+	template<typename RecordType>
+	void deleteEntry(int id);
+
 	PhotosAlbumsRelationsInterface* getPhotosAlbumsRelationsInterface() override;
 	const PhotosAlbumsRelationsInterface* getPhotosAlbumsRelationsInterface() const override;
 	PhotosAlbumsRelationsInterface* getPhotosKeywordsRelationsInterface() override;
 	const PhotosAlbumsRelationsInterface* getPhotosKeywordsRelationsInterface() const override;
-
-	/**
-	 * Get a pointer to the interface for the given Record.
-	 *
-	 * @tparam RType Record for which to return the interface.
-	 * @return Pointer to the interface for RType.
-	 */
-	template<class RType>
-	InterfaceBase<RType>* getInterface();
-
-	/**
-	 * \copydoc getInterface()
-	 */
-	template<class RType>
-	const InterfaceBase<RType>* getInterface() const;
 
 	/**
 	 * Retrieve the value of a main window property.
@@ -137,6 +114,7 @@ public:
 
 private:
 	std::unique_ptr<DatabaseInterface::DatabaseFactory> db;
+	std::unique_ptr<PhotoLibrary::DatabaseInterface::AccessTables<Glib::ustring>> tables_interface;
 	std::unordered_map<WindowProperties,int> window_properties;
 
 	//prevent copying and copy construction
@@ -145,6 +123,47 @@ private:
 	BackendFactory& operator=(const BackendFactory &other) = delete;
 	BackendFactory& operator=(BackendFactory &&other) = delete;
 };
+
+template<typename RecordType>
+RecordType BackendFactory::getEntry(int id) {
+	return tables_interface->getEntry<RecordType>(id);
+}
+
+template<typename RecordType>
+std::vector<int> BackendFactory::getChildren(int parent) {
+	return tables_interface->getChildren<RecordType>(parent);
+}
+
+template<typename RecordType>
+int BackendFactory::getNumberChildren(int parent) {
+	return tables_interface->getNumberChildren<RecordType>(parent);
+}
+
+template<typename RecordType>
+void BackendFactory::newEntry(const RecordType& entry) {
+	return tables_interface->newEntry<RecordType>(entry);
+}
+
+template<typename RecordType>
+void BackendFactory::updateEntry(int id, const RecordType& entry) {
+	return tables_interface->updateEntry<RecordType>(id, entry);
+}
+
+template<typename RecordType>
+void BackendFactory::setParent(int child_id, int new_parent_id) {
+	return tables_interface->setParent<RecordType>(child_id, new_parent_id);
+}
+
+template<typename RecordType>
+int BackendFactory::getID(const RecordType& entry) {
+	return tables_interface->getID<RecordType>(entry);
+}
+
+template<typename RecordType>
+void BackendFactory::deleteEntry(int id) {
+	return tables_interface->deleteEntry<RecordType>(id);
+}
+
 
 } /* namespace Backend */
 } /* namespace PhotoLibrary */

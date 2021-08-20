@@ -38,14 +38,9 @@ template<class TStore, class RecordType>
 class BaseTreeView: public Gtk::TreeView {
 public:
 	/**
-	 * @param backend the backend interface to use for the TreeView
+	 * @param backend The BackendFactory object to use
 	 */
-	BaseTreeView(Backend::InterfaceBase<RecordType>* backend);
-
-	/**
-	 * @param backend Pointer to the BackendFactory
-	 */
-	BaseTreeView(Backend::BackendFactory* backend);
+	BaseTreeView(Backend::BackendFactory& backend);
 
 	virtual ~BaseTreeView() = default;
 
@@ -81,11 +76,11 @@ protected:
 	inline Glib::RefPtr<TStore>& getTreeStore();
 
 	/**
-	 * Returns the backend interface.
+	 * Returns the backend
 	 *
-	 * @return The backend interface used by the TreeView
+	 * @return The BackendFactory object to use
 	 */
-	inline Backend::InterfaceBase<RecordType>* getDBInterface();
+	inline Backend::BackendFactory& getBackend() { return backend; }
 
 	/**
 	 * Reload the TreeStore.
@@ -102,7 +97,7 @@ protected:
 	virtual void createView() = 0;
 
 private:
-	Backend::InterfaceBase<RecordType>* backend_interface;
+	Backend::BackendFactory& backend;
 	Glib::RefPtr<TStore> treeStore;
 	sigc::connection signal_row_expanded_connection;
 	sigc::connection signal_row_collapsed_connection;
@@ -123,14 +118,9 @@ private:
 
 //implementation
 template<class TStore, class RecordType>
-BaseTreeView<TStore,RecordType>::BaseTreeView(Backend::InterfaceBase<RecordType>* dbInterface) : backend_interface(dbInterface), selection_id(0) {
-	treeStore = TStore::create(backend_interface);
-	initialise();
-}
-
-template<class TStore, class RecordType>
-BaseTreeView<TStore,RecordType>::BaseTreeView(Backend::BackendFactory* backend) : backend_interface(backend->getInterface<RecordType>()), selection_id(0) {
-	treeStore = TStore::create(backend);
+BaseTreeView<TStore,RecordType>::BaseTreeView(Backend::BackendFactory& backend) :
+		backend(backend), selection_id(0) {
+	treeStore = TStore::create(&backend);
 	initialise();
 }
 
@@ -153,11 +143,6 @@ void BaseTreeView<TStore, RecordType>::initialise() {
 template<class TStore, class RecordType>
 Glib::RefPtr<TStore>& BaseTreeView<TStore,RecordType>::getTreeStore() {
 	return treeStore;
-}
-
-template<class TStore, class RecordType>
-Backend::InterfaceBase<RecordType>* BaseTreeView<TStore,RecordType>::getDBInterface() {
-	return backend_interface;
 }
 
 template<class TStore, class RecordType>
@@ -184,12 +169,12 @@ void BaseTreeView<TStore,RecordType>::onRowExpanded(const Gtk::TreeModel::iterat
 
 template<class TStore, class RecordType>
 void BaseTreeView<TStore,RecordType>::onRowExpandedOrCollapsed(const Gtk::TreeModel::iterator& iter, const Gtk::TreeModel::Path& path) {
-	RecordType entry(getDBInterface()->getEntry((*iter)[getTreeStore()->getColumns().id]));
+	RecordType entry(getBackend().template getEntry<RecordType>((*iter)[getTreeStore()->getColumns().id]));
 
 	(*iter)[getTreeStore()->getColumns().expanded] = !(*iter)[getTreeStore()->getColumns().expanded];
 	//change the ROW_EXPANDED bit for the entry and save change
 	entry.setOptions() ^= Backend::RecordClasses::RecordOptions::Options::ROW_EXPANDED;
-	getDBInterface()->updateEntry((*iter)[getTreeStore()->getColumns().id], entry);
+	getBackend().template updateEntry<RecordType>((*iter)[getTreeStore()->getColumns().id], entry);
 }
 
 template<class TStore, class RecordType>

@@ -18,6 +18,7 @@
  */
 
 #include "MainWindow.h"
+#include "Record/PhotoRecord.h"
 
 namespace PhotoLibrary {
 namespace GUI {
@@ -85,7 +86,7 @@ void MainWindow::onWindowResize() {
 }
 
 void MainWindow::onNewDirectorySelected(int id) {
-	centrePaneBox.fillGrid(backend->getPhotoInterface()->getChildren(id));
+	centrePaneBox.fillGrid(backend->getChildren<Backend::RecordClasses::PhotoRecord>(id));
 }
 
 void MainWindow::onNewAlbumSelected(int id) {

@@ -19,23 +19,26 @@
 
 #include "../src/Backend/DatabaseInterface/DatabaseFactory.h"
 #include "../src/Backend/BackendFactory.h"
+#include "Record/KeywordRecord.h"
+#include "Record/PhotoRecord.h"
+#include "exceptions.h"
 #include <catch2/catch.hpp>
 
 namespace PhotoLibrary {
+namespace Backend {
+namespace Tests {
 
-using PhotoLibrary::Backend::DatabaseInterface::DatabaseFactory;
-using PhotoLibrary::Backend::BackendFactory;
-using Backend::RelationsInterfaceBase;
-using Backend::RecordClasses::KeywordRecord;
-using Backend::RecordClasses::PhotoRecord;
-using KeywordInterface = Backend::InterfaceBase<Backend::RecordClasses::KeywordRecord>;
-using PhotoInterface = Backend::InterfaceBase<Backend::RecordClasses::PhotoRecord>;
+using RecordClasses::KeywordRecord;
+using RecordClasses::PhotoRecord;
+using PhotoInterface = InterfaceBase<Backend::RecordClasses::PhotoRecord>;
+using PhotoLibrary::DatabaseInterface::constraint_error;
 
-TEMPLATE_TEST_CASE("Test the PhotosKeywordsRelations interface of the Adapter and the Backend", "[relations][PhotosKeywordsRelations][adapter][backend]", DatabaseFactory, BackendFactory) {
-	TestType db { ":memory:" };
+TEST_CASE(
+		"Test the PhotosKeywordsRelations interface of the Adapter and the Backend"
+		, "[relations][PhotosKeywordsRelations][adapter][backend]"
+		) {
+	BackendFactory db { ":memory:" };
 	RelationsInterfaceBase* photos_keywords_realtions_if = db.getPhotosKeywordsRelationsInterface();
-	KeywordInterface* keyword_if = db.getKeywordInterface();
-	PhotoInterface* photo_if = db.getPhotoInterface();
 
 	SECTION("getEntries should return an empty vector for an empty database", "[getEntries][getNumberEntries]") {
 		CHECK(photos_keywords_realtions_if->getEntries(0).size() == 0);
@@ -48,20 +51,20 @@ TEMPLATE_TEST_CASE("Test the PhotosKeywordsRelations interface of the Adapter an
 	}
 
 	KeywordRecord keyword_record(0, KeywordRecord::Options::PRIVATE, "Holiday");
-	keyword_if->newEntry(keyword_record);
-	int k_holiday = keyword_if->getID(keyword_record);
+	db.template newEntry(keyword_record);
+	int k_holiday = db.template getID<KeywordRecord>(keyword_record);
 
 	keyword_record = KeywordRecord(0, KeywordRecord::Options::NONE, "Zoo");
-	keyword_if->newEntry(keyword_record);
-	int k_zoo = keyword_if->getID(keyword_record);
+	db.template newEntry(keyword_record);
+	int k_zoo = db.template getID<KeywordRecord>(keyword_record);
 
 	keyword_record = KeywordRecord(k_holiday, KeywordRecord::Options::INCLUDE_ON_EXPORT, "City Trips");
-	keyword_if->newEntry(keyword_record);
-	int k_city_trips = keyword_if->getID(keyword_record);
+	db.template newEntry(keyword_record);
+	int k_city_trips = db.template getID<KeywordRecord>(keyword_record);
 
 	keyword_record = KeywordRecord(k_city_trips, KeywordRecord::Options::INCLUDE_ON_EXPORT | KeywordRecord::Options::INCLUDE_SYNONYMS_ON_EXPORT, "Venice");
-	keyword_if->newEntry(keyword_record);
-	int k_venice = keyword_if->getID(keyword_record);
+	db.template newEntry(keyword_record);
+	int k_venice = db.template getID<KeywordRecord>(keyword_record);
 
 	SECTION("A keyword with no photos assinged to it should not have any photos assigned to it.", "[getEntries][getNumberEntries]") {
 		CHECK(photos_keywords_realtions_if->getEntries(k_holiday).size() == 0);
@@ -76,24 +79,24 @@ TEMPLATE_TEST_CASE("Test the PhotosKeywordsRelations interface of the Adapter an
 	}
 
 	PhotoRecord photo_record(0, "1.jpg", 1, 1604149700, 1920, 1080);
-	photo_if->newEntry(photo_record);
-	int photo_1 = photo_if->getID(photo_record);
+	db.newEntry(photo_record);
+	int photo_1 = db.getID(photo_record);
 
 	photo_record = PhotoRecord(0, "2.jpg", 1, 1604149700, 1920, 1080);
-	photo_if->newEntry(photo_record);
-	int photo_2 = photo_if->getID(photo_record);
+	db.newEntry(photo_record);
+	int photo_2 = db.getID(photo_record);
 
 	photo_record = PhotoRecord(0, "3.jpg", 3, 1604149700, 1920, 1080);
-	photo_if->newEntry(photo_record);
-	int photo_3 = photo_if->getID(photo_record);
+	db.newEntry(photo_record);
+	int photo_3 = db.getID(photo_record);
 
 	photo_record = PhotoRecord(0, "4.jpg", 1, 1604150500, 1920, 1080);
-	photo_if->newEntry(photo_record);
-	int photo_4 = photo_if->getID(photo_record);
+	db.newEntry(photo_record);
+	int photo_4 = db.getID(photo_record);
 
 	photo_record = PhotoRecord(0, "5.jpg", 5, 1604150650, 1920, 1080);
-	photo_if->newEntry(photo_record);
-	int photo_5 = photo_if->getID(photo_record);
+	db.newEntry(photo_record);
+	int photo_5 = db.getID(photo_record);
 
 	SECTION("A photo should not be assigned to any keywords if it's not asigned to any.", "[getCollections][getNumberCollections]") {
 		CHECK(photos_keywords_realtions_if->getCollections(photo_1).size() == 0);
@@ -202,7 +205,7 @@ TEMPLATE_TEST_CASE("Test the PhotosKeywordsRelations interface of the Adapter an
 		while(i == k_holiday || i == k_zoo || i == k_city_trips || i == k_venice)
 			++i;
 
-		CHECK_THROWS_AS(photos_keywords_realtions_if->newRelation(photo_1, i), Backend::DatabaseInterface::constraint_error);
+		CHECK_THROWS_AS(photos_keywords_realtions_if->newRelation(photo_1, i), constraint_error);
 	}
 
 	SECTION("Adding a non-existing photo to a keyword should return a constraint_error", "[newRelation]") {
@@ -210,28 +213,31 @@ TEMPLATE_TEST_CASE("Test the PhotosKeywordsRelations interface of the Adapter an
 		while(i == photo_1 || i == photo_2 || i == photo_3 || i == photo_4 || i == photo_5)
 			++i;
 
-		CHECK_THROWS_AS(photos_keywords_realtions_if->newRelation(i, k_city_trips), Backend::DatabaseInterface::constraint_error);
+		CHECK_THROWS_AS(photos_keywords_realtions_if->newRelation(i, k_city_trips), constraint_error);
 	}
 
 	SECTION("After deleting a photo all its relations should be removed as well.", "[deleteEntry]") {
 		CHECK_NOFAIL(photos_keywords_realtions_if->getCollections(photo_1).size() != 0);
-		photo_if->deleteEntry(photo_1);
+		db.template deleteEntry<PhotoRecord>(photo_1);
 		CHECK(photos_keywords_realtions_if->getCollections(photo_1).size() == 0);
 
 		CHECK_NOFAIL(photos_keywords_realtions_if->getCollections(photo_4).size() != 0);
-		photo_if->deleteEntry(photo_4);
+		db.template deleteEntry<PhotoRecord>(photo_4);
 		CHECK(photos_keywords_realtions_if->getCollections(photo_4).size() == 0);
 	}
 
 	SECTION("After deleting a keyword all its relations should be removed as well.", "[deleteEntry]") {
 		CHECK_NOFAIL(photos_keywords_realtions_if->getEntries(k_holiday).size() != 0);
-		keyword_if->deleteEntry(k_holiday);
+		db.template deleteEntry<KeywordRecord>(k_holiday);
 		CHECK(photos_keywords_realtions_if->getEntries(k_holiday).size() == 0);
 
 		CHECK_NOFAIL(photos_keywords_realtions_if->getEntries(k_city_trips).size() != 0);
-		keyword_if->deleteEntry(k_city_trips);
+		db.template deleteEntry<KeywordRecord>(k_city_trips);
 		CHECK(photos_keywords_realtions_if->getEntries(k_city_trips).size() == 0);
 	}
 }
 
+
+} /* namespace Tests */
+} /* namespace Backend */
 } /* namespace PhotoLibrary */

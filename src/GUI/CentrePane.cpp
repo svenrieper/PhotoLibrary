@@ -20,6 +20,7 @@
 #include "CentrePane.h"
 #include <giomm/resource.h>
 #include <filesystem>
+#include <iostream>
 #include <typeinfo>
 
 namespace PhotoLibrary {

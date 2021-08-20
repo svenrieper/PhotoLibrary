@@ -18,13 +18,14 @@
  */
 
 #include "AlbumStore.h"
+#include "Record/AlbumRecord.h"
 #include "gtkmm/messagedialog.h"
 
 namespace PhotoLibrary {
 namespace GUI {
 
 AlbumStore::AlbumStore(Backend::BackendFactory* db) :
-		BaseTreeStore(db->getAlbumInterface()),
+		BaseTreeStore(*db),
 		relations(db->getPhotosAlbumsRelationsInterface()) {
 }
 
@@ -35,8 +36,8 @@ Glib::RefPtr<AlbumStore> AlbumStore::create(Backend::BackendFactory* db) {
 void AlbumStore::onRowChanged(const TreeModel::Path& path, const TreeModel::iterator& iter) {
 	int parent = iter->parent() ? (*(iter->parent()))[getColumns().id] : 0;
 	try {
-		getBackend()->setParent((*iter)[getColumns().id], parent);
-	} catch (const Backend::DatabaseInterface::constraint_error& e) {
+		getBackend().setParent<Backend::RecordClasses::AlbumRecord>((*iter)[getColumns().id], parent);
+	} catch (const DatabaseInterface::constraint_error& e) {
 		/// \todo prepare for internationalisation
 		/// \todo improve text
 		Gtk::MessageDialog message_dialogue("Album '" + (*iter)[getColumns().album_name] + "' could not be moved");
@@ -48,7 +49,7 @@ void AlbumStore::onRowChanged(const TreeModel::Path& path, const TreeModel::iter
 void AlbumStore::fillRow(int id, Gtk::TreeModel::Row& row) {
 	using Backend::RecordClasses::AlbumRecord;
 
-	AlbumRecord album(getBackend()->getEntry(id));
+	AlbumRecord album(getBackend().getEntry<Backend::RecordClasses::AlbumRecord>(id));
 	/// \todo implement photo_count
 	int photo_count = relations->getNumberEntries(id);
 	row[getColumns().id] = id;

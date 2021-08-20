@@ -26,8 +26,7 @@ namespace PhotoLibrary {
 namespace GUI {
 
 AlbumView::AlbumView(Backend::BackendFactory* backend) :
-		BaseTreeView(backend) {
-//		BaseTreeView(backend->getAlbumInterface()) {
+		BaseTreeView(*backend) {
 	createView();
 
 	fillPopupMenu();
@@ -55,11 +54,11 @@ void AlbumView::addNewAlbum(Backend::RecordClasses::AlbumRecord::Options options
 	NewAlbumDialogue dialogue(&new_album, parent_album_name);
 	while(dialogue.run() == Gtk::RESPONSE_OK) {
 		try {
-			getDBInterface()->newEntry(new_album);
+			getBackend().newEntry(new_album);
 			reloadTreeStore();
 			return;
 		}
-		catch (Backend::DatabaseInterface::constraint_error& e) {
+		catch (DatabaseInterface::constraint_error& e) {
 			/// \todo prepare for internationalisation
 			/// \todo improve text
 			Gtk::MessageDialog message_dialogue("Album could not be added");
@@ -127,6 +126,7 @@ void AlbumView::onMenuAddNewSet() {
 }
 
 void AlbumView::onMenuRenameAlbum() {
+	using Backend::RecordClasses::AlbumRecord;
 	std::cout << "Rename Album Selected.\n";
 
 	auto refSelection = get_selection();
@@ -135,15 +135,15 @@ void AlbumView::onMenuRenameAlbum() {
 		iter = refSelection->get_selected();
 	if(!iter)
 		return;
-	Backend::RecordClasses::AlbumRecord album(getDBInterface()->getEntry((*iter)[getTreeStore()->getColumns().id]));
+	AlbumRecord album(getBackend().getEntry<AlbumRecord>((*iter)[getTreeStore()->getColumns().id]));
 	RenameAlbumDialogue dialogue(&album);
 	while (dialogue.run() == Gtk::RESPONSE_OK) {
 		try {
-			getDBInterface()->updateEntry((*iter)[getTreeStore()->getColumns().id], album);
+			getBackend().updateEntry((*iter)[getTreeStore()->getColumns().id], album);
 			reloadTreeStore();
 			return;
 		}
-		catch (Backend::DatabaseInterface::constraint_error &e) {
+		catch (DatabaseInterface::constraint_error &e) {
 			/// \todo prepare for internationalisation
 			/// \todo improve text
 			Gtk::MessageDialog message_dialogue("Changes could not be saved");
@@ -172,7 +172,7 @@ void AlbumView::onMenuDeleteAlbum() {
 			"' and all enclosed albums?\n"
 			"You cannot undo the action.");
 	if(delete_dialogue.run() == Gtk::RESPONSE_OK) {
-		getDBInterface()->deleteEntry((*iter)[getTreeStore()->getColumns().id]);
+		getBackend().deleteEntry<Backend::RecordClasses::AlbumRecord>((*iter)[getTreeStore()->getColumns().id]);
 		reloadTreeStore();
 	}
 }

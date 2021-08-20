@@ -18,6 +18,8 @@
  */
 
 #include "PhotoTile.h"
+#include "Record/DirectoryRecord.h"
+#include "Record/PhotoRecord.h"
 #include <filesystem>
 
 namespace PhotoLibrary {
@@ -28,7 +30,7 @@ using Backend::RecordClasses::DirectoryRecord;
 
 PhotoTile::PhotoTile(Backend::BackendFactory* backend, int photo_id) :
 		backend(backend),
-		photo_record(backend->getPhotoInterface()->getEntry(photo_id)),
+		photo_record(backend->getEntry<Backend::RecordClasses::PhotoRecord>(photo_id)),
 		photo_image(backend->getWindowProperty(BackendFactory::WindowProperties::TILE_WIDTH),
 				photo_record.getWidth(), photo_record.getHeight()) {
 
@@ -49,7 +51,7 @@ Glib::ustring PhotoTile::getFilename() {
 Glib::ustring PhotoTile::getFullPath() {
 	Glib::ustring full_path;
 	for(int dir_id = photo_record.getDirectory(); dir_id;) {
-		DirectoryRecord dir(backend->getDirectoriesInterface()->getEntry(dir_id));
+		DirectoryRecord dir(backend->getEntry<DirectoryRecord>(dir_id));
 		full_path = dir.getFullDirectory() + "/" + full_path;
 		dir_id = dir.getParent();
 	}

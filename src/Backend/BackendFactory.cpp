@@ -27,11 +27,6 @@
 namespace PhotoLibrary {
 namespace Backend {
 
-using RecordClasses::AlbumRecord;
-using RecordClasses::DirectoryRecord;
-using RecordClasses::KeywordRecord;
-using RecordClasses::PhotoRecord;
-
 BackendFactory::BackendFactory(const char* filename) : db(nullptr) {
 	/// \todo load values
 	window_properties[WindowProperties::WINDOW_WIDTH] = 1800;
@@ -43,38 +38,7 @@ BackendFactory::BackendFactory(const char* filename) : db(nullptr) {
 	window_properties[WindowProperties::N_THREADS] = std::thread::hardware_concurrency()?std::thread::hardware_concurrency():1;
 
 	db = std::make_unique<Backend::DatabaseInterface::DatabaseFactory>(":memory:", true);
-}
-
-KeywordInterface* BackendFactory::getKeywordInterface() {
-	return db->getKeywordInterface();
-}
-
-const KeywordInterface* BackendFactory::getKeywordInterface() const {
-	return db->getKeywordInterface();
-}
-
-DirectoryInterface* BackendFactory::getDirectoriesInterface() {
-	return db->getDirectoriesInterface();
-}
-
-const DirectoryInterface* BackendFactory::getDirectoriesInterface() const {
-	return db->getDirectoriesInterface();
-}
-
-AlbumInterface* BackendFactory::getAlbumInterface() {
-	return db->getAlbumInterface();
-}
-
-const AlbumInterface* BackendFactory::getAlbumInterface() const {
-	return db->getAlbumInterface();
-}
-
-PhotoInterface* BackendFactory::getPhotoInterface() {
-	return db->getPhotoInterface();
-}
-
-const PhotoInterface* BackendFactory::getPhotoInterface() const {
-	return db->getPhotoInterface();
+	tables_interface = std::make_unique<PhotoLibrary::DatabaseInterface::AccessTables<Glib::ustring>>(db->db);
 }
 
 RelationsInterfaceBase* BackendFactory::getPhotosAlbumsRelationsInterface() {
@@ -91,46 +55,6 @@ RelationsInterfaceBase* BackendFactory::getPhotosKeywordsRelationsInterface() {
 
 const RelationsInterfaceBase* BackendFactory::getPhotosKeywordsRelationsInterface() const {
 	return db->getPhotosKeywordsRelationsInterface();
-}
-
-template<>
-InterfaceBase<KeywordRecord>* BackendFactory::getInterface<KeywordRecord>() {
-	return getKeywordInterface();
-}
-
-template<>
-const InterfaceBase<KeywordRecord>* BackendFactory::getInterface<KeywordRecord>() const {
-	return getKeywordInterface();
-}
-
-template<>
-InterfaceBase<DirectoryRecord>* BackendFactory::getInterface<DirectoryRecord>() {
-	return getDirectoriesInterface();
-}
-
-template<>
-const InterfaceBase<DirectoryRecord>* BackendFactory::getInterface<DirectoryRecord>() const {
-	return getDirectoriesInterface();
-}
-
-template<>
-InterfaceBase<AlbumRecord>* BackendFactory::getInterface<AlbumRecord>() {
-	return getAlbumInterface();
-}
-
-template<>
-const InterfaceBase<AlbumRecord>* BackendFactory::getInterface<AlbumRecord>() const {
-	return getAlbumInterface();
-}
-
-template<>
-InterfaceBase<PhotoRecord>* BackendFactory::getInterface<PhotoRecord>() {
-	return getPhotoInterface();
-}
-
-template<>
-const InterfaceBase<PhotoRecord>* BackendFactory::getInterface<PhotoRecord>() const {
-	return getPhotoInterface();
 }
 
 int BackendFactory::getWindowProperty(WindowProperties property) const {

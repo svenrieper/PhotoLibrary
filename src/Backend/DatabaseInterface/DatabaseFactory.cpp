@@ -25,10 +25,6 @@ namespace DatabaseInterface {
 
 DatabaseFactory::DatabaseFactory(const char* filename, bool initialise) :
 		db(/*filename*/ ":memory:", /*initialise*/ true),
-		keyword_interface(db, "Keywords"),
-		directories_interface(db, "Directories"),
-		album_interface(db, "Albums"),
-		photo_interface(db, "Photos"),
 		photos_albums_relations(db, "PhotosAlbumsRelations", "photoId", "albumId"),
 		photos_keywords_relations(db, "PhotosKeywordsRelations", "photoId", "keywordId") {
 	initialise=true;
@@ -36,38 +32,6 @@ DatabaseFactory::DatabaseFactory(const char* filename, bool initialise) :
 		//testConsistency(); /// \todo Add test for db
 	else
 		createTables();
-}
-
-DBInterface<Backend::RecordClasses::KeywordRecord>* DatabaseFactory::getKeywordInterface() {
-	return &keyword_interface;
-}
-
-const DBInterface<Backend::RecordClasses::KeywordRecord>* DatabaseFactory::getKeywordInterface() const {
-	return &keyword_interface;
-}
-
-DBInterface<Backend::RecordClasses::DirectoryRecord>* DatabaseFactory::getDirectoriesInterface() {
-	return &directories_interface;
-}
-
-const DBInterface<Backend::RecordClasses::DirectoryRecord>* DatabaseFactory::getDirectoriesInterface() const {
-	return &directories_interface;
-}
-
-DBInterface<Backend::RecordClasses::AlbumRecord>* DatabaseFactory::getAlbumInterface() {
-	return &album_interface;
-}
-
-const DBInterface<Backend::RecordClasses::AlbumRecord>* DatabaseFactory::getAlbumInterface() const {
-	return &album_interface;
-}
-
-DBInterface<Backend::RecordClasses::PhotoRecord>* DatabaseFactory::getPhotoInterface() {
-	return &photo_interface;
-}
-
-const DBInterface<Backend::RecordClasses::PhotoRecord>* DatabaseFactory::getPhotoInterface() const {
-	return &photo_interface;
 }
 
 RelationsDBInterface* DatabaseFactory::getPhotosAlbumsRelationsInterface() {

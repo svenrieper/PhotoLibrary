@@ -31,7 +31,7 @@ namespace GUI {
 using Backend::RecordClasses::KeywordRecord;
 
 KeywordsView::KeywordsView(Backend::BackendFactory* backend) :
-		BaseTreeView(backend->getKeywordInterface()) {
+		BaseTreeView(*backend) {
 	createView();
 //	getTreeStore()->signalExpandRow().connect(sigc::mem_fun(*this, &KeywordsView::onSignalExpandRow));
 //	getTreeStore()->initialise();
@@ -103,11 +103,11 @@ void KeywordsView::onMenuAddNewKeyword() {
 	NewKeywordDialogue dialogue(&new_keyword, parent_key);
 	while(dialogue.run() == Gtk::RESPONSE_OK) {
 		try {
-			getDBInterface()->newEntry(new_keyword);
+			getBackend().newEntry(new_keyword);
 			reloadTreeStore();
 			return;
 		}
-		catch (Backend::DatabaseInterface::constraint_error& e) {
+		catch (DatabaseInterface::constraint_error& e) {
 			/// \todo prepare for internationalisation
 			/// \todo improve text
 			Gtk::MessageDialog message_dialogue("Keyword could not be added");
@@ -125,15 +125,15 @@ void KeywordsView::onMenuEditKeyword() {
 		iter = refSelection->get_selected();
 	if(!iter)
 		return;
-	KeywordRecord keyword(getDBInterface()->getEntry((*iter)[getTreeStore()->getColumns().id]));
+	KeywordRecord keyword(getBackend().getEntry<KeywordRecord>((*iter)[getTreeStore()->getColumns().id]));
 	EditKeywordDialogue dialogue(&keyword);
 	while (dialogue.run() == Gtk::RESPONSE_OK) {
 		try {
-			getDBInterface()->updateEntry((*iter)[getTreeStore()->getColumns().id], keyword);
+			getBackend().updateEntry((*iter)[getTreeStore()->getColumns().id], keyword);
 			reloadTreeStore();
 			return;
 		}
-		catch (Backend::DatabaseInterface::constraint_error &e) {
+		catch (DatabaseInterface::constraint_error &e) {
 			/// \todo prepare for internationalisation
 			/// \todo improve text
 			Gtk::MessageDialog message_dialogue("Changes could not be saved");
@@ -163,7 +163,7 @@ void KeywordsView::onMenuDeleteKeyword() {
 			"' and all enclosed keywords?\n"
 			"You cannot undo the action.");
 	if(delete_dialogue.run() == Gtk::RESPONSE_OK) {
-		getDBInterface()->deleteEntry((*iter)[getTreeStore()->getColumns().id]);
+		getBackend().template deleteEntry<KeywordRecord>((*iter)[getTreeStore()->getColumns().id]);
 		reloadTreeStore();
 	}
 }
