@@ -1,5 +1,5 @@
-add_library(DatabaseInterface #STATIC
-	INTERFACE
+add_library(DatabaseInterface STATIC
+	RelationsTable.cpp
 	)
 
 target_include_directories(DatabaseInterface
