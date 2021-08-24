@@ -61,7 +61,6 @@ using SQLiteAdapter::String_type;
  *
  * \todo add support for enum class|es
  * \todo add support for 64 bit integer ids
- * \todo more consistent behaviour regarding id == 0
  * \todo make non-modifying methods const
  *
  * @tparam String String_type to use internally (see above for
@@ -188,9 +187,9 @@ public:
 	 * @param id Id of the record to delete
 	 * @tparam RecordType Record based class for the table (see AccessTables'
 	 * 		class documentation for more information)
+	 *
+	 * @throws constraint_error if deleting the entry fails due to a constraint violation
 	 * @throws database_error If the database returns an error.
-	 * @throws std::runtime_error If id == 0
-	 * \todo Is it correct to forbid deleting the entry with id == 0?
 	 */
 	template<typename RecordType>
 	void deleteEntry(int id);
@@ -374,15 +373,12 @@ int AccessTables<String>::getID(const RecordType& entry) const {
 template<String_type String>
 template<typename RecordType>
 void AccessTables<String>::deleteEntry(int id) {
-	const String& table = RecordType::table;
-
-	if (!id)
-		throw(std::runtime_error("Deleting the root is forbidden."));
-
-	String sql = "DELETE FROM " + table + " WHERE id = " + std::to_string(id);
+	String sql = "DELETE FROM " + RecordType::table + " WHERE id = " + std::to_string(id);
 	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
 
-	if (querry.nextRow() != SQLITE_DONE)
+	if(int i = querry.nextRow(); i == SQLITE_CONSTRAINT)
+		throw(constraint_error("Error deleting keyword faild due to constraint violation."));
+	else if (i != SQLITE_DONE)
 		throw(database_error("Error deleting keyword."));
 }
 

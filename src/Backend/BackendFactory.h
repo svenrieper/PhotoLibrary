@@ -175,8 +175,9 @@ public:
 	 * 		AccessTables' class documentation for more information)
 	 * @param id Id of the record to delete
 	 *
+	 * @throws constraint_error if deleting the entry fails due to a
+	 * 		constraint violation
 	 * @throws database_error If the database returns an error.
-	 * @throws std::runtime_error If id == 0
 	 */
 	template<typename RecordType>
 	void deleteEntry(int id);

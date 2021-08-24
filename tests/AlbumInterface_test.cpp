@@ -189,6 +189,21 @@ TEST_CASE(
 			CHECK_THAT(db.template getChildren<AlbumRecord>(album_ids[4]), Catch::Matchers::VectorContains(album_2017_06_ids[4]));
 		}
 	}
+
+	SECTION("Deleting the root album is not possible", "[album][deleteEntry]") {
+		CHECK_THROWS_AS(db.template deleteEntry<AlbumRecord>(0), constraint_error);
+	}
+
+	SECTION("Changing the root album is not possible", "[album][setParent][updateEntry]") {
+		CHECK_THROWS_AS(db.updateEntry(0, AlbumRecord{0}), constraint_error);
+
+		AlbumRecord record{0, AlbumRecord::Options::NONE, "some name"};
+		CHECK_NOTHROW(db.newEntry(record));
+		int id{};
+		REQUIRE_NOTHROW(id = db.getID(record));
+		CHECK_THROWS_AS(db.updateEntry(0, AlbumRecord{id}), constraint_error);
+		CHECK_THROWS_AS(db.template setParent<AlbumRecord>(0, id), constraint_error);
+	}
 }
 
 } /* namespace Tests */

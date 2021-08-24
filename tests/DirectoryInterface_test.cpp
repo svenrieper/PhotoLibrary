@@ -31,8 +31,8 @@ using PhotoLibrary::DatabaseInterface::constraint_error;
 
 
 TEST_CASE(
-		"Test the DirectoryInterface of the Adapter and the Backend"
-		, "[directory][adapter][backend]"
+		"Test the interface to the Directories table"
+		, "[directory][backend]"
 		) {
 	BackendFactory db { ":memory:" };
 
@@ -215,6 +215,25 @@ TEST_CASE(
 			db.template setParent<DirectoryRecord>(dir_2017_06_ids[4], dir_ids[4]);
 			CHECK_THAT(db.template getChildren<DirectoryRecord>(dir_ids[4]), Catch::Matchers::VectorContains(dir_2017_06_ids[4]));
 		}
+	}
+
+	SECTION("Deleting root directory is not possible", "[directory][deleteEntry]") {
+		CHECK_THROWS_AS(db.deleteEntry<DirectoryRecord>(0), constraint_error);
+	}
+
+	SECTION("Changing root directory is not possible", "[directory][setParent][updateEntry]") {
+		CHECK_THROWS_AS(
+				db.updateEntry(0, DirectoryRecord{0, DirectoryRecord::Options::NONE, "something"}),
+				constraint_error
+				);
+
+		DirectoryRecord record {0, DirectoryRecord::Options::NONE, "some directory"};
+		CHECK_NOTHROW(db.newEntry(record));
+		int id {};
+		REQUIRE_NOTHROW(db.getID(record));
+
+		CHECK_THROWS_AS(db.updateEntry(0, DirectoryRecord{id}), constraint_error);
+		CHECK_THROWS_AS(db.template setParent<DirectoryRecord>(0, id), constraint_error);
 	}
 }
 

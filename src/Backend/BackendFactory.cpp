@@ -76,11 +76,23 @@ void BackendFactory::createTables() {
 			//Constraints
 			", UNIQUE			(parent, lkeyword)"
 			", FOREIGN KEY		(parent) REFERENCES Keywords ON DELETE CASCADE"
+			", CHECK			(id IS NOT parent OR id IS 0 OR id IS 1)"
 			");"
 			//Create index for parent
 			"CREATE INDEX keyParentIndex ON Keywords(parent);"
 			"INSERT INTO Keywords (id, keyword, parent) VALUES (1, 'internal root', 1);"
 			"INSERT INTO Keywords (id, keyword, parent) VALUES (0, 'root', 0);"
+			//Prevent deleting or changing root
+			"CREATE TRIGGER trigger_keys_delete_root BEFORE DELETE"
+			"  ON Keywords WHEN (OLD.id IS 0 OR OLD.id IS 1)"
+			"    BEGIN"
+			"      SELECT RAISE(ABORT, 'trying to delete root of Keyword');"
+			"    END;"
+			"CREATE TRIGGER trigger_keys_update_root BEFORE UPDATE"
+			"  ON Keywords WHEN (OLD.id IS 0 OR OLD.id IS 1)"
+			"    BEGIN"
+			"      SELECT RAISE(ABORT, 'trying to update root of Keyword');"
+			"    END;"
 			//Reserve keyword ids 1 through 50 for internal use
 			"INSERT INTO Keywords (id, keyword, parent) VALUES (50, 'temp', 0);"
 			"DELETE FROM Keywords WHERE id = 50;"
@@ -94,10 +106,22 @@ void BackendFactory::createTables() {
 			//Constraints
 			", UNIQUE			(parent, fullname)"
 			", FOREIGN KEY		(parent) REFERENCES Directories ON DELETE CASCADE"
+			", CHECK			(id IS NOT parent OR id IS 0)"
 			");"
 			//Create index for parent
 			"CREATE INDEX dirParentIndex ON Directories(parent);"
 			"INSERT INTO Directories (id, name, fullname, parent) VALUES (0, 'root', '/', 0);"
+			//Prevent deleting or changing root
+			"CREATE TRIGGER trigger_dirs_delete_root BEFORE DELETE"
+			"  ON Directories WHEN (OLD.id IS 0)"
+			"    BEGIN"
+			"      SELECT RAISE(ABORT, 'trying to delete root Directory');"
+			"    END;"
+			"CREATE TRIGGER trigger_dirs_update_root BEFORE UPDATE"
+			"  ON Directories WHEN (OLD.id IS 0)"
+			"    BEGIN"
+			"      SELECT RAISE(ABORT, 'trying to update root Directory');"
+			"    END;"
 		//Albums table
 			"CREATE TABLE Albums("
 			"  id				INTEGER	PRIMARY KEY"
@@ -107,9 +131,22 @@ void BackendFactory::createTables() {
 			//Constraints
 			", UNIQUE			(parent, name)"
 			", FOREIGN KEY		(parent) REFERENCES Albums ON DELETE CASCADE"
+			", CHECK			(id IS NOT parent OR id IS 0)"
 			");"
+			//Create index for parent
 			"CREATE INDEX albumsParentIndex ON Albums(parent);"
 			"INSERT INTO Albums (id, name, parent) VALUES (0, 'root', 0);"
+			//Prevent deleting or changing root
+			"CREATE TRIGGER trigger_albums_delete_root BEFORE DELETE"
+			"  ON Albums WHEN (OLD.id IS 0)"
+			"    BEGIN"
+			"      SELECT RAISE(ABORT, 'trying to delete root Album');"
+			"    END;"
+			"CREATE TRIGGER trigger_albums_update_root BEFORE UPDATE"
+			"  ON Albums WHEN (OLD.id IS 0)"
+			"    BEGIN"
+			"      SELECT RAISE(ABORT, 'trying to update root Album');"
+			"    END;"
 		//Photos table
 			"CREATE TABLE Photos("
 			"  id				INTEGER	PRIMARY KEY"

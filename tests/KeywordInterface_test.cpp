@@ -19,6 +19,7 @@
 
 #include "BackendFactory.h"
 #include "Record/KeywordRecord.h"
+#include "exceptions.h"
 #include <support.h>
 #include <catch2/catch.hpp>
 
@@ -103,7 +104,10 @@ TEST_CASE(
 		REQUIRE_NOTHROW(empty_id = db.template getID<KeywordRecord>(empty));
 		CHECK(db.template getEntry<Keyword>(empty_id) == empty);
 
-		SECTION( "After updating a keyword it should contain the new information (using the Keyword struct)", "[keywords][database][updateEntry]" ) {
+		SECTION(
+				"After updating a keyword it should contain the new information (using the Keyword struct)",
+				"[keywords][database][updateEntry]"
+				) {
 			Keyword animal(0, Keyword::Options::INCLUDE_ON_EXPORT | Keyword::Options::INCLUDE_SYNONYMS_ON_EXPORT, "Animal", "");
 			db.template updateEntry<KeywordRecord>(animal_id, animal);
 			CHECK(db.template getEntry<Keyword>(animal_id) == animal);
@@ -153,8 +157,8 @@ TEST_CASE(
 //		}
 
 		//delete
-		SECTION("Delete leaves on defferent levels.", "[deleteEntry]") {
-			db.template deleteEntry<KeywordRecord>(empty_id);
+		SECTION("Delete leaves on different levels.", "[deleteEntry]") {
+			REQUIRE_NOTHROW(db.template deleteEntry<KeywordRecord>(empty_id));
 			CHECK_THROWS_AS(db.template getEntry<Keyword>(empty_id), std::runtime_error);
 
 			CHECK(db.template getEntry<Keyword>(animal_id) == animal);
@@ -222,7 +226,10 @@ TEST_CASE(
 		}
 	}
 
-	SECTION( "Inserting a Keyword twice (modulo capitalisation) should throw PhotoLibrary::constraint_error", "[keywords][database][newEntry]" ) {
+	SECTION(
+			"Inserting a Keyword twice (modulo capitalisation) should throw PhotoLibrary::constraint_error",
+			"[keywords][database][newEntry]"
+			) {
 		KeywordRecord key1(0, KeywordRecord::Options::NONE, "some key");
 		REQUIRE_NOTHROW(db.template newEntry<KeywordRecord>(key1));
 		CHECK_THROWS_AS(db.template newEntry<KeywordRecord>(key1), constraint_error);
@@ -428,8 +435,16 @@ TEST_CASE(
 		}
 	}
 
-	SECTION( "root keyword can't be delted", "[keywords][database][deleteEntry]" ) {
-		CHECK_THROWS_AS(db.template deleteEntry<KeywordRecord>(0), std::runtime_error);
+	SECTION("root keywords can't be deleted", "[keywords][database][deleteEntry]") {
+		CHECK_THROWS_AS(db.template deleteEntry<KeywordRecord>(0), constraint_error);
+		CHECK_THROWS_AS(db.template deleteEntry<KeywordRecord>(1), constraint_error);
+	}
+
+	SECTION("root keywords can't be altered", "[keywords][database][updateEntry][setParent]") {
+		CHECK_THROWS_AS(db.updateEntry(0, KeywordRecord(1)), constraint_error);
+		CHECK_THROWS_AS(db.updateEntry(1, KeywordRecord(0)), constraint_error);
+		CHECK_THROWS_AS(db.template setParent<KeywordRecord>(0, 1), constraint_error);
+		CHECK_THROWS_AS(db.template setParent<KeywordRecord>(1, 0), constraint_error);
 	}
 }
 

@@ -281,8 +281,6 @@ void two_ints_delete1(AccessTables<>& interface, std::vector<std::array<int,3>>&
 
 		two_ints_get_entry<T>(interface, reference_vec);
 	}
-
-	REQUIRE_THROWS_AS(interface.deleteEntry<T>(0), std::runtime_error);
 }
 
 template<typename T>
