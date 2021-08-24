@@ -96,6 +96,9 @@ public:
 	 * @param parent id of the entry of which the number children should be
 	 * 		returned
 	 * @return Number of children of 'parent'
+	 *
+	 * @throws database_error if the database returns an error trying to
+	 * 		get the number of children
 	 */
 	template<typename RecordType>
 	int getNumberChildren(int parent);
@@ -196,6 +199,9 @@ public:
 	 * @param collection Id of the 'collection' (e.g. keyword or album)
 	 * 		for which the number of photos should be returned.
 	 * @return Number of photos in the collection
+	 *
+	 * @throws database_error if the database returns an error trying to
+	 * 		get the number of photos
 	 */
 	template<Relations relation>
 	int getNumberEntries(int collection);
@@ -218,6 +224,9 @@ public:
 	 * @photo Id of the photo for which the number of 'collections'
 	 * 		(e.g. keyword or album) containig it should be returned.
 	 * @return Number of 'collections' containing photo
+	 *
+	 * @throws database_error if the database returns an error trying to
+	 * 		get the number of collections
 	 */
 	template<Relations relation>
 	int getNumberCollections(int photo);

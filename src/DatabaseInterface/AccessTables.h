@@ -24,6 +24,7 @@
 #include "support.h"
 #include <Database.h>
 #include <Concepts.h>
+#include <string>
 #include <vector>
 
 namespace PhotoLibrary {
@@ -109,6 +110,9 @@ public:
 	 * @tparam RecordType Record based class for the table (see AccessTables'
 	 * 		class documentation for more information)
 	 * @return Number of children of 'parent'
+	 *
+	 * @throws database_error if any error occurs trying to get the number
+	 * 		of children
 	 */
 	template<typename RecordType>
 	int getNumberChildren(int parent) const;
@@ -244,18 +248,14 @@ std::vector<int> AccessTables<String>::getChildren(int parent) const {
 template<String_type String>
 template<typename RecordType>
 int AccessTables<String>::getNumberChildren(int parent) const {
-	const String& table = RecordType::table;
-
-	/// \todo use COUNT( )
-	String sql = "SELECT id FROM " + table + " WHERE " + RecordType::fields[0] + " IS '" + std::to_string(parent) + "'";
+	String sql = "SELECT COUNT (*) FROM " + RecordType::table + " WHERE ("
+			+ RecordType::fields[0] + " IS " + std::to_string(parent) + " AND id IS NOT 0);";
 	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
 
-	int ids_number = 0;
-	while (querry.nextRow() == SQLITE_ROW)
-		if(int i = querry.getColumnInt(0))
-			++ids_number;
+	if(int i = querry.nextRow(); i != SQLITE_ROW)
+		throw(database_error("Error getting number of children: " + std::to_string(i)));
 
-	return ids_number;
+	return querry.getColumnInt(0);
 }
 
 /**

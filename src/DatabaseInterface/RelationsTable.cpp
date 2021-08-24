@@ -20,6 +20,7 @@
 #include "RelationsTable.h"
 #include "exceptions.h"
 #include "support.h"
+#include <string>
 
 namespace PhotoLibrary {
 namespace DatabaseInterface {
@@ -86,16 +87,14 @@ int RelationsTable::getNumber(
 		const std::string& return_id,
 		const std::string& table
 		) const {
-	/// \todo use COUNT( )
-	std::string sql = "SELECT " + return_id + " FROM " + table
-			+ " WHERE " + reference_id + " IS '" + std::to_string(id) + "'";
+	std::string sql = "SELECT COUNT(*) FROM " + table
+		+ " WHERE " + reference_id + " IS " + std::to_string(id) + ";";
 	SQLiteAdapter::SQLQuerry querry(db, sql.c_str());
 
-	int number_ids = 0;
-	while (querry.nextRow() == SQLITE_ROW)
-		++number_ids;
+	if(int i = querry.nextRow(); i != SQLITE_ROW)
+		throw(database_error("Error retrieving number of relations with error code: " + std::to_string(i)));
 
-	return number_ids;
+	return querry.getColumnInt(0);
 }
 
 } /* namespace DatabaseInterface */

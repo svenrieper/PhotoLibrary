@@ -75,6 +75,8 @@ public:
 	 *
 	 * @throws std::runtime_error if doesn't hold the correct strings
 	 * 		for a table
+	 * @throws database_error if the database returns an error trying to
+	 * 		get the number of entries
 	 */
 	int getNumberEntries(int collection, const std::array<const std::string,3>& table) const;
 
@@ -103,6 +105,8 @@ public:
 	 *
 	 * @throws std::runtime_error if doesn't hold the correct strings
 	 * 		for a table
+	 * @throws database_error if the database returns an error trying to
+	 * 		get the number of collections
 	 */
 	int getNumberCollections(int entry, const std::array<const std::string,3>& table) const;
 
