@@ -20,10 +20,9 @@
 #ifndef SRC_BACKEND_BACKENDFACTORY_H_
 #define SRC_BACKEND_BACKENDFACTORY_H_
 
-#include "FactoryBase.h"
-#include "DatabaseInterface/DatabaseFactory.h"
 #include <AccessTables.h>
 #include <RelationsTable.h>
+#include <glibmm/ustring.h>
 #include <unordered_map>
 #include <memory>
 
@@ -31,14 +30,9 @@ namespace PhotoLibrary {
 namespace Backend {
 
 /**
- * The interface to get, set, and delete relations between photos and albums.
- */
-using PhotosAlbumsRelationsInterface = RelationsInterfaceBase;
-
-/**
  * Interface to the backend.
  */
-class BackendFactory : public FactoryBase {
+class BackendFactory {
 public:
 	/**
 	 * Properties of the main window.
@@ -199,11 +193,6 @@ public:
 	template<Relations relation>
 	void deleteRelation(int entry, int collection);
 
-	PhotosAlbumsRelationsInterface* getPhotosAlbumsRelationsInterface() override;
-	const PhotosAlbumsRelationsInterface* getPhotosAlbumsRelationsInterface() const override;
-	PhotosAlbumsRelationsInterface* getPhotosKeywordsRelationsInterface() override;
-	const PhotosAlbumsRelationsInterface* getPhotosKeywordsRelationsInterface() const override;
-
 	/**
 	 * Retrieve the value of a main window property.
 	 *
@@ -228,14 +217,16 @@ public:
 	int getCentreWidth() const;
 
 private:
-	std::unique_ptr<DatabaseInterface::DatabaseFactory> db;
+	std::unique_ptr<SQLiteAdapter::Database> db;
 	std::unique_ptr<PhotoLibrary::DatabaseInterface::AccessTables<Glib::ustring>> tables_interface;
 	std::unique_ptr<PhotoLibrary::DatabaseInterface::RelationsTable> relations_interface;
 	std::unordered_map<WindowProperties,int> window_properties;
 	static inline const std::array<const std::array<const std::string,3>,2> relations_tables {
 		std::array<const std::string,3>{"PhotosAlbumsRelations", "albumId", "photoId"},
-		{"PhotosKeywordsRelations", "photoId", "keywordId"}
+		{"PhotosKeywordsRelations", "keywordId", "photoId"}
 	};
+
+	void createTables();
 
 	//prevent copying and copy construction
 	BackendFactory(const BackendFactory &other) = delete;

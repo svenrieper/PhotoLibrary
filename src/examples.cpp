@@ -18,6 +18,10 @@
  */
 
 #include "Backend/BackendFactory.h"
+#include "Backend/Record/KeywordRecord.h"
+#include "Backend/Record/PhotoRecord.h"
+#include "Backend/Record/DirectoryRecord.h"
+#include "Backend/Record/AlbumRecord.h"
 
 namespace PhotoLibrary {
 
@@ -102,9 +106,7 @@ void examplePictures(PhotoLibrary::Backend::BackendFactory& db) {
 	using PhotoLibrary::Backend::RecordClasses::PhotoRecord;
 	using PhotoLibrary::Backend::RecordClasses::AlbumRecord;
 	using PhotoLibrary::Backend::RecordClasses::KeywordRecord;
-
-	PhotoLibrary::Backend::RelationsInterfaceBase* photos_albums_interface = db.getPhotosAlbumsRelationsInterface();
-	PhotoLibrary::Backend::RelationsInterfaceBase* photos_keywords_interface = db.getPhotosKeywordsRelationsInterface();
+	using Relations = Backend::BackendFactory::Relations;
 
 	[[maybe_unused]] int here = addEntry(DirectoryRecord(0, DirectoryRecord::Options::ROW_EXPANDED, "here", "."), db);
 	[[maybe_unused]] int examples = addEntry(DirectoryRecord(here, DirectoryRecord::Options::NONE, "example pictures", "example pictures"), db);
@@ -166,17 +168,17 @@ void examplePictures(PhotoLibrary::Backend::BackendFactory& db) {
 	std::vector<int> v_letters {photo_a, photo_b, photo_c, photo_d, photo_e, photo_f, photo_g};
 
 	for(int a : v_hex_dig)
-		photos_albums_interface->newRelation(a, a_hex_dig);
+		db.newRelation<Relations::PHOTOS_ALBUMS>(a, a_hex_dig);
 	for(int a : v_dec_dig)
-		photos_albums_interface->newRelation(a, a_dec_dig);
+		db.newRelation<Relations::PHOTOS_ALBUMS>(a, a_dec_dig);
 	for(int a : v_dec_num)
-		photos_albums_interface->newRelation(a, a_dec_num);
+		db.newRelation<Relations::PHOTOS_ALBUMS>(a, a_dec_num);
 	for(int a : v_oct_dig)
-		photos_albums_interface->newRelation(a, a_oct_dig);
+		db.newRelation<Relations::PHOTOS_ALBUMS>(a, a_oct_dig);
 	for(int a : v_oct_num)
-		photos_albums_interface->newRelation(a, a_oct_num);
+		db.newRelation<Relations::PHOTOS_ALBUMS>(a, a_oct_num);
 	for(int a : v_letters)
-		photos_albums_interface->newRelation(a, a_letters);
+		db.newRelation<Relations::PHOTOS_ALBUMS>(a, a_letters);
 
 	[[maybe_unused]] int k_examples = addEntry(KeywordRecord(0, KeywordRecord::Options::ROW_EXPANDED, "examples"), db);
 	[[maybe_unused]] int k_hex_dig = addEntry(KeywordRecord(k_examples, KeywordRecord::Options::NONE, "Hex digits"), db);
@@ -187,17 +189,17 @@ void examplePictures(PhotoLibrary::Backend::BackendFactory& db) {
 	[[maybe_unused]] int k_oct_dig = addEntry(KeywordRecord(k_examples, KeywordRecord::Options::NONE, "Octal digits"), db);
 
 	for(int a : v_hex_dig)
-		photos_keywords_interface->newRelation(a, k_hex_dig);
+		db.newRelation<Relations::PHOTOS_KEYWORDS>(a, k_hex_dig);
 	for(int a : v_dec_dig)
-		photos_keywords_interface->newRelation(a, k_dec_dig);
+		db.newRelation<Relations::PHOTOS_KEYWORDS>(a, k_dec_dig);
 	for(int a : v_dec_num)
-		photos_keywords_interface->newRelation(a, k_dec_num);
+		db.newRelation<Relations::PHOTOS_KEYWORDS>(a, k_dec_num);
 	for(int a : v_oct_dig)
-		photos_keywords_interface->newRelation(a, k_oct_dig);
+		db.newRelation<Relations::PHOTOS_KEYWORDS>(a, k_oct_dig);
 	for(int a : v_oct_num)
-		photos_keywords_interface->newRelation(a, k_oct_num);
+		db.newRelation<Relations::PHOTOS_KEYWORDS>(a, k_oct_num);
 	for(int a : v_letters)
-		photos_keywords_interface->newRelation(a, k_letters);
+		db.newRelation<Relations::PHOTOS_KEYWORDS>(a, k_letters);
 }
 
 template<class TRecord>

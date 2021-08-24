@@ -19,6 +19,7 @@
 
 #include "DirectoryStore.h"
 #include "Record/DirectoryRecord.h"
+#include "Record/PhotoRecord.h"
 #include <gtkmm/messagedialog.h>
 
 namespace PhotoLibrary {

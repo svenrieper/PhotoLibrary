@@ -1,6 +1,4 @@
 add_library(PhotoLibraryBackend STATIC
-	DatabaseInterface/RelationsDBInterface.cpp
-	DatabaseInterface/DatabaseFactory.cpp
 	BackendFactory.cpp
 	)
 

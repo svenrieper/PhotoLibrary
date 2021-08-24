@@ -22,6 +22,7 @@
 
 #include "BaseTreeStore.h"
 #include "DirectoryModelColumns.h"
+#include "Record/DirectoryRecord.h"
 
 namespace PhotoLibrary {
 namespace GUI {

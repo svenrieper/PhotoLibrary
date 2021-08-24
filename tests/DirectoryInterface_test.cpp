@@ -17,8 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "../src/Backend/DatabaseInterface/DatabaseFactory.h"
-#include "../src/Backend/BackendFactory.h"
+#include "BackendFactory.h"
 #include "Record/DirectoryRecord.h"
 #include "exceptions.h"
 #include <catch2/catch.hpp>

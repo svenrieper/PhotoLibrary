@@ -20,8 +20,9 @@
 #ifndef SRC_GUI_BASETREEVIEW_H_
 #define SRC_GUI_BASETREEVIEW_H_
 
+#include "BackendFactory.h"
+#include "Record/Options.h"
 #include <gtkmm/treeview.h>
-#include "../Backend/BackendFactory.h"
 
 namespace PhotoLibrary {
 namespace GUI {

@@ -25,8 +25,7 @@ namespace PhotoLibrary {
 namespace GUI {
 
 AlbumStore::AlbumStore(Backend::BackendFactory* db) :
-		BaseTreeStore(*db),
-		relations(db->getPhotosAlbumsRelationsInterface()) {
+		BaseTreeStore(*db) {
 }
 
 Glib::RefPtr<AlbumStore> AlbumStore::create(Backend::BackendFactory* db) {
@@ -48,15 +47,17 @@ void AlbumStore::onRowChanged(const TreeModel::Path& path, const TreeModel::iter
 
 void AlbumStore::fillRow(int id, Gtk::TreeModel::Row& row) {
 	using Backend::RecordClasses::AlbumRecord;
+	using Relations = Backend::BackendFactory::Relations;
 
 	AlbumRecord album(getBackend().getEntry<Backend::RecordClasses::AlbumRecord>(id));
 	/// \todo implement photo_count
-	int photo_count = relations->getNumberEntries(id);
+	int photo_count = getBackend().getNumberEntries<Relations::PHOTOS_ALBUMS>(id);
 	row[getColumns().id] = id;
 	row[getColumns().album_name]   = album.getAlbumName();
 	row[getColumns().album_is_set] = album.getOptions() & AlbumRecord::Options::ALBUM_IS_SET;
 	row[getColumns().expanded]     = album.getOptions() & AlbumRecord::Options::ROW_EXPANDED;
-	row[getColumns().photo_count]  = (album.getOptions() & AlbumRecord::Options::ALBUM_IS_SET)?"":std::to_string(photo_count);
+	row[getColumns().photo_count]  = 
+		(album.getOptions() & AlbumRecord::Options::ALBUM_IS_SET) ? "" : std::to_string(photo_count);
 }
 
 bool AlbumStore::row_drop_possible_vfunc(const Gtk::TreeModel::Path& dest_path, const Gtk::SelectionData& selection_data) const {

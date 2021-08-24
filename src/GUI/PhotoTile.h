@@ -20,8 +20,9 @@
 #ifndef SRC_GUI_PHOTOTILE_H_
 #define SRC_GUI_PHOTOTILE_H_
 
-#include "../Backend/BackendFactory.h"
 #include "PhotoDrawingArea.h"
+#include "BackendFactory.h"
+#include "Record/PhotoRecord.h"
 #include <gtkmm/hvbox.h>
 
 namespace PhotoLibrary {

@@ -22,6 +22,7 @@
 
 #include "BaseTreeStore.h"
 #include "AlbumModelColumns.h"
+#include "Record/AlbumRecord.h"
 #include <gtkmm/selectiondata.h>
 
 namespace PhotoLibrary {
@@ -32,8 +33,6 @@ namespace GUI {
  */
 class AlbumStore: public BaseTreeStore<AlbumModelColumns,Backend::RecordClasses::AlbumRecord> {
 public:
-	~AlbumStore() = default;
-
 	/**
 	 * Create an object.
 	 * Creates an objetct of AlbumStore and returns a RefPtr to it.
@@ -44,8 +43,6 @@ public:
 	static Glib::RefPtr<AlbumStore> create(Backend::BackendFactory* db);
 
 private:
-	Backend::RelationsInterfaceBase* relations;
-
 	AlbumStore(Backend::BackendFactory* db);
 
 	void fillRow(int id, Gtk::TreeModel::Row &row) override;

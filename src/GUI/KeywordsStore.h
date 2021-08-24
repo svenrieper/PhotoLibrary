@@ -20,10 +20,11 @@
 #ifndef SRC_GUI_KEYWORDSSTORE_H_
 #define SRC_GUI_KEYWORDSSTORE_H_
 
-#include <gtkmm/treestore.h>
-#include "../Backend/BackendFactory.h"
 #include "KeywordModelColumns.h"
 #include "BaseTreeStore.h"
+#include "BackendFactory.h"
+#include "Record/KeywordRecord.h"
+#include <gtkmm/treestore.h>
 
 namespace PhotoLibrary {
 namespace GUI {

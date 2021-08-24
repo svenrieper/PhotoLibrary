@@ -90,7 +90,7 @@ void MainWindow::onNewDirectorySelected(int id) {
 }
 
 void MainWindow::onNewAlbumSelected(int id) {
-	centrePaneBox.fillGrid(backend->getPhotosAlbumsRelationsInterface()->getEntries(id));
+	centrePaneBox.fillGrid(backend->getEntries<Backend::BackendFactory::Relations::PHOTOS_ALBUMS>(id));
 }
 
 
