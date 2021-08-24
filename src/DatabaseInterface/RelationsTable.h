@@ -118,6 +118,8 @@ public:
 	 *
 	 * @throws std::runtime_error if doesn't hold the correct strings
 	 * 		for a table
+	 * @throws constraint_error if adding the new relation fails due to
+	 * 		a constraint violation
 	 * @throws database_error if any error occurs in the database
 	 */
 	void newRelation(int entry, int collection, const std::array<const std::string,3>& table);

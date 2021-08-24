@@ -49,9 +49,12 @@ public:
 		N_THREADS,	/**< Number of threads to use */
 	};
 
+	/**
+	 * Template parameters for the relations tables
+	 */
 	enum class Relations {
-		PHOTOS_ALBUMS=0,
-		PHOTOS_KEYWORDS=1
+		PHOTOS_ALBUMS=0,    /**< Photos albums relations */
+		PHOTOS_KEYWORDS=1   /**< Photos keywords relations */
 	};
 
 	/**
@@ -175,23 +178,79 @@ public:
 	template<typename RecordType>
 	void deleteEntry(int id);
 
+	/**
+	 * Get a vector of photos in a collection.
+	 *
+	 * @tparam relation Enumerator for the relations table
+	 * @param collection Id of the 'collection' (e.g. keyword or album)
+	 * 		for which the photos should be returned.
+	 * @return Vector of ids of all photos in the collection
+	 */
 	template<Relations relation>
 	std::vector<int> getEntries(int collection);
 
+	/**
+	 * Get the number of photos in a 'collection'.
+	 *
+	 * @tparam relation Enumerator for the relations table
+	 * @param collection Id of the 'collection' (e.g. keyword or album)
+	 * 		for which the number of photos should be returned.
+	 * @return Number of photos in the collection
+	 */
 	template<Relations relation>
 	int getNumberEntries(int collection);
 
+	/**
+	 * Get a vector of 'collections' containig a photo
+	 *
+	 * @tparam relation Enumerator for the relations table
+	 * @photo Id of the photo for which the 'collections'
+	 * 		(e.g. keyword or album) containig it should be returned.
+	 * @return Vector of ids of all 'collections' containing photo
+	 */
 	template<Relations relation>
-	std::vector<int> getCollections(int entry);
+	std::vector<int> getCollections(int photo);
 
+	/**
+	 * Get the number of 'collections' containing a photo
+	 *
+	 * @tparam relation Enumerator for the relations table
+	 * @photo Id of the photo for which the number of 'collections'
+	 * 		(e.g. keyword or album) containig it should be returned.
+	 * @return Number of 'collections' containing photo
+	 */
 	template<Relations relation>
-	int getNumberCollections(int entry);
+	int getNumberCollections(int photo);
 
+	/**
+	 * Add a new relation.
+	 *
+	 * Adding an existing relation has no effenct.
+	 *
+	 * @tparam relation Enumerator for the relations table
+	 * @param photo Id of the photo
+	 * @param collection Id of the 'collection' (e.g. keyword or album)
+	 *
+	 * @throws constraint_error if adding the new relation fails due to
+	 * 		a constraint violation
+	 * @throws database_error if any error occurs in the database
+	 */
 	template<Relations relation>
-	void newRelation(int entry, int collection);
+	void newRelation(int photo, int collection);
 
+	/**
+	 * Remove a relation.
+	 *
+	 * Deleting a non-existing relation has no effect.
+	 *
+	 * @tparam relation Enumerator for the relations table
+	 * @param photo Id of the photo
+	 * @param collection Id of the 'collection' (e.g. keyword or album)
+	 *
+	 * @throws database_error if any error occurs in the database
+	 */
 	template<Relations relation>
-	void deleteRelation(int entry, int collection);
+	void deleteRelation(int photo, int collection);
 
 	/**
 	 * Retrieve the value of a main window property.
