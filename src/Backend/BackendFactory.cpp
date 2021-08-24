@@ -18,10 +18,6 @@
  */
 
 #include "BackendFactory.h"
-#include "Record/AlbumRecord.h"
-#include "Record/DirectoryRecord.h"
-#include "Record/KeywordRecord.h"
-#include "Record/PhotoRecord.h"
 #include <thread>
 
 namespace PhotoLibrary {
@@ -35,10 +31,12 @@ BackendFactory::BackendFactory(const char* filename) : db(nullptr) {
 	window_properties[WindowProperties::RIGHT_PANE_WIDTH] = 250;
 	window_properties[WindowProperties::TILE_WIDTH] = 250;
 //	window_properties[WindowProperties::TILE_HEIGHT] = 250;
-	window_properties[WindowProperties::N_THREADS] = std::thread::hardware_concurrency()?std::thread::hardware_concurrency():1;
+	window_properties[WindowProperties::N_THREADS] =
+		std::thread::hardware_concurrency()?std::thread::hardware_concurrency():1;
 
-	db = std::make_unique<Backend::DatabaseInterface::DatabaseFactory>(":memory:", true);
-	tables_interface = std::make_unique<PhotoLibrary::DatabaseInterface::AccessTables<Glib::ustring>>(db->db);
+	db                  = std::make_unique<Backend::DatabaseInterface::DatabaseFactory>(":memory:", true);
+	tables_interface    = std::make_unique<PhotoLibrary::DatabaseInterface::AccessTables<Glib::ustring>>(db->db);
+	relations_interface = std::make_unique<PhotoLibrary::DatabaseInterface::RelationsTable>(db->db);
 }
 
 RelationsInterfaceBase* BackendFactory::getPhotosAlbumsRelationsInterface() {

@@ -23,6 +23,7 @@
 #include "FactoryBase.h"
 #include "DatabaseInterface/DatabaseFactory.h"
 #include <AccessTables.h>
+#include <RelationsTable.h>
 #include <unordered_map>
 #include <memory>
 
@@ -52,6 +53,11 @@ public:
 		TILE_WIDTH,	/**< The width of a tile in the centre frame */
 //		TILE_HEIGHT,	/**< The height of a tile in the centre frame */
 		N_THREADS,	/**< Number of threads to use */
+	};
+
+	enum class Relations {
+		PHOTOS_ALBUMS=0,
+		PHOTOS_KEYWORDS=1
 	};
 
 	/**
@@ -175,6 +181,24 @@ public:
 	template<typename RecordType>
 	void deleteEntry(int id);
 
+	template<Relations relation>
+	std::vector<int> getEntries(int collection);
+
+	template<Relations relation>
+	int getNumberEntries(int collection);
+
+	template<Relations relation>
+	std::vector<int> getCollections(int entry);
+
+	template<Relations relation>
+	int getNumberCollections(int entry);
+
+	template<Relations relation>
+	void newRelation(int entry, int collection);
+
+	template<Relations relation>
+	void deleteRelation(int entry, int collection);
+
 	PhotosAlbumsRelationsInterface* getPhotosAlbumsRelationsInterface() override;
 	const PhotosAlbumsRelationsInterface* getPhotosAlbumsRelationsInterface() const override;
 	PhotosAlbumsRelationsInterface* getPhotosKeywordsRelationsInterface() override;
@@ -206,7 +230,12 @@ public:
 private:
 	std::unique_ptr<DatabaseInterface::DatabaseFactory> db;
 	std::unique_ptr<PhotoLibrary::DatabaseInterface::AccessTables<Glib::ustring>> tables_interface;
+	std::unique_ptr<PhotoLibrary::DatabaseInterface::RelationsTable> relations_interface;
 	std::unordered_map<WindowProperties,int> window_properties;
+	static inline const std::array<const std::array<const std::string,3>,2> relations_tables {
+		std::array<const std::string,3>{"PhotosAlbumsRelations", "albumId", "photoId"},
+		{"PhotosKeywordsRelations", "photoId", "keywordId"}
+	};
 
 	//prevent copying and copy construction
 	BackendFactory(const BackendFactory &other) = delete;
@@ -255,6 +284,55 @@ void BackendFactory::deleteEntry(int id) {
 	return tables_interface->deleteEntry<RecordType>(id);
 }
 
+template<BackendFactory::Relations relation>
+std::vector<int> BackendFactory::getEntries(int collection) {
+	return relations_interface->getEntries(
+			collection,
+			relations_tables[static_cast<int>(relation)]
+			);
+}
+
+template<BackendFactory::Relations relation>
+int BackendFactory::getNumberEntries(int collection) {
+	return relations_interface->getNumberEntries(
+			collection,
+			relations_tables[static_cast<int>(relation)]
+			);
+}
+
+template<BackendFactory::Relations relation>
+std::vector<int> BackendFactory::getCollections(int entry) {
+	return relations_interface->getCollections(
+			entry,
+			relations_tables[static_cast<int>(relation)]
+			);
+}
+
+template<BackendFactory::Relations relation>
+int BackendFactory::getNumberCollections(int entry) {
+	return relations_interface->getNumberCollections(
+			entry,
+			relations_tables[static_cast<int>(relation)]
+			);
+}
+
+template<BackendFactory::Relations relation>
+void BackendFactory::newRelation(int entry, int collection) {
+	return relations_interface->newRelation(
+			entry,
+			collection,
+			relations_tables[static_cast<int>(relation)]
+			);
+}
+
+template<BackendFactory::Relations relation>
+void BackendFactory::deleteRelation(int entry, int collection) {
+	return relations_interface->deleteRelation(
+			entry,
+			collection,
+			relations_tables[static_cast<int>(relation)]
+			);
+}
 
 } /* namespace Backend */
 } /* namespace PhotoLibrary */
